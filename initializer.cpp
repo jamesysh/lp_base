@@ -843,7 +843,12 @@ void Initializer::initParticleDataMemory() {
 	
 	m_vSoundSpeed = new double[m_iCapacity];
 	fill_n(m_vSoundSpeed,m_iCapacity,0);
-	
+
+    m_vTemperature = new double[m_iCapacity];
+    fill_n(m_vTemperature,m_iCapacity,0);
+
+    m_vTimeTrack = new int[m_iCapacity];
+    fill_n(m_vTimeTrack,m_iCapacity,0);
 	// object tags
 	m_vObjectTag = new int[m_iCapacity];
 	fill_n(m_vObjectTag,m_iCapacity,0);

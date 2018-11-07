@@ -49,6 +49,7 @@ ParticleData::ParticleData(Initializer& init) {
 	m_vPressure = init.getPressure();
 	m_vSoundSpeed = init.getSoundSpeed();	
 	m_vTemperature = init.getTemperature();
+    m_vTimeTrack = init.getTimeTrack();
     m_vObjectTag = init.getObjectTag();
 	m_vLocalParSpacing = init.getLocalParSpacing();
 	m_vMass=init.getMass();
@@ -548,6 +549,7 @@ ParticleData::~ParticleData() {
 	delete[] m_vVolumeVoronoi;
 	delete[] m_vPressure;
 	delete[] m_vTemperature;
+    delete[] m_vTimeTrack;
     //delete[] m_vEnergy;
 	delete[] m_vSoundSpeed;
 	delete[] m_vLocalParSpacing;

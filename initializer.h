@@ -704,7 +704,7 @@ public:
 
 
     double* getTemperature() const {return m_vTemperature;}
-
+    int* getTimeTrack() const{return m_vTimeTrack;}
 	/**
 	 * \brief   Getter function of the array of sound speed of the initialized particles  
 	 * \param   None
@@ -926,7 +926,8 @@ private:
 	double* m_vPressure;///< pressure	
 	double* m_vSoundSpeed;///< sound speed
     double* m_vTemperature;
-    //double* m_vEnergy;///< energy
+    int* m_vTimeTrack;
+  //double* m_vEnergy;///< energy
 	int* m_vObjectTag;///< tag=1,2,3,...:fluid objects; otherwise: boundary or ghost particles
 	double* m_vLocalParSpacing;///< local particle spacing
 	//-----------------------------------------------------------------------------
