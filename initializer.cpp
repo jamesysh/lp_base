@@ -477,7 +477,12 @@ void Initializer::readInputfile(const string& inputfileName) {
 
     if(result != output.end())
         m_iPrintTemperature = 1;
-     
+    
+    result = find(output.begin(),output.end(),"timetrack");
+
+    if(result != output.end())
+        m_iPrintTimeTrack = 1;
+ 
       
 }
 
