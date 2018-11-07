@@ -11,7 +11,7 @@
 #include <cstring> // strerror()
 #include <vector>
 using namespace std;
-
+//time
 //#define LP_DEBUG
 // execute as ./lp -i <inputfile name> -o <output directory name> 
 
