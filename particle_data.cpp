@@ -91,7 +91,7 @@ ParticleData::ParticleData(Initializer& init) {
     m_iPrintQplusminus = init.getPrintQplusminus();
     m_iPrintLocalSpacing = init.getPrintLocalSpacing();
     m_iPrintTemperature = init.getPrintTemperature();
-
+    m_iPrintTimeTrack = init.getPrintTimeTrack();
 
 	try {
 		m_vVolumeOld = new double[m_iCapacity];	

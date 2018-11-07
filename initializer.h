@@ -805,10 +805,12 @@ public:
 
    int getPrintTemperature(){return m_iPrintTemperature;}
 
+   int getPrintTimeTrack(){return m_iPrintTimeTrack;} 
+
    int getPrintAllParticle(){return m_iPrintAllParticle;}
 private:
 
-    //-----------------OUT PUT CONTROL-------------------------------------
+    //-----------------OUTPUT OPTION CONTROL-------------------------------------
     int m_iPrintAllParticle = 0;
     int m_iPrintVelocity = 0;
     int m_iPrintVelocityU = 0;
@@ -825,7 +827,7 @@ private:
     int m_iPrintQplusminus = 0;
     int m_iPrintLocalSpacing = 0;
     int m_iPrintTemperature = 0;
-
+    int m_iPrintTimeTrack = 0;
 
 	//--------------------------Data from arg list--------------------------------
 	bool m_iIfDebug; ///< if true then print debug info

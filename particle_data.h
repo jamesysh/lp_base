@@ -397,7 +397,7 @@ public:
         const int* const getNeighbourList() const {return m_vNeighbourList;}
 
 
- //-----------------OUT PUT CONTROL-------------------------------------
+ //-----------------OUTPUT CONTROL-------------------------------------
 
    
     int m_iPrintVelocity;
@@ -415,7 +415,7 @@ public:
     int m_iPrintQplusminus;
     int m_iPrintLocalSpacing;
     int m_iPrintTemperature;
-
+    int m_iPrintTimeTrack;
 
 
 
