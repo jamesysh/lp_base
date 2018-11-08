@@ -1934,12 +1934,12 @@ void Initializer::initPellet(){
 	}
 	else if(m_iPelletDistribution==2){
        
-		m_vPelletPositionX[0]=4;
+		m_vPelletPositionX[0]=0;
 		m_vPelletPositionY[0]=0;
 		m_vPelletPositionZ[0]=0;
 		m_vPelletRadius[0]=0.2;
 		m_vPelletInnerRadius[0]=0.2;
-		m_vPelletPositionX[1]=12;
+		m_vPelletPositionX[1]=8;
 		m_vPelletPositionY[1]=0;
 		m_vPelletPositionZ[1]=0;
 		m_vPelletRadius[1]=0.2;

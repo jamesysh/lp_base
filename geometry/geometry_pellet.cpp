@@ -27,12 +27,12 @@ MultiPelletLayer::MultiPelletLayer(){
 	zcen = new double[NumberofPellet];
 	innerradius = new double[NumberofPellet];
 	outerradius = new double[NumberofPellet];
-	xcen[0]=4;
+	xcen[0]=0;
 	ycen[0]=0;
 	zcen[0]=0;
 	innerradius[0]=0.2;
 	outerradius[0]=0.24;
-	xcen[1]=12;
+	xcen[1]=8;
 	ycen[1]=0;
 	zcen[1]=0;
 	innerradius[1]=0.2;

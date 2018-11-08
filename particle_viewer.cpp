@@ -1472,7 +1472,7 @@ if(outputerror){
 	mfr=0;
 	for(size_t i=startIndex;i<endIndex;i++)
 	{
-		double tr=(positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+		double tr=(positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
 		tr=fabs(sqrt(tr)-r);
 		if(tr<dis)
 		{
@@ -1483,12 +1483,12 @@ if(outputerror){
 	dr=5*dx;
 	for(size_t i=startIndex;i<endIndex;i++)
 	{
-        double tr=(positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+        double tr=(positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
         tr=fabs(sqrt(tr)-r);
 		if(tr<dr)
 		{
-			double vr=velocityU[i]*(positionX[i]-4)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
-			vr=vr/sqrt((positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
+			double vr=velocityU[i]*(positionX[i])+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
+			vr=vr/sqrt((positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
 			mfr+=mass[i]*vr;
 
 		}
@@ -1498,35 +1498,6 @@ if(outputerror){
 	double mfr_1=mfr;
     
         r = 2;
-        dis=10;
-        mfr=0;
-        for(size_t i=startIndex;i<endIndex;i++)
-        {
-                double tr=(positionX[i]-12)*(positionX[i]-12)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
-                tr=fabs(sqrt(tr)-r);
-                if(tr<dis)
-                {
-                        dis=tr;
-                        dx=localParSpacing[i];
-                }
-        }
-        dr=5*dx;
-        for(size_t i=startIndex;i<endIndex;i++)
-        {
-                double tr=(positionX[i]-12)*(positionX[i]-12)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
-                tr=fabs(sqrt(tr)-r);
-                if(tr<dr)
-                {
-                        double vr=velocityU[i]*(positionX[i]-12)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
-                        vr=vr/sqrt((positionX[i]-12)*(positionX[i]-12)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
-                        mfr+=mass[i]*vr;
-                }
-        }
-        mfr=mfr/2/dr;
-        double mfr_2=mfr;
-
-
-        r=5;
         dis=10;
         mfr=0;
         for(size_t i=startIndex;i<endIndex;i++)
@@ -1548,6 +1519,35 @@ if(outputerror){
                 {
                         double vr=velocityU[i]*(positionX[i]-8)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
                         vr=vr/sqrt((positionX[i]-8)*(positionX[i]-8)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
+                        mfr+=mass[i]*vr;
+                }
+        }
+        mfr=mfr/2/dr;
+        double mfr_2=mfr;
+
+
+        r=5;
+        dis=10;
+        mfr=0;
+        for(size_t i=startIndex;i<endIndex;i++)
+        {
+                double tr=(positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                tr=fabs(sqrt(tr)-r);
+                if(tr<dis)
+                {
+                        dis=tr;
+                        dx=localParSpacing[i];
+                }
+        }
+        dr=5*dx;
+        for(size_t i=startIndex;i<endIndex;i++)
+        {
+                double tr=(positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                tr=fabs(sqrt(tr)-r);
+                if(tr<dr)
+                {
+                        double vr=velocityU[i]*(positionX[i]-4)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
+                        vr=vr/sqrt((positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
                         mfr+=mass[i]*vr;
                 }
         }
