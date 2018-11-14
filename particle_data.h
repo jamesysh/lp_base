@@ -181,7 +181,7 @@ public:
 
     const double* const getTemperature() const{ return m_vTemperature;}
     
-    const int* const getTimeTrack() const{return m_vTimeTrack;}
+    int* const getTimeTrack() const{return m_vTimeTrack;}
 	/**
 	 * \brief   Getter function of the array of x-coordinates of the initialized particles  
 	 * \param   None
@@ -460,7 +460,7 @@ private:
 	double* m_vVolumeVoronoi;
 	double* m_vPressure;///< pressure	
 	double* m_vSoundSpeed;///< sound speed
-	double* m_vTemperature;///<temperature
+    double* m_vTemperature;
     int* m_vTimeTrack;
     double* m_vLocalParSpacing;///<local inter-particle spacing
 	double* m_vMass;

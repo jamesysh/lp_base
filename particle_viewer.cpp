@@ -553,6 +553,7 @@ int VTKParticleViewer::writeResult(double time, size_t writeStep) {
 	const double* rightintegral = m_pParticleData->getRightIntegral();
 	const double* Deltaq = m_pParticleData->getDeltaQ();
 	const double* Qplusminus = m_pParticleData->getQplusminus();
+    int* timetrack = m_pParticleData->getTimeTrack();
 //	const double* phi = m_pParticleData->getPhi();
         const double* perror0 = m_pParticleData->getPError0();
         const double* perror1 = m_pParticleData->getPError1();
@@ -753,6 +754,20 @@ if(m_pParticleData->getNumberofPellet()){
 	    }
     }
 }
+        double Delta_T = 0.0005;
+        if(m_pParticleData->m_iPrintTimeTrack){
+                fprintf(outfile,"SCALARS timetrack int\n");
+                fprintf(outfile,"LOOKUP_TABLE default\n");
+                for(size_t i=startIndex; i<endIndex; i++){
+                    double t = pressure[i]*volume[i]/4.12023/1.160452e4;
+                    if (t>1&&timetrack[i]==0){
+                        fprintf(outfile,"%d\n",(int)(time/Delta_T));
+                        timetrack[i] = -1;
+                    }
+                    else
+                        fprintf(outfile,"%d\n",0);
+              }
+        }
 #ifdef DEBUG_LW_V
 //        fprintf(outfile,"SCALARS phi double\n");
         fprintf(outfile,"SCALARS u_x double\n");
