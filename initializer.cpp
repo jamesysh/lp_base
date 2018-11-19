@@ -509,7 +509,7 @@ void Initializer::setParams() {
 	if(m_iDimension==3)
 		m_fTimesCapacity = 3 ;//1.5
 
-	m_fAdditionalCapacity = 200000;
+	m_fAdditionalCapacity = 2000000;
 //	if(m_iDimension==3)
 //		m_fAdditionalCapacity = 1000000;	
 	// compute the number of particles within m_fNeiSearchRadius based on the initial packing of particles
@@ -1949,7 +1949,7 @@ void Initializer::initPellet(){
 		m_vPelletPositionZ[0]=0;
 		m_vPelletRadius[0]=0.2;
 		m_vPelletInnerRadius[0]=0.2;
-		m_vPelletPositionX[1]=12;
+		m_vPelletPositionX[1]=-4;
 		m_vPelletPositionY[1]=0;
 		m_vPelletPositionZ[1]=0;
 		m_vPelletRadius[1]=0.2;

@@ -32,7 +32,7 @@ MultiPelletLayer::MultiPelletLayer(){
 	zcen[0]=0;
 	innerradius[0]=0.2;
 	outerradius[0]=0.24;
-	xcen[1]=12;
+	xcen[1]=-4;
 	ycen[1]=0;
 	zcen[1]=0;
 	innerradius[1]=0.2;

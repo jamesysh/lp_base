@@ -762,7 +762,7 @@ if(m_pParticleData->getNumberofPellet()){
                     double t = pressure[i]*volume[i]/4.12023/1.160452e4;
                     if (t>1&&timetrack[i]==0){
                         fprintf(outfile,"%d\n",(int)(time/Delta_T));
-                        timetrack[i] = -1;
+                        timetrack[i] = -50;
                     }
                     else
                         fprintf(outfile,"%d\n",timetrack[i]);
@@ -1517,7 +1517,7 @@ if(outputerror){
         mfr=0;
         for(size_t i=startIndex;i<endIndex;i++)
         {
-                double tr=(positionX[i]-12)*(positionX[i]-12)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                double tr=(positionX[i]+4)*(positionX[i]+4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
                 tr=fabs(sqrt(tr)-r);
                 if(tr<dis)
                 {
@@ -1528,12 +1528,12 @@ if(outputerror){
         dr=5*dx;
         for(size_t i=startIndex;i<endIndex;i++)
         {
-                double tr=(positionX[i]-12)*(positionX[i]-12)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                double tr=(positionX[i]+4)*(positionX[i]+4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
                 tr=fabs(sqrt(tr)-r);
                 if(tr<dr)
                 {
-                        double vr=velocityU[i]*(positionX[i]-12)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
-                        vr=vr/sqrt((positionX[i]-12)*(positionX[i]-12)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
+                        double vr=velocityU[i]*(positionX[i]+4)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
+                        vr=vr/sqrt((positionX[i]+4)*(positionX[i]+4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
                         mfr+=mass[i]*vr;
                 }
         }
@@ -1546,7 +1546,7 @@ if(outputerror){
         mfr=0;
         for(size_t i=startIndex;i<endIndex;i++)
         {
-                double tr=(positionX[i]-8)*(positionX[i]-8)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                double tr=(positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
                 tr=fabs(sqrt(tr)-r);
                 if(tr<dis)
                 {
@@ -1557,12 +1557,12 @@ if(outputerror){
         dr=5*dx;
         for(size_t i=startIndex;i<endIndex;i++)
         {
-                double tr=(positionX[i]-8)*(positionX[i]-8)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                double tr=(positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
                 tr=fabs(sqrt(tr)-r);
                 if(tr<dr)
                 {
-                        double vr=velocityU[i]*(positionX[i]-8)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
-                        vr=vr/sqrt((positionX[i]-8)*(positionX[i]-8)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
+                        double vr=velocityU[i]*(positionX[i])+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
+                        vr=vr/sqrt((positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
                         mfr+=mass[i]*vr;
                 }
         }
