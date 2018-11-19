@@ -419,7 +419,8 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	}
 
 //------start density integral computing--------------------
-   int numberofParticle = m_pParticleData->m_iFluidNum + m_pParticleData->m_iBoundaryNum;
+ 
+ int numberofParticle = m_pParticleData->m_iFluidNum + m_pParticleData->m_iBoundaryNum;
       if(m_pParticleData->m_iNumberofPellet){
         m_vPositionX_temp = new double[numberofParticle];
         fill_n(m_vPositionX_temp, numberofParticle, 0);
@@ -429,9 +430,9 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	}
         m_pNeighbourSearcher->buildSearchStructure_integral(m_vPositionX_temp, positionY, positionZ, mass, VolumeVoronoi,
 	m_pParticleData->m_iFluidStartIndex, numberofParticle, positionX);
-  
-    	m_pNeighbourSearcher->computeIntegralQuadtree(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
 
+
+    	m_pNeighbourSearcher->computeIntegralQuadtree(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
         calculateHeatDeposition();
 
         delete[] m_vPositionX_temp; 
@@ -453,7 +454,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //	cout<<"Calculate integral"<<endl;
 //        printf("Build octree takes %.16g seconds\n", omp_get_wtime() - startTime);
 /*	if(m_pParticleData->m_iNumberofPellet){
-	        startTime = omp_get_wtime();
+	      double  apcstartTime = omp_get_wtime();
 
 //Compute integral from x+ and x- directions using octree
 		m_pNeighbourSearcher->computeIntegralAPCloud(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
@@ -462,7 +463,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //		computeIntegralSpherical();
 
 //		cout<<"Integral calculated"<<endl;	
-//		printf("Calculate integral takes %.16g seconds\n", omp_get_wtime() - startTime);
+		printf("Calculate integral takes %f(s)\n", omp_get_wtime() - apcstartTime);
 		startTime = omp_get_wtime();
     calculateHeatDeposition();
 //		cout<<"Heat deposition calculated"<<endl;      

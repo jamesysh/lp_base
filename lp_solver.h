@@ -149,7 +149,7 @@ private:
     //-----------------------Used for density integral-----------------------------------
 
 
-    double* m_vPositionX_temp;
+    double* m_vPositionX_temp; //used for quadtree computation
 
 
 	//--------------------------Info got from input argument list---------------------------
