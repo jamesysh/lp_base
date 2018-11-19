@@ -29,12 +29,12 @@ OctreeSearcher::OctreeSearcher(const Initializer& init) {
 //	m_iMinNeighborNum = init.getNumParticleWithinSearchRadius()/2;
 	m_iMinNeighborNum = init.getNumRow2ndOrder();
 	int treeDepth = init.getTreeDepth(); 
-
+    int m_iNumberofPellet = init.getNumberofPellet();
 	m_pOctree = new Octree(treeDepth, m_iMaxParticleNum);
 	//m_pSearchResult = new SearchResult[m_iMaxNeighborNum];
 
 
-    if(init.getNumberofPellet()){
+    if(m_iNumberofPellet){
         m_pOctree_integral = new Octree(treeDepth, m_iMaxParticleNum);
         }
 
@@ -54,7 +54,7 @@ OctreeSearcher::OctreeSearcher(const Initializer& init) {
 	m_pSearchResulttemp = new SearchResult[m_iMaxNeighborNum];
 #endif
 
-
+    
 	// print debug info
 	std::cout<<"-------OctreeSearcher::OctreeSearcher()-------"<<std::endl;
 	std::cout<<"m_iMaxParticleNum = "<<m_iMaxParticleNum<<std::endl;

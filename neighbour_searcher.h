@@ -274,7 +274,8 @@ public:
 	 */
 	virtual ~OctreeSearcher() {
 		delete m_pOctree;
-    
+        if(m_iNumberofPellet)
+            delete m_pOctree_integral; 
 #ifdef _OPENMP
 		for(int i=0 ; i<m_iTheadNum ; i++) {
 			delete[] m_pSearchResult[i];
@@ -450,7 +451,9 @@ private:
 	size_t m_iMinNeighborNum;///< The minimum number of neighbours of a particle
 #ifdef _OPENMP
 	int m_iTheadNum;///< The number of threads 
-	SearchResult** m_pSearchResult;///< The search result for each thread id 
+
+    int m_iNumberofPellet;
+    SearchResult** m_pSearchResult;///< The search result for each thread id 
 	SearchResult** m_pSearchResultTemp; 
 	//vector<SearchResult*> m_pSearchResult;
 #else
