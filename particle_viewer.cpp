@@ -765,7 +765,7 @@ if(m_pParticleData->getNumberofPellet()){
                         timetrack[i] = -1;
                     }
                     else
-                        fprintf(outfile,"%d\n",0);
+                        fprintf(outfile,"%d\n",timetrack[i]);
               }
         }
 #ifdef DEBUG_LW_V
