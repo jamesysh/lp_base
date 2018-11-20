@@ -13,7 +13,6 @@
 using namespace std;
 
 //#define LP_DEBUG
-// execute as ./lp -i <inputfile name> -o <output directory name> 
 
 int main(int argc, const char* argv[]) {	
 	
