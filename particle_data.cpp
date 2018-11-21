@@ -98,41 +98,30 @@ ParticleData::ParticleData(Initializer& init) {
                 m_vVolumeVoronoi = new double[m_iCapacity];
                 for(size_t i=0; i<m_iCapacity; i++) m_vVolumeVoronoi[i]=m_vVolume[i];
 		
-		m_vFluidBoundingBox = init.getFluidBoundingBox();
-		m_vBoundaryObj = init.getBoundaryObj();
-		m_vBoundaryObjTypes = init.getBoundaryObjTypes();
-/*
-		const vector<BoundingBox*>& tmp = init.getFluidBoundingBox();	
-		for(size_t i=0; i<tmp.size(); i++) 
-			m_vFluidBoundingBox.push_back(new BoundingBox(*tmp[i])); //copy constructor of BoundingBox is called
-		
-		const vector<string>& tmp2 = init.getBoundaryObjTypes();	
-		for(size_t i=0; i<tmp2.size(); i++) 
-			m_vBoundaryObjTypes.push_back(tmp2[i]);
-	
-		const vector<Boundary*>& tmp3 = init.getBoundaryObj();	
-		for(size_t i=0; i<tmp3.size(); i++) 
-			m_vBoundaryObj.push_back(new Boundary(*tmp3[i]));
-*/
+        		m_vFluidBoundingBox = init.getFluidBoundingBox();
+		        m_vBoundaryObj = init.getBoundaryObj();
+		        m_vBoundaryObjTypes = init.getBoundaryObjTypes();
 
 		// allocate memory velocity
-		m_vLeftIntegral = new double[m_iCapacity];
-		fill_n(m_vLeftIntegral, m_iCapacity, 0);
-                m_vRightIntegral = new double[m_iCapacity];
-                fill_n(m_vRightIntegral, m_iCapacity, 0);
-		m_vDeltaq = new double[m_iCapacity];
-		fill_n(m_vDeltaq, m_iCapacity, 0);
-		m_vQplusminus = new double[m_iCapacity];
-		fill_n(m_vQplusminus, m_iCapacity, 0);
+                if(m_iNumberofPellet){
+                    m_vLeftIntegral = new double[m_iCapacity];
+                    fill_n(m_vLeftIntegral, m_iCapacity, 0);
+                    m_vRightIntegral = new double[m_iCapacity];
+                    fill_n(m_vRightIntegral, m_iCapacity, 0);
+                    m_vDeltaq = new double[m_iCapacity];
+                    fill_n(m_vDeltaq, m_iCapacity, 0);
+                    m_vQplusminus = new double[m_iCapacity];
+                    fill_n(m_vQplusminus, m_iCapacity, 0);
 
-                m_bLeftInflow = new bool[m_iCapacity];
-                fill_n(m_bLeftInflow,m_iCapacity,false);
-                m_vPelletEnergy = new double[m_iNumberofPellet];
-                fill_n(m_vPelletEnergy, m_iNumberofPellet, 0);
-                m_vPelletVelocity = new double[m_iNumberofPellet];
-                fill_n(m_vPelletVelocity, m_iNumberofPellet, 0);
-                m_vPelletID = new int[m_iCapacity];
-                fill_n(m_vPelletID, m_iCapacity, -1);
+                    m_bLeftInflow = new bool[m_iCapacity];
+                    fill_n(m_bLeftInflow,m_iCapacity,false);
+                    m_vPelletEnergy = new double[m_iNumberofPellet];
+                    fill_n(m_vPelletEnergy, m_iNumberofPellet, 0);
+                    m_vPelletVelocity = new double[m_iNumberofPellet];
+                    fill_n(m_vPelletVelocity, m_iNumberofPellet, 0);
+                    m_vPelletID = new int[m_iCapacity];
+                    fill_n(m_vPelletID, m_iCapacity, -1);
+                }
 #ifdef LW_DEBUG
                 m_vPhi = new double[m_iCapacity];
                 fill_n(m_vPhi,m_iCapacity,0);
