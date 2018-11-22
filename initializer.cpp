@@ -1909,7 +1909,7 @@ void Initializer::modifyInitContactLength() {
 void Initializer::initPellet(){
 
     
-	m_iMaxParticlePerCell = 1500;//maximum number of particles per APCloud node in density integral calculation
+	m_iMaxParticlePerCell = 800;//maximum number of particles per APCloud node in density integral calculation
 
 	if(m_iPelletDistribution==1){
 		m_iNumberofPellet=1;

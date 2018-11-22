@@ -4,9 +4,6 @@
 #include <algorithm>
 #include <iostream>
 //#include <iostream>
-#ifndef LW_DEBUG
-#define LW_DEBUG
-#endif
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,10 +98,12 @@ ParticleData::ParticleData(Initializer& init) {
         		m_vFluidBoundingBox = init.getFluidBoundingBox();
 		        m_vBoundaryObj = init.getBoundaryObj();
 		        m_vBoundaryObjTypes = init.getBoundaryObjTypes();
-
-		// allocate memory velocity
+                m_bLeftInflow = new bool[m_iCapacity];
+                fill_n(m_bLeftInflow,m_iCapacity,false);
+                    
+		// allocate pellet memory 
                 if(m_iNumberofPellet){
-                    m_vLeftIntegral = new double[m_iCapacity];
+                   m_vLeftIntegral = new double[m_iCapacity];
                     fill_n(m_vLeftIntegral, m_iCapacity, 0);
                     m_vRightIntegral = new double[m_iCapacity];
                     fill_n(m_vRightIntegral, m_iCapacity, 0);
@@ -113,18 +112,22 @@ ParticleData::ParticleData(Initializer& init) {
                     m_vQplusminus = new double[m_iCapacity];
                     fill_n(m_vQplusminus, m_iCapacity, 0);
 
-                    m_bLeftInflow = new bool[m_iCapacity];
-                    fill_n(m_bLeftInflow,m_iCapacity,false);
                     m_vPelletEnergy = new double[m_iNumberofPellet];
                     fill_n(m_vPelletEnergy, m_iNumberofPellet, 0);
                     m_vPelletVelocity = new double[m_iNumberofPellet];
                     fill_n(m_vPelletVelocity, m_iNumberofPellet, 0);
                     m_vPelletID = new int[m_iCapacity];
                     fill_n(m_vPelletID, m_iCapacity, -1);
+                
+
                 }
+
+                    m_vPhi = new double[m_iCapacity];
+                    fill_n(m_vPhi,m_iCapacity,0);
+                    m_vIfSPHDensity = new int[m_iCapacity];
+                    fill_n(m_vIfSPHDensity,m_iCapacity,0);
+
 #ifdef LW_DEBUG
-                m_vPhi = new double[m_iCapacity];
-                fill_n(m_vPhi,m_iCapacity,0);
                 m_vPError0 = new double[m_iCapacity];
                 fill_n(m_vPError0,m_iCapacity,0);
                 m_vPError1 = new double[m_iCapacity];
@@ -167,9 +170,8 @@ ParticleData::ParticleData(Initializer& init) {
                 fill_n(m_vNeighList,40*m_iCapacity,0);
                 m_vNeighOfParticle = new int[m_iCapacity];
                 fill_n(m_vNeighOfParticle,m_iCapacity,0);
-                m_vIfSPHDensity = new int[m_iCapacity];
-                fill_n(m_vIfSPHDensity,m_iCapacity,0);
 #endif
+
                 m_vVolume_x = new double[m_iCapacity];
                 m_vVolume_y = new double[m_iCapacity];
                 m_vVolume_z = new double[m_iCapacity];
@@ -556,16 +558,13 @@ ParticleData::~ParticleData() {
 	delete[] m_vTemp2Pressure;
 	delete[] m_vTemp2SoundSpeed;
 	delete[] m_vMass;
-	delete[] m_vLeftIntegral;
+	
+    if(m_iNumberofPellet){
+    delete[] m_vLeftIntegral;
 	delete[] m_vRightIntegral;
 	delete[] m_vDeltaq;
 	delete[] m_vQplusminus;
-	delete[] m_vVolume_x;
-        delete[] m_vVolume_y;
-        delete[] m_vVolume_z;
-	delete[] m_vDensity;
-	delete[] m_bLeftInflow;
-	delete[] m_vPelletID;
+    delete[] m_vPelletID;
 	delete[] m_vPelletPositionX;
 	delete[] m_vPelletPositionY;
 	delete[] m_vPelletPositionZ;
@@ -573,13 +572,22 @@ ParticleData::~ParticleData() {
 	delete[] m_vPelletInnerRadius;
 	delete[] m_vPelletEnergy;
 	delete[] m_vPelletVelocity;
-#ifdef LW_DEBUG
+    }
+	delete[] m_vVolume_x;
+    delete[] m_vVolume_y;
+    delete[] m_vVolume_z;
+	delete[] m_vDensity;
+	delete[] m_bLeftInflow;
+	
 	delete[] m_vPhi;
-	delete[] m_vPError0;
+    
+	delete[] m_vIfSPHDensity;
+#ifdef LW_DEBUG
+	    delete[] m_vPError0;
         delete[] m_vPError1;
         delete[] m_vVelError0;
         delete[] m_vVelError1;
-	delete[] m_vPxl;
+	    delete[] m_vPxl;
         delete[] m_vPxr;
         delete[] m_vVxl;
         delete[] m_vVxr;
@@ -596,7 +604,6 @@ ParticleData::~ParticleData() {
 	delete[] m_vNeighList;
 	delete[] m_vNeighSize;
 	delete[] m_vNeighOfParticle;
-	delete[] m_vIfSPHDensity;
 #endif	
 	if(m_iDimension==2 || m_iDimension==3) {
 

@@ -653,7 +653,6 @@ void Octree::computeIntegralQuadtree(const double* mass, double* left_integral, 
 
     
     int maxNumberPerCell = 20;
-    int maxCellNumberInBox = maxnp/maxNumberPerCell + 1;
     	std::vector<int> child,old_index,level,phint(4,0);
 	std::vector<double> y_size(m_iMaxDepth+1),z_size(m_iMaxDepth+1);
    	std::queue<int> integral_queue;
@@ -811,15 +810,7 @@ void Octree::computeIntegralQuadtree(const double* mass, double* left_integral, 
     std::vector<double> right_sum(division,0);
     std::vector<double> local_sum(division,0) ;
     
-//integral computing
-  /*   for(int id_cell = 0; id_cell<division; id_cell++){
-       
-        local_sum[id_cell] = 0;
-        left_sum[id_cell] = 0;
-        right_sum[id_cell] = 0;
-       } 
-    */    
-     for(int id_particle=0,id_cell=0;id_particle<numberofParticleInBox;)
+    for(int id_particle=0,id_cell=0;id_particle<numberofParticleInBox;)
         {
             int j = m_vParticleKeyIndex_integral[id_particle].index;
             if(m_vParticleKeyIndex_integral[id_particle].key <= x_dividing[id_cell]){
@@ -870,65 +861,6 @@ void Octree::computeIntegralQuadtree(const double* mass, double* left_integral, 
     }
 
 //-----------------------------------------------------------------
-/*
-
-   for(int id_cell = 0; id_cell<maxCellNumberInBox; id_cell++){
-       
-       local_sum[id_cell] = 0;
-       left_sum[id_cell] = 0;
-       right_sum[id_cell] = 0;
-
-       } 
-    
-    int division;
-    if(numberofParticleInBox%maxNumberPerCell == 0)
-        division = numberofParticleInBox/maxNumberPerCell;
-    else
-        division = floor(numberofParticleInBox/maxNumberPerCell) + 1;
-
-//    cout<<"np"<<numberofParticleInBox<<endl;
-//    cout<<"division"<<division<<endl;
-
-    int numberofParticleInCell;
-    
-    numberofParticleInCell = floor(numberofParticleInBox/division)+1;
-//    cout<<"incell"<<numberofParticleInCell<<endl;
-
-    for(int id_particle=0;id_particle<numberofParticleInBox;id_particle++){
-            int j = m_vParticleKeyIndex_integral[id_particle].index;
-            int id_cell = floor(id_particle/numberofParticleInCell);
-            if(j<fluidnum)
-            local_sum[id_cell] += mass[j]; 
-        }
-
-//    cout<<"local_sum"<<local_sum[0]<<endl;
-    for(int k = 0; k<division; k++){
-        
-        for(int p = 0; p<k+1;p++){
-            left_sum[k] += local_sum[p];
-            
-            }
-            left_sum[k] -= local_sum[k]/2;
-            left_sum[k] = left_sum[k]/y_length/z_length; 
-        for(int p = k; p<division; p++){
-            right_sum[k] += local_sum[p];
-            }
-            right_sum[k] -= local_sum[k]/2;
-            right_sum[k] = right_sum[k]/y_length/z_length; 
-        }
-
-            
-    for(int id_particle = 0;id_particle<numberofParticleInBox;id_particle++ ){
-        
-          int id_cell = floor(id_particle/numberofParticleInCell);
-
-          int j = m_vParticleKeyIndex_integral[id_particle].index;
-
-          left_integral[j] = left_sum[id_cell];
-          right_integral[j] = right_sum[id_cell];
-        
-        }
-*/
     delete[] m_vParticleKeyIndex_integral;
   
   

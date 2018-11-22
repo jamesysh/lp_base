@@ -28,9 +28,7 @@
 #include <iostream>
 #include <new> // std::bad_alloc
 #include <cassert>
-#ifndef LW_DEBUG
-#define LW_DEBUG
-#endif
+
 class LPSolver;
 class Initializer;
 class BoundingBox;
@@ -292,6 +290,7 @@ public:
 	double getconductivity() {return conductivity;}
 	double getsublimationenergy() {return sublimationenergy;}
 
+    const double* const getPhi() const {return m_vPhi;}
 
 
 
@@ -302,7 +301,6 @@ public:
          * \return  Pointer pointing to the array of phi of the initialized particles
          *
          */
-        const double* const getPhi() const {return m_vPhi;}
         const double* const getPError1() const {return m_vPError1;}
         const double* const getPError0() const {return m_vPError0;}
         const double* const getVelError1() const {return m_vVelError1;}
@@ -493,31 +491,33 @@ private:
 	double sublimationenergy;
 	double m_vMassFlowRate;
 
-	//double* m_vEnergy;///< energy
-#ifdef LW_DEBUG
+
 	double *m_vPhi;//< used by limiter
+    
+	int *m_vIfSPHDensity;
+//double* m_vEnergy;///< energy
+#ifdef LW_DEBUG
 	double *m_vPError0;
 	double *m_vPError1;
 	double *m_vVelError0;
 	double *m_vVelError1;
 	double *m_vPxl;
-        double *m_vPxr;
-        double *m_vVxl;
-        double *m_vVxr;
-        double *m_vPyl;
-        double *m_vPyr;
-        double *m_vVyl;
-        double *m_vVyr;
-        double *m_vPtx;
-        double *m_vVtx;
-        double *m_vPty;
-        double *m_vVty;
-        double *m_vVolumetx;
-        double *m_vVolumety;
-	int *m_vNeighSize;
+    double *m_vPxr;
+    double *m_vVxl;
+    double *m_vVxr;
+    double *m_vPyl;
+    double *m_vPyr;
+    double *m_vVyl;
+    double *m_vVyr;
+    double *m_vPtx;
+    double *m_vVtx;
+    double *m_vPty;
+    double *m_vVty;
+    double *m_vVolumetx;
+    double *m_vVolumety;
+    int *m_vNeighSize;
 	int *m_vNeighList;
 	int *m_vNeighOfParticle;
-	int *m_vIfSPHDensity;
 #endif	
 	double* m_vTemp1VelocityU;///< Temp array 1 of velocity in x-coordinate (for Stang Splitting)
 	double* m_vTemp1VelocityV;///< Temp array 1 of velocity in y-coordinate (for Stang Splitting)

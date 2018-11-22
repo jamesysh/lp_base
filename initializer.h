@@ -895,7 +895,6 @@ private:
 	std::vector<BoundingBox*> m_vFluidBoundingBox;///< Initial bounding box of the initialized fluid objects
 	std::vector<Geometry*> m_vFluidObj;///< Vector of fluid objects
 //	std::vector<BoundingBox*> m_vBoundaryBoundingBox;///< Initial bounding box of the initialized boundary objects
-//	std::vector<Geometry*> m_vBoundaryObj;///< Vector of boundary objects 
 	std::vector<Boundary*> m_vBoundaryObj;///< Vector of boundary objects
 	std::vector<State*> m_vFluidObjState;///< Vector of objects of fluid state
 	std::vector<std::string> m_vFluidObjNames; ///< Vector of fluid object names 	

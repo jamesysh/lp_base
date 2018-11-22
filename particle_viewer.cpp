@@ -546,20 +546,21 @@ int VTKParticleViewer::writeResult(double time, size_t writeStep) {
 	const double* mass = m_pParticleData->getMass();
 	const double* pressure = m_pParticleData->getPressure();
 	const double* soundSpeed = m_pParticleData->getSoundSpeed();
-        const double* phi = m_pParticleData->getPhi();
         const double* voronoi_volume = m_pParticleData->getVolumeVoronoi();
-	const int* IfSPHDensity = m_pParticleData->getIfSPHDensity();
 	const double* leftintegral = m_pParticleData->getLeftIntegral();
 	const double* rightintegral = m_pParticleData->getRightIntegral();
 	const double* Deltaq = m_pParticleData->getDeltaQ();
 	const double* Qplusminus = m_pParticleData->getQplusminus();
-//	const double* phi = m_pParticleData->getPhi();
+#ifdef LW_DEBUG        
+        
         const double* perror0 = m_pParticleData->getPError0();
         const double* perror1 = m_pParticleData->getPError1();
         const double* velerror0 = m_pParticleData->getVelError0();
-        const double* velerror1 = m_pParticleData->getVelError1();
+        const double* velerror1 = m_pParticleData->getVelError1();        
+	    const int* IfSPHDensity = m_pParticleData->getIfSPHDensity();
+#endif
 #ifdef DEBUG_LW_S
-	const double* pxl = m_pParticleData->getPxl();
+	    const double* pxl = m_pParticleData->getPxl();
         const double* pxr = m_pParticleData->getPxr();
         const double* vxl = m_pParticleData->getVxl();
         const double* vxr = m_pParticleData->getVxr();
@@ -1442,7 +1443,8 @@ if(outputerror){
                 printf("Unable to open file: %s\n",radialfilename.c_str());
                 return 1;
         }
-	double tv_p=0,tv_rho=0,tv_u=0;
+#ifdef LW_DEBUG
+    double tv_p=0,tv_rho=0,tv_u=0;
         for(size_t i=startIndex; i<endIndex; i++)
         {
 		tv_p+=perror0[i]*volume[i];
@@ -1451,8 +1453,10 @@ if(outputerror){
         }
 	fprintf(radialoutfile,"%.16g %.16g %.16g %.16g\n",time,tv_p/(endIndex-startIndex),tv_rho/(endIndex-startIndex),tv_u/(endIndex-startIndex));	
         fclose(radialoutfile);
-	}
-
+	
+    
+#endif
+    }
 	if(auxiliaryoutput=="pelletablation"){
         string mfrfilename = m_sOutputfileName + "_massflowrate.txt";
         FILE *mfroutfile;

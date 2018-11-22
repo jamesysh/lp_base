@@ -421,21 +421,22 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //------start density integral computing--------------------
  
  int numberofParticle = m_pParticleData->m_iFluidNum + m_pParticleData->m_iBoundaryNum;
+ cout<<"boundarynum"<<m_pParticleData->m_iBoundaryNum<<endl;
+ cout<<"inflow"<<m_pParticleData->getInflowNum()<<endl;
       if(m_pParticleData->m_iNumberofPellet){
-        m_vPositionX_temp = new double[numberofParticle];
-        fill_n(m_vPositionX_temp, numberofParticle, 0);
-	for(int i=0;i<numberofParticle;i++){
-	if(m_vPositionX_temp[i] != 0)
-		cout<<"problem here value ="<<m_vPositionX_temp[i]<<endl;
-	}
+         m_vPositionX_temp = new double[numberofParticle];
+         fill_n(m_vPositionX_temp, numberofParticle, 0);
+
+                 
         m_pNeighbourSearcher->buildSearchStructure_integral(m_vPositionX_temp, positionY, positionZ, mass, VolumeVoronoi,
 	m_pParticleData->m_iFluidStartIndex, numberofParticle, positionX);
 
 
     	m_pNeighbourSearcher->computeIntegralQuadtree(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
         calculateHeatDeposition();
-
-        delete[] m_vPositionX_temp; 
+    
+    delete[] m_vPositionX_temp;
+       
        }
 
 
