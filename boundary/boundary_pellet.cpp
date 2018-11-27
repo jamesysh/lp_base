@@ -143,6 +143,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			if(index>fluidEndIndex)
                                         m_pParticleData->swap(index,fluidEndIndex);
 			fluidEndIndex++;
+            pelletid[fluidEndIndex-1] = -1; 
 		}
 	}
 
@@ -168,22 +169,26 @@ int PelletOutflowBoundary::UpdateInflowBoundary(ParticleData *m_pParticleData, E
         double *z = m_pParticleData->m_vPositionZ;
 //        double *volume = m_pParticleData->m_vVolume;
 //        double volumeforvacuum = 1e6;
+     
+     
+      
         for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
         {
                 if(x[index]<xmin || x[index]>xmax || y[index]<ymin || y[index]>ymax || z[index]<zmin || z[index]>zmax)
                 {
-
+                        
                         if(index+1<fluidEndIndex)
                         {
                                 m_pParticleData->swap(index,fluidEndIndex-1);
-                        }
+                          }
                         if(fluidEndIndex<inflowEndIndex)
                         {
                                 m_pParticleData->swap(fluidEndIndex-1,inflowEndIndex-1);
                         }
                         fluidEndIndex--;
                         inflowEndIndex--;
-                }
+				
+	             }
         }
         m_pParticleData->m_iFluidNum=fluidEndIndex-fluidStartIndex;
         m_pParticleData->m_iBoundaryStartIndex=fluidEndIndex;

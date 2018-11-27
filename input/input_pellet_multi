@@ -7,9 +7,11 @@
 1				number of fluid objects
 multipelletlayer		geometry for fluid object0
 pelletstate			intiial condition for fluid object0
-2				number of boundary conditions
+3				number of boundary conditions
 pelletinflow			boundary condition0 (only meaningful for non-free boundary condition)
 inflow				type of boundary condition0 (free, solid, periodic, inflow, outflow)
+pelletoutflow       pelletoutflow
+outflow             outflow
 free				boundary condition1
 free				type of boundary condition1
 1				use random order for direction splittig (1) or not(0)
