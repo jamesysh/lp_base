@@ -11,7 +11,6 @@
 #include <cstring> // strerror()
 #include <vector>
 using namespace std;
-
 //#define LP_DEBUG
 
 int main(int argc, const char* argv[]) {	

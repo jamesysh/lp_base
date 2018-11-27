@@ -700,7 +700,11 @@ public:
 	 *          It is advised not to assign the ownership of this array to other classes
 	 */
 	double* getPressure() const {return m_vPressure;}
-	
+
+
+
+    double* getTemperature() const {return m_vTemperature;}
+    int* getTimeTrack() const{return m_vTimeTrack;}
 	/**
 	 * \brief   Getter function of the array of sound speed of the initialized particles  
 	 * \param   None
@@ -801,10 +805,12 @@ public:
 
    int getPrintTemperature(){return m_iPrintTemperature;}
 
+   int getPrintTimeTrack(){return m_iPrintTimeTrack;} 
+
    int getPrintAllParticle(){return m_iPrintAllParticle;}
 private:
 
-    //-----------------OUT PUT CONTROL-------------------------------------
+    //-----------------OUTPUT OPTION CONTROL-------------------------------------
     int m_iPrintAllParticle = 0;
     int m_iPrintVelocity = 0;
     int m_iPrintVelocityU = 0;
@@ -821,7 +827,7 @@ private:
     int m_iPrintQplusminus = 0;
     int m_iPrintLocalSpacing = 0;
     int m_iPrintTemperature = 0;
-
+    int m_iPrintTimeTrack = 0;
 
 	//--------------------------Data from arg list--------------------------------
 	bool m_iIfDebug; ///< if true then print debug info
@@ -920,7 +926,9 @@ private:
 	double* m_vMass;
 	double* m_vPressure;///< pressure	
 	double* m_vSoundSpeed;///< sound speed
-	//double* m_vEnergy;///< energy
+    double* m_vTemperature;
+    int* m_vTimeTrack;
+  //double* m_vEnergy;///< energy
 	int* m_vObjectTag;///< tag=1,2,3,...:fluid objects; otherwise: boundary or ghost particles
 	double* m_vLocalParSpacing;///< local particle spacing
 	//-----------------------------------------------------------------------------

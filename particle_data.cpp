@@ -45,7 +45,9 @@ ParticleData::ParticleData(Initializer& init) {
 	m_vVolume = init.getVolume();
 	m_vPressure = init.getPressure();
 	m_vSoundSpeed = init.getSoundSpeed();	
-	m_vObjectTag = init.getObjectTag();
+	m_vTemperature = init.getTemperature();
+    m_vTimeTrack = init.getTimeTrack();
+    m_vObjectTag = init.getObjectTag();
 	m_vLocalParSpacing = init.getLocalParSpacing();
 	m_vMass=init.getMass();
 
@@ -86,7 +88,7 @@ ParticleData::ParticleData(Initializer& init) {
     m_iPrintQplusminus = init.getPrintQplusminus();
     m_iPrintLocalSpacing = init.getPrintLocalSpacing();
     m_iPrintTemperature = init.getPrintTemperature();
-
+    m_iPrintTimeTrack = init.getPrintTimeTrack();
 
 	try {
 		m_vVolumeOld = new double[m_iCapacity];	
@@ -537,7 +539,9 @@ ParticleData::~ParticleData() {
 	delete[] m_vVolumeOld;
 	delete[] m_vVolumeVoronoi;
 	delete[] m_vPressure;
-	//delete[] m_vEnergy;
+	delete[] m_vTemperature;
+    delete[] m_vTimeTrack;
+    //delete[] m_vEnergy;
 	delete[] m_vSoundSpeed;
 	delete[] m_vLocalParSpacing;
 

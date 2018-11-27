@@ -32,11 +32,4 @@ leftintegral
 density
 rightintegral
 pressure
-qplusminus
-deltaq
-localspacing
-soundspeed
-mass
-volume
-velocity
-
+timetrack

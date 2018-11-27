@@ -477,7 +477,12 @@ void Initializer::readInputfile(const string& inputfileName) {
 
     if(result != output.end())
         m_iPrintTemperature = 1;
-     
+    
+    result = find(output.begin(),output.end(),"timetrack");
+
+    if(result != output.end())
+        m_iPrintTimeTrack = 1;
+ 
       
 }
 
@@ -843,7 +848,12 @@ void Initializer::initParticleDataMemory() {
 	
 	m_vSoundSpeed = new double[m_iCapacity];
 	fill_n(m_vSoundSpeed,m_iCapacity,0);
-	
+
+    m_vTemperature = new double[m_iCapacity];
+    fill_n(m_vTemperature,m_iCapacity,0);
+
+    m_vTimeTrack = new int[m_iCapacity];
+    fill_n(m_vTimeTrack,m_iCapacity,0);
 	// object tags
 	m_vObjectTag = new int[m_iCapacity];
 	fill_n(m_vObjectTag,m_iCapacity,0);
@@ -1909,7 +1919,7 @@ void Initializer::modifyInitContactLength() {
 void Initializer::initPellet(){
 
     
-	m_iMaxParticlePerCell = 800;//maximum number of particles per APCloud node in density integral calculation
+	m_iMaxParticlePerCell = 1500;//maximum number of particles per APCloud node in density integral calculation
 
 	if(m_iPelletDistribution==1){
 		m_iNumberofPellet=1;

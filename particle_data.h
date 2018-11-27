@@ -176,7 +176,10 @@ public:
 	 */
 	int getDimension() {return m_iDimension;}
 	
-	
+
+    const double* const getTemperature() const{ return m_vTemperature;}
+    
+    int* const getTimeTrack() const{return m_vTimeTrack;}
 	/**
 	 * \brief   Getter function of the array of x-coordinates of the initialized particles  
 	 * \param   None
@@ -184,7 +187,8 @@ public:
 	 * 
 	 */ 
 	const double* const getPositionX() const {return m_vPositionX;}
-	
+
+
 	/**
 	 * \brief   Getter function of the array of y-coordinates of the initialized particles  
 	 * \param   None
@@ -391,7 +395,7 @@ public:
         const int* const getNeighbourList() const {return m_vNeighbourList;}
 
 
- //-----------------OUT PUT CONTROL-------------------------------------
+ //-----------------OUTPUT CONTROL-------------------------------------
 
    
     int m_iPrintVelocity;
@@ -409,7 +413,7 @@ public:
     int m_iPrintQplusminus;
     int m_iPrintLocalSpacing;
     int m_iPrintTemperature;
-
+    int m_iPrintTimeTrack;
 
 
 
@@ -442,7 +446,7 @@ private:
 	std::size_t m_iGhostStartIndex;///< Start index of ghost particles in the particle array 
 	std::size_t m_iMaxNeighbourNum;///< maximum number of neighbours of a particle
 	std::size_t m_iMaxNeighbourNumInOneDir;///< maximum number of neighbours of a particle in one direction
-
+    
 	double* m_vPositionX;///< x
 	double* m_vPositionY;///< y
 	double* m_vPositionZ;///< z
@@ -454,12 +458,14 @@ private:
 	double* m_vVolumeVoronoi;
 	double* m_vPressure;///< pressure	
 	double* m_vSoundSpeed;///< sound speed
-	double* m_vLocalParSpacing;///<local inter-particle spacing
+    double* m_vTemperature;
+    int* m_vTimeTrack;
+    double* m_vLocalParSpacing;///<local inter-particle spacing
 	double* m_vMass;
-        double* m_vVolume_x;
-        double* m_vVolume_y;
-        double* m_vVolume_z;
-	double* m_vDensity;
+    double* m_vVolume_x;
+    double* m_vVolume_y;
+    double* m_vVolume_z;
+    double* m_vDensity;
 	double* m_vLeftIntegral;
 	double* m_vRightIntegral;
 	bool* m_bLeftInflow;
