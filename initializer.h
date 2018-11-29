@@ -401,6 +401,7 @@ public:
         double* getPelletPositionZ() const {return m_vPelletPositionZ;}
         double* getPelletRadius() const {return m_vPelletRadius;}
 	double* getPelletInnerRadius() const {return m_vPelletInnerRadius;}
+        double* getPelletOuterRadius() const {return m_vPelletOuterRadius;}
         double getMagx() {return Magx;}
         double getMagy() {return Magy;}
         double getMagz() {return Magz;}
@@ -863,7 +864,7 @@ private:
 	std::string m_sExactSolutionName;///<name of exact solution
 	std::string m_sAuxiliaryOutput;////<name of auxiliary output type
 	int m_iPelletDistribution;
-	int m_iMaxParticlePerCell;	
+	int m_iMaxParticlePerCell = 2000;	
     int m_iQuadtreeResolution;
     int m_iBinarytreeResolution;
 
@@ -943,7 +944,7 @@ private:
 	double* m_vPelletPositionZ;
 	double* m_vPelletRadius;
 	double* m_vPelletInnerRadius;
-
+    double* m_vPelletOuterRadius;
         double Magx;
         double Magy;
         double Magz;

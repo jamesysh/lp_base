@@ -395,7 +395,7 @@ void Initializer::readInputfile(const string& inputfileName) {
         m_vPelletPositionZ = new double[m_iNumberofPellet];
         m_vPelletRadius = new double[m_iNumberofPellet];
         m_vPelletInnerRadius = new double[m_iNumberofPellet];
-
+        m_vPelletOuterRadius = new double[m_iNumberofPellet];
         double pelletquantity_tmp;
         iss.str(lines[i++]);
 	    for(int i=0;i<m_iNumberofPellet;i++){
@@ -418,13 +418,16 @@ void Initializer::readInputfile(const string& inputfileName) {
         iss.str(lines[i++]);
 	    iss>>pelletquantity_tmp;
         for(int i=0;i<m_iNumberofPellet;i++){
-        m_vPelletRadius[i] = pelletquantity_tmp;
+        m_vPelletRadius[i] = pelletquantity_tmp;        
+        cout<<"radius: "<<m_vPelletRadius[i]<<endl;
+        m_vPelletInnerRadius[i] = pelletquantity_tmp;
+        cout<<"inner radius: "<<m_vPelletInnerRadius[i]<<endl;
         }
 
         iss.str(lines[i++]);
 	    iss>>pelletquantity_tmp;
         for(int i=0;i<m_iNumberofPellet;i++){
-        m_vPelletInnerRadius[i] = pelletquantity_tmp;
+        m_vPelletOuterRadius[i] = pelletquantity_tmp;
         }
 
         
@@ -660,7 +663,6 @@ void Initializer::setObjs() {
 		m_vFluidObj.push_back(GeometryFactory::instance().createGeometry(m_vFluidObjNames[j]));
 	    if(m_vFluidObjNames[j] == "multipelletlayer")
            { m_vFluidObj[j]->initPellet(this);
-            cout<<"running!"<<endl;
             }
     }
 	// create fluid state objects

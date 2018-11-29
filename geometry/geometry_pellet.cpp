@@ -59,11 +59,10 @@ void MultiPelletLayer::getBoundingBox(double& xmin, double& xmax, double& ymin, 
 void MultiPelletLayer::initPellet(Initializer* init){
    
     NumberofPellet = init->getNumberofPellet();
-    std::cout<<"Num"<<NumberofPellet<<std::endl;
     xcen = init->getPelletPositionX();
     ycen = init->getPelletPositionY();
     zcen = init->getPelletPositionZ();
     innerradius = init->getPelletInnerRadius();
-    outerradius = init->getPelletRadius();
+    outerradius = init->getPelletOuterRadius();
     }
 
