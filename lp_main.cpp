@@ -135,10 +135,12 @@ int main(int argc, const char* argv[]) {
 
     TimeController* timeControl = new DefaultTimeController(*init, lpSolver, viewers);
 
-	delete init; // initialization finished
 #ifdef LP_DEBUG
 	cout<<"Begin to solve"<<endl;
 #endif	
-	return timeControl->solve(); 
-
+	timeControl->solve(); 
+    
+	delete init; // initialization finished
+    
+    return 0;
 }
