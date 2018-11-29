@@ -1037,7 +1037,7 @@ private:
 	/// modify the local inter-particle spacing
 	void modifyLocalParSpacing();
 
-	void initPellet();
+	void setPelletQuantity();
 };
 
 

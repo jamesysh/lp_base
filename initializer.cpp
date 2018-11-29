@@ -390,6 +390,7 @@ void Initializer::readInputfile(const string& inputfileName) {
 
     if(m_iPelletDistribution){
         m_iNumberofPellet = m_iPelletDistribution;
+        save<<"m_iNumberofPellet"<< m_iNumberofPellet<<endl;
         m_vPelletPositionX = new double[m_iNumberofPellet];
         m_vPelletPositionY = new double[m_iNumberofPellet];
         m_vPelletPositionZ = new double[m_iNumberofPellet];
@@ -430,8 +431,17 @@ void Initializer::readInputfile(const string& inputfileName) {
         m_vPelletOuterRadius[i] = pelletquantity_tmp;
         }
 
+        iss.str(lines[i++]);
+	    iss>>m_iQuadtreeResolution;
+	    save<<"m_iQuadtreeResolution "<<m_iQuadtreeResolution<<endl;
         
+        iss.str(lines[i++]);
+        iss>>m_iBinarytreeResolution;
+	    save<<"m_iBinarytreeResolution "<<m_iBinarytreeResolution<<endl;
 
+
+       
+/*
         Magx=0;
         Magy=0;
         Magz=0;
@@ -444,7 +454,7 @@ void Initializer::readInputfile(const string& inputfileName) {
         heatK=1.602e-18;//eVu
         conductivity=0;
         sublimationenergy=1363;
-
+*/
     }
 
 //-------------------SETUP OUTPUT OPTION------------------------
@@ -832,7 +842,8 @@ void Initializer::initGeometryAndState() {
 	}
 	else {
 		bool saveData = false;
-
+        if(m_iPelletDistribution)
+            setPelletQuantity();
 		if(m_iIfHex==true) 
 			m_iFluidNum = initGeometryAndStateOnHexPacking(saveData);// Compute the number of particles
 		else
@@ -1978,45 +1989,8 @@ void Initializer::modifyInitContactLength() {
 
 }
 
-/*void Initializer::initPellet(){
+void Initializer::setPelletQuantity(){
 
-    
-	m_iMaxParticlePerCell = 1500;//maximum number of particles per APCloud node in density integral calculation
-
-	if(m_iPelletDistribution==1){
-		m_iNumberofPellet=1;
-	}
-	else if(m_iPelletDistribution==2){
-		m_iNumberofPellet=2;
-	}
-	else
-        m_iNumberofPellet=0;
-        m_vPelletPositionX = new double[m_iNumberofPellet];
-        m_vPelletPositionY = new double[m_iNumberofPellet];
-        m_vPelletPositionZ = new double[m_iNumberofPellet];
-        m_vPelletRadius = new double[m_iNumberofPellet];
-        m_vPelletInnerRadius = new double[m_iNumberofPellet];
-    if(m_iPelletDistribution==1)
-	{
-		m_vPelletPositionX[0]=0;
-		m_vPelletPositionY[0]=0;
-		m_vPelletPositionZ[0]=0;
-		m_vPelletRadius[0]=0.2;
-		m_vPelletInnerRadius[0]=0.2;
-	}
-	else if(m_iPelletDistribution==2){
-       
-		m_vPelletPositionX[0]=0;
-		m_vPelletPositionY[0]=0;
-		m_vPelletPositionZ[0]=0;
-		m_vPelletRadius[0]=0.2;
-		m_vPelletInnerRadius[0]=0.2;
-		m_vPelletPositionX[1]=8;
-		m_vPelletPositionY[1]=0;
-		m_vPelletPositionZ[1]=0;
-		m_vPelletRadius[1]=0.2;
-		m_vPelletInnerRadius[1]=0.2;
-	}
 
         Magx=0;
         Magy=0;
@@ -2032,7 +2006,7 @@ void Initializer::modifyInitContactLength() {
         sublimationenergy=1363;
 }
 
-*/
+
 
 
 

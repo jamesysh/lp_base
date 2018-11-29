@@ -763,9 +763,9 @@ void OctreeSearcher::computeIntegral(const double *mass, double *left, double * 
 void OctreeSearcher::computeIntegralAPCloud(const double *mass, double *left, double * right, int n, int maxnp){
         m_pOctree->computeIntegralAPCloud(mass,left,right,n,maxnp);
 }
-void OctreeSearcher::computeIntegralQuadtree(const double* mass, double* left, double* right, int n, int maxnp)
+void OctreeSearcher::computeIntegralQuadtree(const double* mass, double* left, double* right, int n, int maxnp, int binaryresolution)
 {
-    m_pOctree_integral->computeIntegralQuadtree(mass,left,right,n,maxnp);
+    m_pOctree_integral->computeIntegralQuadtree(mass,left,right,n,maxnp,binaryresolution);
     }
 
 

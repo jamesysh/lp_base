@@ -213,7 +213,7 @@ public:
 	virtual void computeIntegral(const double* mass, double* left, double* right, int n) = 0;
         virtual void computeIntegralAPCloud(const double* mass, double* left, double* right, int n, int maxnp) = 0;
 
-    virtual void computeIntegralQuadtree(const double* mass, double* left, double* right, int n, int maxnp) = 0;
+    virtual void computeIntegralQuadtree(const double* mass, double* left, double* right, int n, int maxnp, int binaryresolution) = 0;
 
 
 };
@@ -432,7 +432,7 @@ public:
 
 	virtual void computeIntegral(const double* mass, double* left, double* right, int n);
         virtual void computeIntegralAPCloud(const double* mass, double* left, double* right, int n, int maxnp);
-  virtual void computeIntegralQuadtree(const double* mass, double* left, double* right, int n, int maxnp);
+  virtual void computeIntegralQuadtree(const double* mass, double* left, double* right, int n, int maxnp, int binaryresolution);
 
 	/*
 	 * \brief reset the maxParticleNum when data array is augmented 

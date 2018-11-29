@@ -295,7 +295,7 @@ public:
   void computeIntegral(const double* mass, double* left, double*right, int fluidnum);
   void computeIntegralAPCloud(const double* mass, double* left_integral, double* right_integral, int fluidnum, int maxnp);
 
-  void computeIntegralQuadtree(const double* mass, double* left_integral, double* right_integral, int fluidnum, int maxnp);
+  void computeIntegralQuadtree(const double* mass, double* left_integral, double* right_integral, int fluidnum, int maxnp, int binaryresolution);
 
 
   int searchNeighbor(const double search_x, const double search_y, const double search_z, const double radius, int* result, size_t& result_length);

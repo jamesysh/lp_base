@@ -649,10 +649,10 @@ void Octree::computeIntegral(const double* mass, double* left_integral, double* 
 
 }
 
-void Octree::computeIntegralQuadtree(const double* mass, double* left_integral, double* right_integral, int fluidnum, int maxnp){
+void Octree::computeIntegralQuadtree(const double* mass, double* left_integral, double* right_integral, int fluidnum, int maxnp, int binaryresolution){
 
     
-    int maxNumberPerCell = 30;
+    int maxNumberPerCell = binaryresolution;
     std::vector<int> child,old_index,level,phint(4,0);
 	std::vector<double> y_size(m_iMaxDepth+1),z_size(m_iMaxDepth+1);
    	std::queue<int> integral_queue;

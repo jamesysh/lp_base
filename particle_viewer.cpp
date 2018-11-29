@@ -1482,49 +1482,71 @@ if(outputerror){
                 mfroutfile = fopen(mfrfilename.c_str(), "a");
         else{
                 mfroutfile = fopen(mfrfilename.c_str(), "w");
-		fprintf(mfroutfile,"Time  Massflowrate at surface / at r=1 / at r=10\n");
+		fprintf(mfroutfile,"Time  Massflowrate around pellets.\n");
 	}
         if(mfroutfile==nullptr) {
                 printf("Unable to open file: %s\n",mfrfilename.c_str());
                 return 1;
         }
+
+
+	fprintf(mfroutfile,"%.16g %.16g ",time,m_pParticleData->getMassFlowRate());
+
+
 	double r,dis,dx,dr,mfr;
-	r=2;
+	int NumberofPellet = m_pParticleData->getNumberofPellet();
+	const double* px = m_pParticleData->getPelletPositionX();
+	const double* py = m_pParticleData->getPelletPositionY();
+	const double* pz = m_pParticleData->getPelletPositionZ();
+
+	
+	r=1;
 	dis=10;
-	mfr=0;
-	for(size_t i=startIndex;i<endIndex;i++)
-	{
-		double tr=(positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
-		tr=fabs(sqrt(tr)-r);
-		if(tr<dis)
-		{
-			dis=tr;
-			dx=localParSpacing[i];
-		}
-	}
-	dr=5*dx;
-	for(size_t i=startIndex;i<endIndex;i++)
-	{
-        double tr=(positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
-        tr=fabs(sqrt(tr)-r);
-		if(tr<dr)
-		{
-			double vr=velocityU[i]*(positionX[i])+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
-			vr=vr/sqrt((positionX[i])*(positionX[i])+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
-			mfr+=mass[i]*vr;
 
-		}
-	}
-	mfr=mfr/2/dr;
+	for(int k=0;k<NumberofPellet;k++)
+	{
+		mfr = 0;
 
+		for(size_t i=startIndex;i<endIndex;i++)
+		{
+			double tr=(positionX[i]-px[k])*(positionX[i]-px[k])+(positionY[i]-py[k])*(positionY[i]-py[k])+(positionZ[i]-pz[k])*(positionZ[i]-pz[k]);
+			tr=fabs(sqrt(tr)-r);
+			if(tr<dis)
+			{	
+				dis=tr;
+				dx=localParSpacing[i];
+			}
+		}
+		dr=5*dx;
+		for(size_t i=startIndex;i<endIndex;i++)
+		{	
+        	double tr=(positionX[i]-px[k])*(positionX[i]-px[k])+(positionY[i]-py[k])*(positionY[i]-py[k])+(positionZ[i]-pz[k])*(positionZ[i]-pz[k]);
+        	tr=fabs(sqrt(tr)-r);
+			if(tr<dr)
+			{
+				double vr=velocityU[i]*(positionX[i]-px[k])+velocityV[i]*(positionY[i]-py[k])+velocityW[i]*(positionZ[i]-pz[k]);
+				vr=vr/sqrt((positionX[i]-px[k])*(positionX[i]-px[k])+(positionY[i]-py[k])*(positionY[i]-py[k])+(positionZ[i]-pz[k])*(positionZ[i]-pz[k]));
+				mfr+=mass[i]*vr;
+
+			}
+		}
+		mfr=mfr/2/dr;
+		fprintf(mfroutfile,"%.16g ", mfr);
+		if((k+1)%NumberofPellet == 0)
+			fprintf(mfroutfile,"\n");
+	}
+	
+
+
+/*
 	double mfr_1=mfr;
     
-        r = 2;
+        r = 1;
         dis=10;
         mfr=0;
         for(size_t i=startIndex;i<endIndex;i++)
         {
-                double tr=(positionX[i]-8)*(positionX[i]-8)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                double tr=(positionX[i]-4)*(positionX[i]-4)+(positionY[i])*(positionY[i])+positionZ[i]*positionZ[i];
                 tr=fabs(sqrt(tr)-r);
                 if(tr<dis)
                 {
@@ -1535,12 +1557,12 @@ if(outputerror){
         dr=5*dx;
         for(size_t i=startIndex;i<endIndex;i++)
         {
-                double tr=(positionX[i]-8)*(positionX[i]-8)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                double tr=(positionX[i]-4)*(positionX[i]-4)+(positionY[i])*(positionY[i])+positionZ[i]*positionZ[i];
                 tr=fabs(sqrt(tr)-r);
                 if(tr<dr)
                 {
-                        double vr=velocityU[i]*(positionX[i]-8)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
-                        vr=vr/sqrt((positionX[i]-8)*(positionX[i]-8)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
+                        double vr=velocityU[i]*(positionX[i]-4)+velocityV[i]*(positionY[i])+velocityW[i]*positionZ[i];
+                        vr=vr/sqrt((positionX[i]-4)*(positionX[i]-4)+(positionY[i])*(positionY[i])+positionZ[i]*positionZ[i]);
                         mfr+=mass[i]*vr;
                 }
         }
@@ -1548,12 +1570,12 @@ if(outputerror){
         double mfr_2=mfr;
 
 
-        r=5;
+        r=1;
         dis=10;
         mfr=0;
         for(size_t i=startIndex;i<endIndex;i++)
         {
-                double tr=(positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                double tr=(positionX[i])*(positionX[i])+(positionY[i]-4)*(positionY[i]-4)+positionZ[i]*positionZ[i];
                 tr=fabs(sqrt(tr)-r);
                 if(tr<dis)
                 {
@@ -1564,12 +1586,12 @@ if(outputerror){
         dr=5*dx;
         for(size_t i=startIndex;i<endIndex;i++)
         {
-                double tr=(positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i];
+                double tr=(positionX[i])*(positionX[i])+(positionY[i]-4)*(positionY[i]-4)+positionZ[i]*positionZ[i];
                 tr=fabs(sqrt(tr)-r);
                 if(tr<dr)
                 {
-                        double vr=velocityU[i]*(positionX[i]-4)+velocityV[i]*positionY[i]+velocityW[i]*positionZ[i];
-                        vr=vr/sqrt((positionX[i]-4)*(positionX[i]-4)+positionY[i]*positionY[i]+positionZ[i]*positionZ[i]);
+                        double vr=velocityU[i]*(positionX[i])+velocityV[i]*(positionY[i]-4)+velocityW[i]*positionZ[i];
+                        vr=vr/sqrt((positionX[i])*(positionX[i])+(positionY[i]-4)*(positionY[i]-4)+positionZ[i]*positionZ[i]);
                         mfr+=mass[i]*vr;
                 }
         }
@@ -1577,6 +1599,8 @@ if(outputerror){
         double mfr_3=mfr;
 	
         fprintf(mfroutfile,"%.16g %.16g %.16g %.16g %.16g\n",time,m_pParticleData->getMassFlowRate(), mfr_1, mfr_2, mfr_3);
+     
+  */  
         fclose(mfroutfile);
 	}
 	return 0;

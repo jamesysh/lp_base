@@ -29,9 +29,11 @@ free				type of boundary condition1
 0				compute error compared with exact solution (1) or not (0)
 none				name of exact solution to compare with (simplewave, shocktube, sod, gresho, yee, noh)
 pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletablation)
-2				distribution of pellet (number of pellets)
-0. 8.         pelletx
-0. 0.         pellety
-0. 0.         pelletz
+4				distribution of pellet (number of pellets)
+0. 8. 2 4         pelletx
+0. 0. 0 0        pellety
+0. 0. 0 0        pelletz
 0.2             radius
 0.24             outer radius
+2000        quadtree resolution
+30          binarytree resolution
