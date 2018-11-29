@@ -62,7 +62,7 @@ void MultiPelletLayer::initPellet(Initializer* init){
     xcen = init->getPelletPositionX();
     ycen = init->getPelletPositionY();
     zcen = init->getPelletPositionZ();
-    innerradius = init->getPelletInnerRadius();
+    innerradius = init->getPelletRadius();
     outerradius = init->getPelletOuterRadius();
     }
 

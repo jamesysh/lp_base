@@ -396,7 +396,9 @@ public:
 	int getPelletDistribution() const {return m_iPelletDistribution;}
 	int getNumberofPellet() const {return m_iNumberofPellet;}
 	int getMaxParticlePerCell() const {return m_iMaxParticlePerCell;}
-	double* getPelletPositionX() const {return m_vPelletPositionX;}
+    int getQuadtreeResolution() const {return m_iQuadtreeResolution;}
+    int getBinarytreeResolution() const {return m_iBinarytreeResolution;}
+    double* getPelletPositionX() const {return m_vPelletPositionX;}
         double* getPelletPositionY() const {return m_vPelletPositionY;}
         double* getPelletPositionZ() const {return m_vPelletPositionZ;}
         double* getPelletRadius() const {return m_vPelletRadius;}

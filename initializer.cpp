@@ -97,7 +97,7 @@ void Initializer::setLocalParSpacingTemp() {
 
 
 Initializer::~Initializer() {
-	for(auto obj:m_vFluidObj) delete obj;
+//	for(auto obj:m_vFluidObj) delete obj;
 //	for(auto obj:m_vBoundaryObj) delete obj;	
 	for(auto state:m_vFluidObjState) delete state;
 //	for(auto box:m_vFluidBoundingBox) delete box;

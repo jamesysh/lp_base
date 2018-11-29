@@ -53,12 +53,14 @@ ParticleData::ParticleData(Initializer& init) {
 
 	m_iNumberofPellet = init.getNumberofPellet();
 	m_iMaxParticlePerCell=init.getMaxParticlePerCell();
-	m_vPelletPositionX = init.getPelletPositionX();
+	m_iQuadtreeResolution = init.getQuadtreeResolution();
+    m_iBinarytreeResolution = init.getBinarytreeResolution();
+    m_vPelletPositionX = init.getPelletPositionX();
 	m_vPelletPositionY = init.getPelletPositionY();
 	m_vPelletPositionZ = init.getPelletPositionZ();
 	m_vPelletRadius = init.getPelletRadius();
 	m_vPelletInnerRadius = init.getPelletInnerRadius();
-
+    m_vPelletOuterRadius = init.getPelletOuterRadius();
 	Magx = init.getMagx();
 	Magy = init.getMagy();
 	Magz = init.getMagz();
@@ -576,7 +578,8 @@ ParticleData::~ParticleData() {
 	delete[] m_vPelletPositionZ;
 	delete[] m_vPelletRadius;
 	delete[] m_vPelletInnerRadius;
-	delete[] m_vPelletEnergy;
+	delete[] m_vPelletOuterRadius;
+    delete[] m_vPelletEnergy;
 	delete[] m_vPelletVelocity;
     }
 	delete[] m_vVolume_x;

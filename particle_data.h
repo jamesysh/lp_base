@@ -279,7 +279,10 @@ public:
         int getNumberofPellet() {return m_iNumberofPellet;}
 	double getMassFlowRate() {return m_vMassFlowRate;}
 	int getMaxParticlePerCell() {return m_iMaxParticlePerCell;}
-	const double* const getDeltaQ() const {return m_vDeltaq;}
+	int getQuadtreeResolution() const {return m_iQuadtreeResolution;}
+    int getBinarytreeResolution() const {return m_iBinarytreeResolution;}
+    
+    const double* const getDeltaQ() const {return m_vDeltaq;}
 	const double* const getQplusminus() const {return m_vQplusminus;}
 	double getMagx() {return Magx;}
 	double getMagy() {return Magy;}
@@ -473,12 +476,15 @@ private:
 	//for pellet ablation simulation
 	int m_iNumberofPellet;//number of pellet
 	int m_iMaxParticlePerCell;//maximum number of particle per APCloud node for density integral calculation
-	double* m_vPelletPositionX;//x coordinate of centre of each pellet, size = m_iNumberofPellet
+	int m_iQuadtreeResolution;
+    int m_iBinarytreeResolution;
+    double* m_vPelletPositionX;//x coordinate of centre of each pellet, size = m_iNumberofPellet
 	double* m_vPelletPositionY;//y coordinate
 	double* m_vPelletPositionZ;//z coordinate
 	double* m_vPelletRadius;//radius of each pellet
 	double* m_vPelletInnerRadius;
-	double* m_vPelletEnergy;//energy absorbed by each pellet, need to be updated in every time step
+	double* m_vPelletOuterRadius;
+    double* m_vPelletEnergy;//energy absorbed by each pellet, need to be updated in every time step
 	double* m_vPelletVelocity;
 	int* m_vPelletID;//the id of the pellet generating each inflow particle, size = m_iCapacity
 	double* m_vDeltaq;
