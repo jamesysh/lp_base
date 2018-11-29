@@ -135,7 +135,7 @@ namespace
 
 	// 3d Shocktube
         GeometryRegistrar<Shocktube3D> r24("shocktube3d");
-        BoundaryRegistrar<Shocktube3DSolidBoundary> b24("shocktube3dsolidboundary");
+    //    BoundaryRegistrar<Shocktube3DSolidBoundary> b24("shocktube3dsolidboundary");
         GeometryRegistrar<Shocktube3D0025> r24_1("shocktube3d0025");
         GeometryRegistrar<Shocktube3D0005> r24_2("shocktube3d0005");
         BoundaryRegistrar<Shocktube3D0025SolidBoundary> b24_1("shocktube3d0025solidboundary");
@@ -221,7 +221,9 @@ namespace
         GeometryRegistrar<Nozzle2DComplete> r45("nozzle2dcomplete");
         GeometryRegistrar<Nozzle3D> r46("nozzle3d");
         StateRegistrar<NozzleState> s43("nozzlestate");
-	BoundaryRegistrar<NozzleInflowBoundary> b43("nozzleinflowboundary");
+	    
+        BoundaryRegistrar<NozzleInflowBoundary> b43("nozzleinflowboundary");
+    
         BoundaryRegistrar<Nozzle2DSimpleSolidBoundary> b44("nozzle2dsimplesolidboundary");
 	BoundaryRegistrar<Nozzle2DSolidBoundary> b45("nozzle2dsolidboundary");
         BoundaryRegistrar<Nozzle3DInflowBoundary> b46("nozzle3dinflowboundary");

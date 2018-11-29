@@ -43,7 +43,7 @@ Initializer::Initializer(const string& inputfileName, bool ifDebug, const string
 	setLocalParSpacing();
 //	setLocalParSpacingTemp();
 //	cout<<"Set pellet"<<endl;
-	initPellet();
+//	initPellet();
 	m_iIfRestart = false;
 }
 
@@ -388,6 +388,62 @@ void Initializer::readInputfile(const string& inputfileName) {
 	iss>>m_iPelletDistribution;
 	save<<"m_iPelletDistribution "<<m_iPelletDistribution<<endl;
 
+    if(m_iPelletDistribution){
+        m_iNumberofPellet = m_iPelletDistribution;
+        m_vPelletPositionX = new double[m_iNumberofPellet];
+        m_vPelletPositionY = new double[m_iNumberofPellet];
+        m_vPelletPositionZ = new double[m_iNumberofPellet];
+        m_vPelletRadius = new double[m_iNumberofPellet];
+        m_vPelletInnerRadius = new double[m_iNumberofPellet];
+
+        double pelletquantity_tmp;
+        iss.str(lines[i++]);
+	    for(int i=0;i<m_iNumberofPellet;i++){
+        iss>>pelletquantity_tmp;
+        m_vPelletPositionX[i] = pelletquantity_tmp;
+        }
+
+        iss.str(lines[i++]);
+	    for(int i=0;i<m_iNumberofPellet;i++){
+        iss>>pelletquantity_tmp;
+        m_vPelletPositionY[i] = pelletquantity_tmp;
+        }
+        
+        iss.str(lines[i++]);
+	    for(int i=0;i<m_iNumberofPellet;i++){
+        iss>>pelletquantity_tmp;
+        m_vPelletPositionZ[i] = pelletquantity_tmp;
+        }
+
+        iss.str(lines[i++]);
+	    iss>>pelletquantity_tmp;
+        for(int i=0;i<m_iNumberofPellet;i++){
+        m_vPelletRadius[i] = pelletquantity_tmp;
+        }
+
+        iss.str(lines[i++]);
+	    iss>>pelletquantity_tmp;
+        for(int i=0;i<m_iNumberofPellet;i++){
+        m_vPelletInnerRadius[i] = pelletquantity_tmp;
+        }
+
+        
+
+        Magx=0;
+        Magy=0;
+        Magz=0;
+        masse=9.109e-28;
+        massNe=3.35e-23;
+        teinf=2000;//kev
+       	INe=135.5;//kev
+        ZNe=10;
+        neinf=1.682e+13;
+        heatK=1.602e-18;//eVu
+        conductivity=0;
+        sublimationenergy=1363;
+
+    }
+
 //-------------------SETUP OUTPUT OPTION------------------------
   
     vector<string> output;
@@ -600,9 +656,13 @@ void Initializer::setEOS() {
 void Initializer::setObjs() {
 	
 	// create fluid geometry objects 
-	for(int j=0; j<m_iFluidObjNum; j++) 
+	for(int j=0; j<m_iFluidObjNum; j++){ 
 		m_vFluidObj.push_back(GeometryFactory::instance().createGeometry(m_vFluidObjNames[j]));
-	
+	    if(m_vFluidObjNames[j] == "multipelletlayer")
+           { m_vFluidObj[j]->initPellet(this);
+            cout<<"running!"<<endl;
+            }
+    }
 	// create fluid state objects
 	for(int j=0; j<m_iFluidObjNum; j++) 
 		m_vFluidObjState.push_back(StateFactory::instance().createState(m_vFluidObjStateNames[j]));
@@ -1916,7 +1976,7 @@ void Initializer::modifyInitContactLength() {
 
 }
 
-void Initializer::initPellet(){
+/*void Initializer::initPellet(){
 
     
 	m_iMaxParticlePerCell = 1500;//maximum number of particles per APCloud node in density integral calculation
@@ -1928,13 +1988,13 @@ void Initializer::initPellet(){
 		m_iNumberofPellet=2;
 	}
 	else
-		m_iNumberofPellet=0;
-	m_vPelletPositionX = new double[m_iNumberofPellet];
-	m_vPelletPositionY = new double[m_iNumberofPellet];
-	m_vPelletPositionZ = new double[m_iNumberofPellet];
-	m_vPelletRadius = new double[m_iNumberofPellet];
-	m_vPelletInnerRadius = new double[m_iNumberofPellet];
-	if(m_iPelletDistribution==1)
+        m_iNumberofPellet=0;
+        m_vPelletPositionX = new double[m_iNumberofPellet];
+        m_vPelletPositionY = new double[m_iNumberofPellet];
+        m_vPelletPositionZ = new double[m_iNumberofPellet];
+        m_vPelletRadius = new double[m_iNumberofPellet];
+        m_vPelletInnerRadius = new double[m_iNumberofPellet];
+    if(m_iPelletDistribution==1)
 	{
 		m_vPelletPositionX[0]=0;
 		m_vPelletPositionY[0]=0;
@@ -1970,7 +2030,7 @@ void Initializer::initPellet(){
         sublimationenergy=1363;
 }
 
-
+*/
 
 
 

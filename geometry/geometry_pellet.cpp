@@ -1,7 +1,7 @@
-#include "geometry_pellet.h"
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include "geometry_pellet.h"
 
 PelletLayer::PelletLayer(): xcen(0),ycen(0),zcen(0),innerradius(0.2), outerradius(0.24){}
 
@@ -19,28 +19,8 @@ void PelletLayer::getBoundingBox(double& xmin, double& xmax, double& ymin, doubl
 	zmax = zcen+outerradius;
 }
 
-
-MultiPelletLayer::MultiPelletLayer(){
-	NumberofPellet=2;
-	xcen = new double[NumberofPellet];
-	ycen = new double[NumberofPellet];
-	zcen = new double[NumberofPellet];
-	innerradius = new double[NumberofPellet];
-	outerradius = new double[NumberofPellet];
-	xcen[0]=0;
-	ycen[0]=0;
-	zcen[0]=0;
-	innerradius[0]=0.2;
-	outerradius[0]=0.24;
-	xcen[1]=8;
-	ycen[1]=0;
-	zcen[1]=0;
-	innerradius[1]=0.2;
-	outerradius[1]=0.24;
-}
-
 MultiPelletLayer::~MultiPelletLayer(){
-	delete[] xcen;
+    	delete[] xcen;
         delete[] ycen;
         delete[] zcen;
         delete[] innerradius;
@@ -73,3 +53,17 @@ void MultiPelletLayer::getBoundingBox(double& xmin, double& xmax, double& ymin, 
                 zmax=std::max(zmax,zcen[i]+outerradius[i]);
 	}
 }
+
+
+
+void MultiPelletLayer::initPellet(Initializer* init){
+   
+    NumberofPellet = init->getNumberofPellet();
+    std::cout<<"Num"<<NumberofPellet<<std::endl;
+    xcen = init->getPelletPositionX();
+    ycen = init->getPelletPositionY();
+    zcen = init->getPelletPositionZ();
+    innerradius = init->getPelletInnerRadius();
+    outerradius = init->getPelletRadius();
+    }
+

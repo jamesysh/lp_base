@@ -21,7 +21,7 @@
 #include "geometry.h"
 #include "state.h"
 #include "boundary.h"
-
+#include "initializer.h"
 
 
 /**
@@ -225,7 +225,10 @@ public:
 	 * \return  A Boundary * pointer that points to an object of \e Derived class  
 	 *
 	 */
-	static Boundary* createFunc();	
+	 static Boundary* createFunc();
+
+    
+
 };
 
 

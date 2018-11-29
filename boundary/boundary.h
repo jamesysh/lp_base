@@ -40,7 +40,8 @@
  */
 class Boundary {
 public:
-	/// Destructor
+    //Constructor
+    /// Destructor
 	virtual ~Boundary() {}
 	
 	/**
@@ -56,6 +57,8 @@ public:
 	std::vector<double>& xb, std::vector<double>& yb, std::vector<double>& zb,
 	std::vector<double>& pressureb, std::vector<double>& vxb, std::vector<double>& vyb, std::vector<double>& vzb)=0; 	
 	virtual int UpdateInflowBoundary(ParticleData* pData, EOS* m_pEOS, double dt, double m_fInitParticleSpacing){return 0;};
+    
+
 };
 
 

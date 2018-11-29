@@ -864,7 +864,11 @@ private:
 	std::string m_sAuxiliaryOutput;////<name of auxiliary output type
 	int m_iPelletDistribution;
 	int m_iMaxParticlePerCell;	
-	//-----------------------------------------------------------------------------
+    int m_iQuadtreeResolution;
+    int m_iBinarytreeResolution;
+
+
+    //-----------------------------------------------------------------------------
 
 	
 	//-------------Predetermined parameters specified in this class----------------

@@ -2,8 +2,29 @@
 #define __GEOMETRY_PELLET_H
 
 #include "geometry.h"
-
+#include "initializer.h"
 #include <math.h>
+
+
+class MultiPelletLayer: public Geometry {
+public:
+        MultiPelletLayer(){} 
+        virtual void initPellet(Initializer* init);
+        ~MultiPelletLayer();
+        virtual bool operator()(double x, double y, double z) const;
+        virtual void getBoundingBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double&zmax);
+private:
+	    int NumberofPellet;
+        double* xcen;
+        double* ycen;
+        double* zcen;
+        double* innerradius;
+        double* outerradius;
+};
+
+
+
+
 
 class PelletLayer: public Geometry {
 public:
@@ -17,21 +38,6 @@ private:
 	double zcen;
 	double innerradius;
 	double outerradius;
-};
-
-class MultiPelletLayer: public Geometry {
-public:
-        MultiPelletLayer();
-        ~MultiPelletLayer();
-        virtual bool operator()(double x, double y, double z) const;
-        virtual void getBoundingBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double&zmax);
-private:
-	int NumberofPellet;
-        double* xcen;
-        double* ycen;
-        double* zcen;
-        double* innerradius;
-        double* outerradius;
 };
 
 #endif

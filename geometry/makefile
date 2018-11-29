@@ -7,9 +7,9 @@ BOUNDARY=/gpfs/home/shyyuan/lp_base/boundary
 STATE=/gpfs/home/shyyuan/lp_base/state
 GEOMETRY=/gpfs/home/shyyuan/lp_base/geometry
 MAIN_DIR=/gpfs/home/shyyuan/lp_base
-INCS   = -I $(BOUNDARY) -I $(STATE) -I $(GEOMETRY)
+INCS   = -I $(BOUNDARY) -I $(STATE) -I $(GEOMETRY) -I $(MAIN_DIR)
 LIBS   = -L $(LAPACK_DIR) 
-CFLAGS = -Wall -c -std=c++11 $(DEBUG) $(OMP)
+CFLAGS = -Wall -c -std=c++11 $(DEBUG) $(OMP) $(INCS)
 LFLAGS = -Wall  $(DEBUG) $(INCS) $(LIBS) $(OMP)
 SRC_FILES := $(wildcard *.cpp) 
 OBJS := $(SRC_FILES:.cpp=.o)

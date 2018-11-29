@@ -18,7 +18,7 @@
 
 #include <unordered_map>
 #include <string>
-
+#include <initializer.h>
 /**
  * \class Geometry
  * 
@@ -40,7 +40,7 @@ class Geometry {
 public:
 	/// Destructor
 	virtual ~Geometry() {}
-	
+    virtual void initPellet(Initializer* init){}	
 	/**
 	 * \brief      Level set function of particle geometry 
 	 * \param [in] x  The x-coordinate
