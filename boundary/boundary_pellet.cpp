@@ -167,6 +167,7 @@ int PelletOutflowBoundary::UpdateInflowBoundary(ParticleData *m_pParticleData, E
         double *x = m_pParticleData->m_vPositionX;
         double *y = m_pParticleData->m_vPositionY;
         double *z = m_pParticleData->m_vPositionZ;
+        int* timetrack = m_pParticleData->m_vTimeTrack;
 //        double *volume = m_pParticleData->m_vVolume;
 //        double volumeforvacuum = 1e6;
      
@@ -187,7 +188,7 @@ int PelletOutflowBoundary::UpdateInflowBoundary(ParticleData *m_pParticleData, E
                         }
                         fluidEndIndex--;
                         inflowEndIndex--;
-				
+			            timetrack[fluidEndIndex] = 0; //RESET TIMETRACK TO BE ZERO
 	             }
         }
         m_pParticleData->m_iFluidNum=fluidEndIndex-fluidStartIndex;

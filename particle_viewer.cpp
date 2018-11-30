@@ -759,14 +759,16 @@ if(m_pParticleData->getNumberofPellet()){
     }
 }
         double Delta_T = 0.0005;
+
+        int timelabel =  (int)(time/Delta_T);
         if(m_pParticleData->m_iPrintTimeTrack){
                 fprintf(outfile,"SCALARS timetrack int\n");
                 fprintf(outfile,"LOOKUP_TABLE default\n");
                 for(size_t i=startIndex; i<endIndex; i++){
                     double t = pressure[i]*volume[i]/4.12023/1.160452e4;
-                    if (t>1&&timetrack[i]==0){
-                        fprintf(outfile,"%d\n",(int)(time/Delta_T));
-                        timetrack[i] = -50;
+                    if (t>1){
+                        timetrack[i] = timelabel;
+                        fprintf(outfile,"%d\n",timetrack[i]);
                     }
                     else
                         fprintf(outfile,"%d\n",timetrack[i]);

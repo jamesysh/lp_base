@@ -323,7 +323,8 @@ void ParticleData::swap(size_t i, size_t j){
 	    double *Qplusminus = m_vQplusminus;
         bool *LeftInflow = m_bLeftInflow;
 	    int* pelletid = m_vPelletID;
-    std::swap(x[i],x[j]);
+        int* timetrack = m_vTimeTrack;
+std::swap(x[i],x[j]);
 	std::swap(y[i],y[j]);
 	if(m_iDimension == 3) std::swap(z[i],z[j]);
 	std::swap(pressure[i],pressure[j]);
@@ -341,6 +342,7 @@ void ParticleData::swap(size_t i, size_t j){
 	std::swap(Deltaq[i],Deltaq[j]);
 	std::swap(Qplusminus[i],Qplusminus[j]);
     std::swap(pelletid[i],pelletid[j]);
+    std::swap(timetrack[i],timetrack[j]);
 }
 
 void ParticleData::makezero(size_t i){
