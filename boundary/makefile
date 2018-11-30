@@ -3,11 +3,11 @@ DEBUG  = -g
 OMP    = -fopenmp
 #OMP =
 LAPACK_DIR=/gpfs/home/shyyuan/local/lapack-3.8.0
-BOUNDARY=/gpfs/home/shyyuan/lp_base/boundary
-STATE=/gpfs/home/shyyuan/lp_base/state
-GEOMETRY=/gpfs/home/shyyuan/lp_base/geometry
-MAIN_DIR=/gpfs/home/shyyuan/lp_base/
-INCS   = -I $(BOUNDARY) -I $(STATE) -I $(GEOMETRY) -I $(MAIN_DIR)
+MAIN_DIR:=${CURDIR}/../
+BOUNDARY_DIR=$(MAIN_DIR)/boundary/
+STATE_DIR=$(MAIN_DIR)/state/
+GEOMETRY_DIR=$(MAIN_DIR)/geometry/
+INCS   = -I $(BOUNDARY_DIR) -I $(STATE_DIR) -I $(GEOMETRY_DIR) -I $(MAIN_DIR)
 LIBS   = -L $(LAPACK_DIR) 
 CFLAGS = -Wall -std=c++11 $(DEBUG) $(OMP) $(INCS) -c
 LFLAGS = -Wall  $(DEBUG) $(INCS) $(LIBS) $(OMP)
