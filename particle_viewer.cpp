@@ -766,7 +766,7 @@ if(m_pParticleData->getNumberofPellet()){
                 fprintf(outfile,"LOOKUP_TABLE default\n");
                 for(size_t i=startIndex; i<endIndex; i++){
                     double t = pressure[i]*volume[i]/4.12023/1.160452e4;
-                    if (t>1){
+                    if (t>1&&timetrack[i]==0){
                         timetrack[i] = timelabel;
                         fprintf(outfile,"%d\n",timetrack[i]);
                     }
