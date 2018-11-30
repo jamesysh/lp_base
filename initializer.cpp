@@ -420,9 +420,7 @@ void Initializer::readInputfile(const string& inputfileName) {
 	    iss>>pelletquantity_tmp;
         for(int i=0;i<m_iNumberofPellet;i++){
         m_vPelletRadius[i] = pelletquantity_tmp;        
-        cout<<"radius: "<<m_vPelletRadius[i]<<endl;
         m_vPelletInnerRadius[i] = pelletquantity_tmp;
-        cout<<"inner radius: "<<m_vPelletInnerRadius[i]<<endl;
         }
 
         iss.str(lines[i++]);
