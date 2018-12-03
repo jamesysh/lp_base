@@ -768,10 +768,11 @@ if(m_pParticleData->getNumberofPellet()){
                     double t = pressure[i]*volume[i]/4.12023/1.160452e4;
                     if (t>1&&timetrack[i]==0){
                         timetrack[i] = timelabel;
-                        fprintf(outfile,"%d\n",timetrack[i]);
+                        fprintf(outfile,"%d\n",timelabel);
+
                     }
                     else
-                        fprintf(outfile,"%d\n",timetrack[i]);
+                        fprintf(outfile,"%d\n",10);
               }
         }
 #ifdef DEBUG_LW_V
