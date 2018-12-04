@@ -88,17 +88,18 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
    */
 
 //		cout<<"calculate velocity"<<endl;
-    int layer_n = ceil((pir-newpir)/dx);
-    double dx_temp = (pir-newpir)/layer_n;
-    cout<<"dx_temp "<<dx_temp<<endl;
-    layer_n += 1;
+    int layer_n = round((pir-newpir)/dx);
     double layer_r[layer_n];
     double total_layer_np = 1;
     double layer_np[layer_n];
     layer_np[0] = 1;
      
    for(int i=0;i<layer_n;i++){
-        layer_r[i] = newpir + i*dx_temp ;        
+        layer_r[i] = newpir + i*dx ;
+        if (layer_r[i] > pir) 
+        {   
+            layer_r[i] = pir;
+            }
         }
     
     for(int i=1;i<layer_n;i++){
