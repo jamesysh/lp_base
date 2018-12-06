@@ -1,7 +1,7 @@
 24				number of threads
 0				start time
 0.1				end time
-0.001				write time interval
+0.0005				write time interval
 0.5				CFL coefficient
 3				dimension (2 or 3)
 1				number of fluid objects
@@ -39,4 +39,7 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 30          binarytree resolution
 pressure
 timetrack
+localspacing
+soundspeed
+velocity
 allparticle

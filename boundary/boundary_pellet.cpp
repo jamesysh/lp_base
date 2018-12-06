@@ -2,7 +2,9 @@
 #include <iostream>
 #include <cmath>
 #include <cassert>
+#include <time.h>
 using namespace std;
+
 
 PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100){}
 
@@ -13,7 +15,7 @@ double calculateMassFlowRate(double energy){
 int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EOS* m_pEOS, double dt, double dx){
         size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
         size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
-        size_t inflowEndIndex = fluidEndIndex + m_pParticleData->m_iInflowNum;
+        size_t inflowEndIndex = fluidEndIndex;
         double *x = m_pParticleData->m_vPositionX;
         double *y = m_pParticleData->m_vPositionY;
         double *z = m_pParticleData->m_vPositionZ;
@@ -59,7 +61,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			return 1;//too many
 		}
 		double newpir=pir-n*dx*dx*dx/4.0/3.1416/pr/pr/sqrt(2.0);
-/*		for(int i=0;i<n;i++)
+		cout<<"new pir "<<newpir<<endl;
+/*        for(int i=0;i<n;i++)
 		{
 //			if(i%1000==0)
 //			cout<<i<<endl;
@@ -85,55 +88,38 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			pelletid[inflowEndIndex]=pi;
 			inflowEndIndex++;
 		}
-   */
-
+   
+*/
 //		cout<<"calculate velocity"<<endl;
-    int layer_n = round((pir-newpir)/dx);
+//		double layer_d = cbrt(4*M_PI*pir*pir*pir/3/n);
+    pir = pr;
+    int layer_n = floor((pir)/dx);
+//    int layer_n = 5;
     double layer_r[layer_n];
-    double total_layer_np = 1;
-    double layer_np[layer_n];
-    layer_np[0] = 1;
      
    for(int i=0;i<layer_n;i++){
-        layer_r[i] = newpir + i*dx ;
-        if (layer_r[i] > pir) 
+        layer_r[i] = pir - i*dx;
+        if (layer_r[i] < 0 ) 
         {   
-            layer_r[i] = pir;
+            layer_r[i] = dx;
             }
         }
     
-    for(int i=1;i<layer_n;i++){
-        layer_np[i] = (layer_r[i]/layer_r[0])*(layer_r[i]/layer_r[0]);
-        total_layer_np += layer_np[i];
-       }
     int numberOfParticleOnLayer[layer_n];
     int n_tmp = 0;
     for(int i=0;i<layer_n;i++){
-        numberOfParticleOnLayer[i] = round(n*layer_np[i]/total_layer_np);
+        numberOfParticleOnLayer[i] = round(4*M_PI*layer_r[i]*layer_r[i]/dx/dx);
         n_tmp += numberOfParticleOnLayer[i]; 
         }
 
-    int n_difference = n - n_tmp;
      
         cout<<"we want "<<n<<endl;
         cout<<"we create "<<n_tmp<<endl;
         cout<<"n_layer "<<layer_n<<endl;
-        cout<<"n_difference "<<n_difference<<endl;
  
-    if(n_difference > 0){
-        for(int i=0;i<n_difference;i++){
-            numberOfParticleOnLayer[i] += 1;
-            
-            }
-        }
-          else if(n_difference < 0){
-        for(int i=0;i<(-n_difference);i++){
-            numberOfParticleOnLayer[i] -= 1;
-            
-            }
-        
-        }
     int n_current = inflowEndIndex;
+    
+    srand(time(NULL));
     for(int layer_id=0;layer_id<layer_n;layer_id++){
         
         double a = 4*M_PI/numberOfParticleOnLayer[layer_id];
@@ -144,11 +130,15 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         for(int m=0;m<m_theta;m++){
             double theta = M_PI*(m+0.5)/m_theta;
             int m_phi = round(2*M_PI*sin(theta)/d_phi);
+            double phi_fix = rand();
             for(int nn=0;nn<m_phi;nn++){
-                double phi = 2*M_PI*nn/m_phi;
-                x[inflowEndIndex] = pelletx[pi]+layer_r[layer_id]*sin(theta)*cos(phi);
-                y[inflowEndIndex] = pellety[pi]+layer_r[layer_id]*sin(theta)*sin(phi);
-                z[inflowEndIndex] = pelletz[pi]+layer_r[layer_id]*cos(theta);
+                
+                double phi = 2*M_PI*nn/m_phi + phi_fix;
+              double r_random = 0;
+    //           double r_random = (2*(double)rand()/(double)RAND_MAX - 1)*dx/2; 
+                x[inflowEndIndex] = pelletx[pi]+(r_random + layer_r[layer_id])*sin(theta)*cos(phi);
+                y[inflowEndIndex] = pellety[pi]+(r_random + layer_r[layer_id])*sin(theta)*sin(phi);
+                z[inflowEndIndex] = pelletz[pi]+(r_random + layer_r[layer_id])*cos(theta);
                 vx[inflowEndIndex]=vy[inflowEndIndex]=vz[inflowEndIndex]=0;
 			    pressure[inflowEndIndex]=Pinflow;
 			    volumeold[inflowEndIndex]=volume[inflowEndIndex]=Vinflow;
@@ -167,7 +157,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         
         }
         cout<<"we generate "<<inflowEndIndex-n_current<<endl;
-        pelletir[pi]=newpir;
+    
+        pelletir[pi]=pr;
 		//calculate ablation velocity
 		for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
 		{
@@ -223,8 +214,9 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		{
 //			mass[index]=dx*dx*dx/sqrt(2.0)/Vinflow;
 			if(index>fluidEndIndex)
-                                        m_pParticleData->swap(index,fluidEndIndex);
-			fluidEndIndex++;
+          {  m_pParticleData->swap(index,fluidEndIndex);
+          }
+              fluidEndIndex++;
             pelletid[fluidEndIndex-1] = -1; 
 		}
 	}

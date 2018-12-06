@@ -175,7 +175,7 @@ private:
 	std::size_t m_iNumCol2ndOrder; ///< the number of columns of A when solving 2nd order LPF
 	std::size_t m_iNumCol1stOrder; ///< the number of columns of A when solving 1st order LPF	
 	double m_fAvgParticleSpacing; ///< the average particle spacing
-        double m_fInitParticleSpacing;//< the initial particle spacing for uniform density 
+    double m_fInitParticleSpacing;//< the initial particle spacing for uniform density 
 	double m_fGravity; ///< Gravity 
 	double m_fInvalidPressure; ///< if p < invalid pressure => invalid state
 	double m_fInvalidDensity; ///< volume cannot be negative: if volume < invalid volume => invalid state
