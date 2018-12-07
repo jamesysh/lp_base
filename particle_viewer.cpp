@@ -1503,7 +1503,7 @@ if(outputerror){
 	const double* pz = m_pParticleData->getPelletPositionZ();
 
 	
-	r=10;
+	r=1;
 	dis=10;
 
 	for(int k=0;k<NumberofPellet;k++)

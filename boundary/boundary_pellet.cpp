@@ -125,7 +125,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			if(r<(pr+dx)*(pr+dx) && r>pr*pr)
 			{   
                 volumeOnBoundary[pi] += volume[index];
-				pelletqsum[pi]+=qplusminus[index];
+				pelletqsum[pi]+=qplusminus[index]*;
 				pelletneighbor[pi]++;
 			}
 		}
