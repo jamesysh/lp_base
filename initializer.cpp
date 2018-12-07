@@ -1342,7 +1342,7 @@ size_t Initializer::initGeometryAndStateOnHexPacking(bool saveData) {
 									m_vPositionY[numParticle] = y;
 									m_vPositionZ[numParticle] = z;
 									m_vVolume[numParticle] = 1./states[p]->density(x,y,z);
-                                                                        m_vMass[numParticle] = sqrt(2)*4*h_r*h_r*h_r/m_vVolume[numParticle];
+                                    m_vMass[numParticle] = sqrt(2)*4*h_r*h_r*h_r/m_vVolume[numParticle];
 									m_vPressure[numParticle] = states[p]->pressure(x,y,z);
 									states[p]->velocity(x,y,z,
 										m_vVelocityU[numParticle],m_vVelocityV[numParticle],m_vVelocityW[numParticle]);
