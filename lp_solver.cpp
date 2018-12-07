@@ -845,8 +845,9 @@ void HyperbolicLPSolver::calculateHeatDeposition() {
         size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
         size_t ghostStartIndex = fluidStartIndex + m_pParticleData->getGhostStartIndex();
 
+    double lnLambda = log(2*teinf/INe*sqrt(exp(1)/2));
 //previous used lnlambda
-	double lnLambda = log(2.5*teinf/(INe));
+//	double lnLambda = log(2.5*teinf/(INe));
 
 //new lnlambda
 //	double lnLambda = log(2.0*teinf/(9.0*ZNe*(1.0 + 1.8*pow(ZNe,-2./3.))));
