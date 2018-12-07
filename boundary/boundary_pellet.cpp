@@ -53,16 +53,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		double pir=pelletir[pi];
 		double pr=pelletr[pi];
 		//generate new inflow particles in region 0<r<pir
-		int n=4.0*3.1416*pir*pr*pr/dx/dx/dx*sqrt(2.0);
-//		cout<<n<<endl;
-		if(inflowEndIndex+n>=m_pParticleData->m_iCapacity) {
-			cout<<"Error: too many inflow particles: n = "<<n<<endl;
-			return 1;//too many
-		}
-		double newpir=pir-n*dx*dx*dx/4.0/3.1416/pr/pr/sqrt(2.0);
-		cout<<"new pir "<<newpir<<endl;
-//		cout<<"calculate velocity"<<endl;
-//		double layer_d = cbrt(4*M_PI*pir*pir*pir/3/n);
     pir = pr;
     int layer_n = floor((pir)/dx);
     double layer_r[layer_n];
@@ -79,11 +69,11 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 
     int n_tmp = layer_n*numberOfParticleOnLayer;
      
-        cout<<"we want "<<n<<endl;
-        cout<<"we create "<<n_tmp<<endl;
-        cout<<"n_layer "<<layer_n<<endl;
- 
-    int n_current = inflowEndIndex;
+ 	if(inflowEndIndex+n_tmp>=m_pParticleData->m_iCapacity) {
+			cout<<"Error: too many inflow particles: n = "<<n<<endl;
+			return 1;//too many
+		}
+	
     
     srand(time(NULL));
     for(int layer_id=0;layer_id<layer_n;layer_id++){
@@ -123,7 +113,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         
         
         }
-        cout<<"we generate "<<inflowEndIndex-n_current<<endl;
     
         pelletir[pi]=pr;
 		//calculate ablation velocity
