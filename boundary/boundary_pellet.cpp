@@ -70,7 +70,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
     int n_tmp = layer_n*numberOfParticleOnLayer;
      
  	if(inflowEndIndex+n_tmp>=m_pParticleData->m_iCapacity) {
-			cout<<"Error: too many inflow particles: n = "<<n<<endl;
+			cout<<"Error: too many inflow particles: n = "<<n_tmp<<endl;
 			return 1;//too many
 		}
 	
