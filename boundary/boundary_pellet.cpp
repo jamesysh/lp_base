@@ -148,7 +148,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		pelletvelocity[pi]=massflowrate*volumeOnBoundary[pi]/4.0/3.1416/pr/pr;
 		cout<<"pellet ablation velocity = "<<pelletvelocity[pi]<<endl;
 //		pelletvelocity[pi]=15;
-		pelletir[pi]+=dt*0.5*(oldv+pelletvelocity[pi]);
 	}	
 //	cout<<"move particles"<<endl;
 
