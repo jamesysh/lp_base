@@ -470,8 +470,8 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 	}
 
-    
-*/
+  */  
+
 
 //	cout<<"end building octree"<<endl;
 
