@@ -200,6 +200,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         
         double Tb = Ts - (gamma0-1)/(2*gamma0*R)*newv*newv;
         double mach = newv/sqrt(gamma0*R*Ts);
+        if(index == fluidEndIndex){cout<<mach<<endl;}
         if(mach<1){
            volume[index]  = volumeold[index] = volumeOnBoundary[pelletid[index]]; 
            pressure[index] = R*Tb/volume[index];
