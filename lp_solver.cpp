@@ -420,8 +420,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 //------start density integral computing--------------------
  
-        int numberofParticle = m_pParticleData->m_iFluidNum;
-            //+m_pParticleData->m_iBoundaryNum;
+        int numberofParticle = m_pParticleData->m_iFluidNum +  m_pParticleData->m_iBoundaryNum;
         if(m_pParticleData->m_iNumberofPellet){
             m_vPositionX_temp = new double[numberofParticle];
             fill_n(m_vPositionX_temp, numberofParticle, 0);
