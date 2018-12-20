@@ -430,7 +430,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	m_pParticleData->m_iFluidStartIndex, numberofParticle, positionX);
 
 
-    	m_pNeighbourSearcher->computeIntegralQuadtree(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum ,m_pParticleData->getQuadtreeResolution(),m_pParticleData->getBinarytreeResolution());
+    	m_pNeighbourSearcher->computeIntegralQuadtree(mass, leftintegral, rightintegral, numberofParticle ,m_pParticleData->getQuadtreeResolution(),m_pParticleData->getBinarytreeResolution());
         calculateHeatDeposition();
     
     delete[] m_vPositionX_temp;
