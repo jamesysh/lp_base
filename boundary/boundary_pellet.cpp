@@ -100,13 +100,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
              
  //               pelletqsum[pi] += qplusminus[index];
 
-          //      volumeOnBoundary[pi] += volume[index];
-          //      pressureOnBoundary[pi] += pressure[index];
-			    if(r<min_v)
-                {
-                    min_v = r;
-                    volumeOnBoundary[pi] = volume[index];
-                    pressureOnBoundary[pi] = pressure[index];}
+                volumeOnBoundary[pi] += volume[index];
+                pressureOnBoundary[pi] += pressure[index];
                 pelletneighbor[pi]++;
 			}
 		}
@@ -118,8 +113,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		}
 		cout<<"Number of neighbor for pellet = "<<pelletneighbor[pi]<<endl;
 		pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*3.1416*pr*pr*2/M_PI;
-     //   volumeOnBoundary[pi] = volumeOnBoundary[pi]/pelletneighbor[pi];
-      //  pressureOnBoundary[pi] /= pelletneighbor[pi];
+        volumeOnBoundary[pi] = volumeOnBoundary[pi]/pelletneighbor[pi];
+        pressureOnBoundary[pi] /= pelletneighbor[pi];
         volumeOnBoundary[pi] = pow(pow(volumeOnBoundary[pi],gamma0)*pressureOnBoundary[pi]/R/Ts,1./(gamma0-1)); 
         cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
         cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
