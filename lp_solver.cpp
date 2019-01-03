@@ -420,7 +420,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 //------start density integral computing--------------------
  
-        int numberofParticle = m_pParticleData->m_iFluidNum +  m_pParticleData->m_iBoundaryNum;
+        int numberofParticle = m_pParticleData->m_iFluidNum +  m_pParticleData->m_iInflowNum;
         if(m_pParticleData->m_iNumberofPellet){
             m_vPositionX_temp = new double[numberofParticle];
             fill_n(m_vPositionX_temp, numberofParticle, 0);
@@ -3209,7 +3209,7 @@ setLPFOrderPointers(dir,&LPFOrder0,&LPFOrder1,LPFOrderOther);
 bool phaseSuccess = true;
 
 
-
+/*
     ofstream in;
 int totalNumOfParticle = m_pParticleData->m_iBoundaryNum + m_pParticleData->m_iGhostNum + m_pParticleData->m_iFluidNum;
     in.open("xPosition.txt",ios::trunc);
@@ -3316,7 +3316,7 @@ int numinone = m_pParticleData->m_iMaxNeighbourNumInOneDir;
 
 
 
-
+*/
 
 
 
