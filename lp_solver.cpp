@@ -250,7 +250,7 @@ m_fDt = dt;
 #pragma omp parallel for
 #endif
 for(size_t index=m_pParticleData->m_iFluidStartIndex;
-index<m_pParticleData->m_iFluidStartIndex+m_pParticleData->m_iFluidNum; index++) {
+index<m_pParticleData->m_iFluidStartIndex+m_pParticleData->m_iFluidNum+m_pParticleData->m_iInflowNum; index++) {
 	m_pParticleData->m_vVolumeOld[index] = m_pParticleData->m_vVolume[index];
 }
 
@@ -480,6 +480,14 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 	size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
 	size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
+	size_t inflowEndIndex = fluidEndIndex + m_pParticleData->getInflowNum();
+    int *pelletid = m_pParticleData->m_vPelletID;
+	size_t pelletn = m_pParticleData->m_iNumberofPellet;
+	double *pelletx = m_pParticleData->m_vPelletPositionX;
+	double *pellety = m_pParticleData->m_vPelletPositionY;
+	double *pelletz = m_pParticleData->m_vPelletPositionZ;
+	double *pelletr = m_pParticleData->m_vPelletRadius;
+	double *pelletir = m_pParticleData->m_vPelletInnerRadius;
 	
 	size_t maxNeiNum = m_pParticleData->m_iMaxNeighbourNum;		
 	 
@@ -546,13 +554,23 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 		#ifdef _OPENMP
 		#pragma omp for
 		#endif
-		for(size_t index=fluidStartIndex; index<fluidEndIndex; index++) { 
+		for(size_t index=fluidStartIndex; index<inflowEndIndex; index++) { 
+            int pi = -1;
 			size_t neiListStartIndex = index*maxNeiNum;	
 				
 			double radius;
-                        if(m_iDimension==2) radius = m_fTimesNeiSearchRadius * sqrt(2*mass[index]*m_pParticleData->m_vVolumeOld[index]/1.7321);
+            if(m_iDimension==2) radius = m_fTimesNeiSearchRadius * sqrt(2*mass[index]*m_pParticleData->m_vVolumeOld[index]/1.7321);
 			if(m_iDimension==3) radius = m_fTimesNeiSearchRadius * cbrt(1.4142*mass[index]*m_pParticleData->m_vVolumeOld[index]);	
 
+            if(index>=fluidEndIndex){
+                pi = pelletid[index];
+                double d_x = positionX[index] - pelletx[pi];
+                double d_y = positionY[index] - pellety[pi];
+                double d_z = positionZ[index] - pelletz[pi];
+                double r = sqrt(d_x*d_x + d_y*d_y + d_z*d_z);
+                radius *= r*r/pelletir[pi]/pelletir[pi];
+            }
+           // cout<<"index "<<index<<" radius  "<<radius<<" pi "<<pi<<endl;
 //Using octree to search neighbours. The neighbourhood should contains similar number of particles from each direction.
 			if(m_iDimension==3) {
 	                        #ifdef _OPENMP
@@ -901,7 +919,7 @@ void HyperbolicLPSolver::updateStatesByLorentzForce() {
 	double Magneticfield=0.0;//placeholder
 
         size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 
 //      #ifdef _OPENMP
 //      #pragma omp parallel for
@@ -946,7 +964,7 @@ void HyperbolicLPSolver::SPHDensityEstimatorForFluidParticle(int choice) {
 
 //        double *localParSpacing = m_pParticleData->m_vLocalParSpacing;
         size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 
         cout<<"Calculate density"<<endl;
         #ifdef _OPENMP
@@ -1599,7 +1617,7 @@ bool HyperbolicLPSolver::generateGhostParticleByFillingVacancy() {
 	size_t ghostIndex = m_pParticleData->getGhostStartIndex();
 //	cout<<"ghostStartIndex="<<ghostIndex<<endl;
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 
 	#ifdef _OPENMP
 	size_t numThreads = min(omp_get_max_threads(), m_iNumThreads);
@@ -2445,7 +2463,7 @@ void HyperbolicLPSolver::setUpwindNeighbourList() {
 	size_t maxNeiNumInOneDir = m_pParticleData->m_iMaxNeighbourNumInOneDir;
 
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 	
 	#ifdef _OPENMP
 	#pragma omp parallel
@@ -2738,7 +2756,7 @@ cout<<"-------END HyperbolicLPSolver::setUpwindNeighbourList()-------"<<endl;
 
 void HyperbolicLPSolver::resetLPFOrder() {
 size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;	
-size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
+size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 if(m_iDimension==3) {
 	#ifdef _OPENMP
 	#pragma omp parallel for
@@ -2782,7 +2800,7 @@ size_t maxNeiNum = m_pParticleData->m_iMaxNeighbourNum;
 m_fMinParticleSpacing=numeric_limits<double>::max();	
 
 size_t startIndex = m_pParticleData->getFluidStartIndex();
-size_t endIndex = startIndex + m_pParticleData->getFluidNum();
+size_t endIndex = startIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 
 #ifdef _OPENMP
 size_t numThreads = min(omp_get_max_threads(), m_iNumThreads);
@@ -2966,7 +2984,7 @@ const double* soundSpeed = m_pParticleData->m_vSoundSpeed;
 m_fMaxSoundSpeed = -1;
 
 size_t startIndex = m_pParticleData->m_iFluidStartIndex;
-size_t endIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;	
+size_t endIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;	
 
 #ifdef _OPENMP
 size_t numThreads = min(omp_get_max_threads(), m_iNumThreads);
@@ -3017,7 +3035,7 @@ const double* soundSpeed = m_pParticleData->m_vSoundSpeed;
 m_fMinCFL = -1;
 
 size_t startIndex = m_pParticleData->getFluidStartIndex();
-size_t endIndex = startIndex + m_pParticleData->getFluidNum();
+size_t endIndex = startIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 #ifdef _OPENMP
 size_t numThreads = min(omp_get_max_threads(), m_iNumThreads);
 vector<double> mincfl(numThreads,-1);
@@ -3067,7 +3085,7 @@ const double* vW = (m_iDimension==3)? m_pParticleData->m_vVelocityW:nullptr;
 m_fMaxFluidVelocity = -1;
 
 size_t startIndex = m_pParticleData->getFluidStartIndex();
-size_t endIndex = startIndex + m_pParticleData->getFluidNum();	
+size_t endIndex = startIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();	
 #ifdef _OPENMP
 size_t numThreads = min(omp_get_max_threads(), m_iNumThreads);
 //	cout<<"numThreads="<<numThreads<<endl;
@@ -3192,7 +3210,7 @@ bool phaseSuccess = true;
 
 
 
-  /*  ofstream in;
+    ofstream in;
 int totalNumOfParticle = m_pParticleData->m_iBoundaryNum + m_pParticleData->m_iGhostNum + m_pParticleData->m_iFluidNum;
     in.open("xPosition.txt",ios::trunc);
     
@@ -3255,7 +3273,7 @@ int totalNumOfParticle = m_pParticleData->m_iBoundaryNum + m_pParticleData->m_iG
 
 
 
-int cap = m_pParticleData->m_iFluidNum;
+int cap = m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 int numinone = m_pParticleData->m_iMaxNeighbourNumInOneDir;
    cout<<"---------capacity------"<<cap<<"-------------------"<<endl; 
     in3.open("neighbourlist0.txt",ios::trunc);
@@ -3301,7 +3319,7 @@ int numinone = m_pParticleData->m_iMaxNeighbourNumInOneDir;
 
 
 
-*/
+
 
 // gravity is only on y(1) direction 
 double gravity;
@@ -3327,7 +3345,7 @@ if(m_iDimension==2) {multiplier1st=2; multiplier2nd=m_fDt/2.;}
 else if(m_iDimension==3) {multiplier1st=3; multiplier2nd=m_fDt*3./4.;}
 // iteration start index
 size_t startIndex = m_pParticleData->m_iFluidStartIndex;
-size_t endIndex = startIndex + m_pParticleData->m_iFluidNum;
+size_t endIndex = startIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 int additional=0;
 int warningcount=0;
 //cout<<"m_pParticleData->getFluidNum() = "<<m_pParticleData->getFluidNum()<<endl;
@@ -3368,7 +3386,6 @@ for(size_t index=startIndex; index<endIndex; index++) {
                                                         gravity, inVolume[index], inVelocity[index], inPressure[index], inSoundSpeed[index],
                                                         vel_d_0, vel_dd_0, p_d_0, p_dd_0, vel_d_1, vel_dd_1, p_d_1, p_dd_1,
                                                         &outVolume[index], &outVelocity[index], &outPressure[index]); // output
-   if(p_d_0!=0) cout<<"value "<<p_d_0<<endl;
            if(m_pParticleData->m_iNumberofPellet)
 			{
 				outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
@@ -3915,7 +3932,7 @@ void HyperbolicLPSolver::computeSpatialDer(int dir, size_t index, // input
         
      //printf("In %d compute A for number %d is %.5f,%.5f,%.5f,%.5f, %.5f,%.5f \n",m_iCount, index,A[0],A[1],A[2],A[3],A[4],A[5]);
 
-         printf("In %d compute B for number %d is %.5f,%.5f,%.5f\n",m_iCount,index,b[0],b[1],b[2]);
+//         printf("In %d compute B for number %d is %.5f,%.5f,%.5f\n",m_iCount,index,b[0],b[1],b[2]);
 
 		QRSolver qrSolver(numRow,numCol,A);
 		
@@ -4743,7 +4760,7 @@ void HyperbolicLPSolver::updateFluidState() {
 void HyperbolicLPSolver::moveFluidParticle() {
 		
 	size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-	size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
+	size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 	
 	if(m_iDimension==2) {
 		#ifdef _OPENMP
