@@ -94,7 +94,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         }
 
     }
-    massflowrate = massflowrate/2/5/dx;
+    massflowrate = massflowrate/5/dx;
     for(int pi=0; pi<pelletn; pi++){
     if(pelletneighbor[pi]==0){
         cout<<"no neighbor found for velocity"<<endl;
