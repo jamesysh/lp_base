@@ -20,7 +20,7 @@ double calculateMassFlowRate(double energy){
 int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EOS* m_pEOS, double dt, double dx){
         size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
         size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
-       size_t inflowEndIndex = fluidEndIndex + m_pParticleData->m_iInflowNum;
+        size_t inflowEndIndex = fluidEndIndex + m_pParticleData->m_iInflowNum;
         double *x = m_pParticleData->m_vPositionX;
         double *y = m_pParticleData->m_vPositionY;
         double *z = m_pParticleData->m_vPositionZ;
@@ -60,7 +60,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	vector<int> pelletneighbor(pelletn,0);
     vector<double> volumeOnBoundary(pelletn,0);
     vector<double> pressureOnBoundary(pelletn,0);
-    vector<double> velocityOnBoundary(pelletn,0);  
+    vector<double> velocityOnBoundary(pelletn,0);
+    double massflowrate = 0;
     for(size_t index = fluidEndIndex; index<inflowEndIndex; index++){
         int pi = pelletid[index];
         double d_x=x[index]-pelletx[pi];
@@ -69,8 +70,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		double dr=sqrt(d_x*d_x+d_y*d_y+d_z*d_z);
   
 		if(dr>pelletr[pi])//change label from inflow to fluid if r>pr
-		{   
-            pelletneighbor[pi] ++;
+		{             pelletneighbor[pi] ++;
             velocityOnBoundary[pi] += sqrt(vx[index]*vx[index] + vy[index]*vy[index] + vz[index]*vz[index]);
 			if(index>fluidEndIndex)
           {  m_pParticleData->swap(index,fluidEndIndex);
@@ -79,7 +79,22 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
             pelletid[fluidEndIndex-1] = -1; 
 		}
 	}
-    
+    for(size_t index=fluidStartIndex;index<fluidEndIndex;index++){
+      int pi = 0;
+        double d_x=x[index]-pelletx[pi];
+		double d_y=y[index]-pellety[pi];
+		double d_z=z[index]-pelletz[pi];
+		double dr=sqrt(d_x*d_x+d_y*d_y+d_z*d_z);
+        double tr = dr - pelletir[pi];
+        if(tr<(dx*5)){
+          double vr = vx[index]*(x[index]-pelletx[pi])+vy[index]*(y[index]-pellety[pi])+vz[index]*(z[index]-pelletz[pi]);
+				vr=vr/sqrt((x[index]-pelletx[pi])*(x[index]-pelletx[pi])+(y[index]-pellety[pi])*(y[index]-pellety[pi])+(z[index]-pelletz[pi])*(z[index]-pelletz[pi]));
+				massflowrate += mass[index]*vr;
+
+        }
+
+    }
+    massflowrate = massflowrate/2/5/dx;
     for(int pi=0; pi<pelletn; pi++){
     if(pelletneighbor[pi]==0){
         cout<<"no neighbor found for velocity"<<endl;
@@ -104,7 +119,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
     for(int pi=0;pi<pelletn;pi++){
 		double pir=pelletir[pi];
 		double pr=pelletr[pi];
-        double oldv=0;
+        double oldv=pelletvelocity[pi];
            	for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
 		{
 			double d_x=x[index]-pelletx[pi];
@@ -147,19 +162,19 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         volumeOnBoundary[pi] = pow(pow(volumeOnBoundary[pi],gamma0)*pressureOnBoundary[pi]/R/Ts,1./(gamma0-1)); 
         cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
         cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
-        double massflowrate=pellete[pi]/sublimationenergy;
+    //    double massflowrate=pellete[pi]/sublimationenergy;
 		cout<<"Mass flow rate = "<<massflowrate<<endl;
 
 		m_pParticleData->m_vMassFlowRate = massflowrate;
 
-		pelletvelocity[pi]=massflowrate*volumeOnBoundary[pi]/4.0/3.1416/pr/pr;
+		pelletvelocity[pi]=massflowrate*Vinflow/4.0/3.1416/pr/pr;
 		cout<<"pellet ablation velocity = "<<pelletvelocity[pi]<<endl;
         
 //		cout<<pi<<endl;
     pir = pr;
 		//generate new inflow particles in region 0<r<pir
    if(pir > 3*dx/2){
-    int layer_n = floor((pir)/dx/2) ;
+    int layer_n = floor((pir)/dx) ;
     cout<<"layer_n "<<layer_n<<endl;
     double layer_r[layer_n];
      if(layer_n != 1){
@@ -174,7 +189,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
      else{
      layer_r[0] = dx/2;
      }
-    int numberOfParticleOnLayer = sqrt(2)*4*M_PI*(pr)*(pr)/dx/dx*Vinflow/volumeOnBoundary[pi];
+    int numberOfParticleOnLayer = sqrt(2)*4*M_PI*(pr)*(pr)/dx/dx;//*Vinflow/volumeOnBoundary[pi];
 
         //sqrt(2)*4/3*M_PI*(3*pr*pr*dx-3*pr*dx*dx+dx*dx*dx)/dx/dx/dx*Vinflow/volumeOnBoundary[pi];
 
