@@ -3368,7 +3368,6 @@ for(size_t index=startIndex; index<endIndex; index++) {
                                                         gravity, inVolume[index], inVelocity[index], inPressure[index], inSoundSpeed[index],
                                                         vel_d_0, vel_dd_0, p_d_0, p_dd_0, vel_d_1, vel_dd_1, p_d_1, p_dd_1,
                                                         &outVolume[index], &outVelocity[index], &outPressure[index]); // output
-   if(p_d_0!=0) cout<<"value "<<p_d_0<<endl;
            if(m_pParticleData->m_iNumberofPellet)
 			{
 				outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
@@ -3915,7 +3914,7 @@ void HyperbolicLPSolver::computeSpatialDer(int dir, size_t index, // input
         
      //printf("In %d compute A for number %d is %.5f,%.5f,%.5f,%.5f, %.5f,%.5f \n",m_iCount, index,A[0],A[1],A[2],A[3],A[4],A[5]);
 
-         printf("In %d compute B for number %d is %.5f,%.5f,%.5f\n",m_iCount,index,b[0],b[1],b[2]);
+       //  printf("In %d compute B for number %d is %.5f,%.5f,%.5f\n",m_iCount,index,b[0],b[1],b[2]);
 
 		QRSolver qrSolver(numRow,numCol,A);
 		
