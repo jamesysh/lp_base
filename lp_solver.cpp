@@ -318,7 +318,7 @@ return 0;
 
 void HyperbolicLPSolver::checkInvalid() {
 size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
+size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
@@ -370,9 +370,9 @@ void HyperbolicLPSolver::computeIntegralSpherical(){
         double *leftintegral = m_pParticleData->m_vLeftIntegral;
 
         int fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        int fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
+        int fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 
-	std::vector<std::pair<double,int>> vec(m_pParticleData->m_iFluidNum);
+	std::vector<std::pair<double,int>> vec(m_pParticleData->m_iFluidNum+m_pParticleData->m_iInflowNum);
 	for(int index=fluidStartIndex; index<fluidEndIndex; index++)
 	{
 		double r2=positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index];
@@ -456,10 +456,10 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	      double  apcstartTime = omp_get_wtime();
 
 //Compute integral from x+ and x- directions using octree
-		m_pNeighbourSearcher->computeIntegralAPCloud(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
+//		m_pNeighbourSearcher->computeIntegralAPCloud(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
 
 //Compute integral for spherical symmetry case
-//		computeIntegralSpherical();
+		computeIntegralSpherical();
 
 //		cout<<"Integral calculated"<<endl;	
 		printf("Calculate integral takes %f(s)\n", omp_get_wtime() - apcstartTime);
@@ -469,9 +469,9 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //              	printf("Calculate heat deposition takes %.16g seconds\n", omp_get_wtime() - startTime);
 
 	}
-*/
-    
 
+    
+*/
 
 //	cout<<"end building octree"<<endl;
 
@@ -2954,7 +2954,7 @@ const double *volumeOld = m_pParticleData->m_vVolumeOld;
 double *localParSpacing = m_pParticleData->m_vLocalParSpacing;
 
 size_t startIndex = m_pParticleData->getFluidStartIndex();
-size_t endIndex = startIndex + m_pParticleData->getFluidNum();
+size_t endIndex = startIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 
 #ifdef _OPENMP
 #pragma omp parallel for 
@@ -3164,7 +3164,7 @@ if(m_iDimension==2) {computeA = &HyperbolicLPSolver::computeA2D; offset=2;}
 else if(m_iDimension==3) {computeA = &HyperbolicLPSolver::computeA3D; offset=3;}
 // iteration start index
 size_t startIndex = m_pParticleData->m_iFluidStartIndex;
-size_t endIndex = startIndex + m_pParticleData->m_iFluidNum;
+size_t endIndex = startIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 for(size_t index=startIndex; index<(endIndex+m_pParticleData->m_iBoundaryNum+m_pParticleData->m_iGhostNum); index++)
 	inDensity[index]=1.0/inVolume[index];
 
@@ -3346,6 +3346,7 @@ else if(m_iDimension==3) {multiplier1st=3; multiplier2nd=m_fDt*3./4.;}
 // iteration start index
 size_t startIndex = m_pParticleData->m_iFluidStartIndex;
 size_t endIndex = startIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
+size_t fluidEndIndex = startIndex + m_pParticleData->m_iFluidNum;
 int additional=0;
 int warningcount=0;
 //cout<<"m_pParticleData->getFluidNum() = "<<m_pParticleData->getFluidNum()<<endl;
@@ -3387,8 +3388,9 @@ for(size_t index=startIndex; index<endIndex; index++) {
                                                         vel_d_0, vel_dd_0, p_d_0, p_dd_0, vel_d_1, vel_dd_1, p_d_1, p_dd_1,
                                                         &outVolume[index], &outVelocity[index], &outPressure[index]); // output
            if(m_pParticleData->m_iNumberofPellet)
-			{
+			{   if(index<fluidEndIndex){
 				outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
+                                       }
 			}
 			if(LPFOrder0[index]*LPFOrder1[index]==0 && warningcount++==0)
 			{
