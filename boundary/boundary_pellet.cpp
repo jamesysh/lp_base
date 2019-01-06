@@ -69,12 +69,40 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 
         double gamma0 = 5.0/3;
    
-
+    double massflowrate = 0;
     for(int pi=0;pi<pelletn;pi++){
 		double pir=pelletir[pi];
 		double pr=pelletr[pi];
-        double oldv=pelletvelocity[pi];
-        
+        double r = 0.3;
+        double dis = 10;
+        double dx0 = 0;
+		for(size_t i=fluidStartIndex;i<inflowEndIndex;i++)
+		{
+			double tr=(x[i]-pelletx[pi])*(x[i]-pelletx[pi])+(y[i]-pellety[pi])*(y[i]-pellety[pi])+(z[i]-pelletz[pi])*(z[i]-pelletz[pi]);
+			tr=fabs(sqrt(tr)-r);
+			if(tr<dis)
+			{	
+				dis=tr;
+				dx0=localParSpacing[i];
+			}
+		}
+		double dr=5*dx0;
+		for(size_t i=fluidStartIndex;i<inflowEndIndex;i++)
+		{	
+            double tr=(x[i]-pelletx[pi])*(x[i]-pelletx[pi])+(y[i]-pellety[pi])*(y[i]-pellety[pi])+(z[i]-pelletz[pi])*(z[i]-pelletz[pi]);
+
+        	tr=fabs(sqrt(tr)-r);
+			if(tr<dr)
+			{
+				double vr=vx[i]*(x[i]-pelletx[pi])+vy[i]*(y[i]-pellety[pi])+vz[i]*(z[i]-pelletz[pi]);
+				vr=vr/sqrt((x[i]-pelletx[pi])*(x[i]-pelletx[pi])+(y[i]-pellety[pi])*(y[i]-pellety[pi])+(z[i]-pelletz[pi])*(z[i]-pelletz[pi]));
+				massflowrate+=mass[i]*vr;
+
+			}
+		}
+		massflowrate=massflowrate/2/dr;
+   
+
         for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
 		{
 			double d_x=x[index]-pelletx[pi];
@@ -114,7 +142,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*M_PI*pr*pr*2/M_PI;
         heatOnBoundary[pi] /= pelletneighbor[pi];
         pelletneighbor[pi] = 0;
-        double massflowrate=pellete[pi]/sublimationenergy;
+       // double massflowrate=pellete[pi]/sublimationenergy;
 		cout<<"Mass flow rate = "<<massflowrate<<endl;
 
 		m_pParticleData->m_vMassFlowRate = massflowrate;
@@ -127,7 +155,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pr+dx/5)*(pr+dx/5) && r>pr*pr)
+			if(r<(pr+dx/10)*(pr+dx/10) && r>pr*pr)
 			{   
 
                 volumeOnBoundary[pi] += volume[index];
@@ -154,6 +182,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		pelletvelocity[pi] = m_pParticleData->m_vMassFlowRate*volumeOnBoundary[pi]/4.0/M_PI/pr/pr;
 		cout<<"pellet ablation velocity = "<<pelletvelocity[pi]<<endl;
     
+        double oldv=pelletvelocity[pi];
         for(size_t index = fluidEndIndex; index<inflowEndIndex; index++){
             int pi = pelletid[index];
             double d_x=x[index]-pelletx[pi];
@@ -198,7 +227,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
      else{
      layer_r[0] = dx/2;
      }
-    int numberOfParticleOnLayer = 4*M_PI*(pr)*(pr)/dx/dx*Vinflow/volumeOnBoundary[pi];
+    int numberOfParticleOnLayer = sqrt(2)*4*M_PI*(pr)*(pr)/dx/dx*Vinflow/volumeOnBoundary[pi];
 
         //sqrt(2)*4/3*M_PI*(3*pr*pr*dx-3*pr*dx*dx+dx*dx*dx)/dx/dx/dx*Vinflow/volumeOnBoundary[pi];
 
