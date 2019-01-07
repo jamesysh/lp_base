@@ -68,11 +68,10 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         double Ts = Vinflow*Pinflow/R;
 
         double gamma0 = 5.0/3;
-    double massflowrate = 0; 
     for(int pi=0;pi<pelletn;pi++){
 		double pir=pelletir[pi];
 		double pr=pelletr[pi];
- 
+/* 
         double r = 0.4;
         double dis = 10;
         double dx0 = 0;
@@ -102,7 +101,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		}
 		massflowrate=massflowrate/2/dr;
    
-
+*/
         for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
 		{
 			double d_x=x[index]-pelletx[pi];
@@ -143,7 +142,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         heatOnBoundary[pi] /= pelletneighbor[pi];
         cout<<"Heat on boundary = "<<heatOnBoundary[pi]<<endl;
         pelletneighbor[pi] = 0;
-   //     double massflowrate=pellete[pi]/sublimationenergy;
+        double massflowrate=pellete[pi]/sublimationenergy;
 		cout<<"Mass flow rate = "<<massflowrate<<endl;
 
 		m_pParticleData->m_vMassFlowRate = massflowrate;

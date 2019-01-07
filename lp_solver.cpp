@@ -919,7 +919,7 @@ void HyperbolicLPSolver::updateStatesByLorentzForce() {
 	double Magneticfield=0.0;//placeholder
 
         size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
 
 //      #ifdef _OPENMP
 //      #pragma omp parallel for
@@ -1005,7 +1005,6 @@ void HyperbolicLPSolver::SPHDensityEstimatorForFluidParticle(int choice) {
                 #ifdef _OPENMP
                 #pragma omp for
                 #endif
-//                for(size_t index=fluidStartIndex; index<fluidEndIndex+m_pParticleData->getInflowNum(); index++) {
                 for(size_t index=fluidStartIndex; index<fluidEndIndex+m_pParticleData->getInflowNum(); index++) {
 //sph density estimator
 //			double tolerance=1;
@@ -1075,16 +1074,6 @@ void HyperbolicLPSolver::SPHDensityEstimatorForFluidParticle(int choice) {
                                                 m_pParticleData->m_vIfSPHDensity[index]+=1;
                                                 m_pParticleData->m_vVolume[index]=1.0/count_density;
                                         }
-/*                                        if((m_pParticleData->m_vVolume[index]*count_density)>alpha||(m_pParticleData->m_vVolume[index]*count_density)<1.0/alpha)
-                                        {
-                                                m_pParticleData->m_vIfSPHDensity[index]+=1;
-                                                m_pParticleData->m_vVolume[index]=1.0/count_density;
-                                        }*/
-/*                                        if(gra_mag>max_gradient)
-                                        {
-                                                m_pParticleData->m_vIfSPHDensity[index]+=1;
-                                                m_pParticleData->m_vVolume[index]=1.0/count_density;
-                                        }*/
                                 }
 
                         }
@@ -1102,12 +1091,13 @@ void HyperbolicLPSolver::SPHDensityEstimatorForFluidParticle(int choice) {
 
 }
 
+
 bool HyperbolicLPSolver::generateSolidBoundaryByMirrorParticles() {
 	
 	cout<<"-------HyperbolicLPSolver::generateSolidBoundaryByMirrorParticles()-------"<<endl;	
 
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 
 
 	#ifdef _OPENMP
@@ -1143,7 +1133,7 @@ bool HyperbolicLPSolver::generateSolidBoundaryByMirrorParticles() {
 			return false;
 		}
 	}
-	fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
+	fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 
 	#pragma omp parallel  
 	{
@@ -1162,7 +1152,7 @@ bool HyperbolicLPSolver::generateSolidBoundaryByMirrorParticles() {
 			#ifdef _OPENMP
 			#pragma omp for
 			#endif
-			for(size_t index=fluidStartIndex; index<fluidEndIndex+m_pParticleData->m_iInflowNum; index++)  {
+			for(size_t index=fluidStartIndex; index<fluidEndIndex; index++)  {
 				#ifdef _OPENMP
 				int num = m_pParticleData->m_vBoundaryObj[p]->operator()(
 				m_pParticleData->m_vPositionX[index],
@@ -1193,7 +1183,7 @@ bool HyperbolicLPSolver::generateSolidBoundaryByMirrorParticles() {
 			#ifdef _OPENMP
 			#pragma omp for
 			#endif
-			for(size_t index=fluidStartIndex; index<fluidEndIndex+m_pParticleData->m_iInflowNum; index++)  {
+			for(size_t index=fluidStartIndex; index<fluidEndIndex; index++)  {
 				#ifdef _OPENMP
 				int num = m_pParticleData->m_vBoundaryObj[p]->operator()(
 				m_pParticleData->m_vPositionX[index],
@@ -3388,9 +3378,10 @@ for(size_t index=startIndex; index<endIndex; index++) {
                                                         vel_d_0, vel_dd_0, p_d_0, p_dd_0, vel_d_1, vel_dd_1, p_d_1, p_dd_1,
                                                         &outVolume[index], &outVelocity[index], &outPressure[index]); // output
            if(m_pParticleData->m_iNumberofPellet)
-			{   if(index<fluidEndIndex){
+			{  
+                if(index<fluidEndIndex){
 				outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
-                                       }
+                }
 			}
 			if(LPFOrder0[index]*LPFOrder1[index]==0 && warningcount++==0)
 			{
@@ -4585,7 +4576,7 @@ void HyperbolicLPSolver::setMirrorPressureAndVelocity(int phase) {
 	if((m_iDimension==2 && phase==2) || (m_iDimension==3 && phase==4)) return;
 
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 	size_t boundaryStartIndex = m_pParticleData->m_iBoundaryStartIndex + m_pParticleData->m_iInflowNum;
 	size_t boundaryEndIndex = m_pParticleData->m_iBoundaryStartIndex + m_pParticleData->m_iBoundaryNum;
 	
@@ -4693,7 +4684,7 @@ void HyperbolicLPSolver::setGhostVelocity(int phase) {
 //	if((m_iDimension==2 && (phase==0 || phase==2)) || 
 //	   (m_iDimension==3 && (phase==0 || phase==1 || phase==4))) return;
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
 	size_t ghostStartIndex = m_pParticleData->getGhostStartIndex();
 	
 	if(m_iDimension==3) {
