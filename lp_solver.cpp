@@ -419,7 +419,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	}
 
 //------start density integral computing--------------------
- 
+/* 
         int numberofParticle = m_pParticleData->m_iFluidNum +  m_pParticleData->m_iBoundaryNum;
         if(m_pParticleData->m_iNumberofPellet){
             m_vPositionX_temp = new double[numberofParticle];
@@ -436,7 +436,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
     delete[] m_vPositionX_temp;
        
        }
-
+*/
 
 
 
@@ -452,14 +452,14 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	m_pParticleData->m_iFluidStartIndex ,m_pParticleData->m_iFluidNum + m_pParticleData->m_iBoundaryNum);
 //	cout<<"Calculate integral"<<endl;
 //        printf("Build octree takes %.16g seconds\n", omp_get_wtime() - startTime);
-/*	if(m_pParticleData->m_iNumberofPellet){
+	if(m_pParticleData->m_iNumberofPellet){
 	      double  apcstartTime = omp_get_wtime();
 
 //Compute integral from x+ and x- directions using octree
-		m_pNeighbourSearcher->computeIntegralAPCloud(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
+//		m_pNeighbourSearcher->computeIntegralAPCloud(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
 
 //Compute integral for spherical symmetry case
-//		computeIntegralSpherical();
+		computeIntegralSpherical();
 
 //		cout<<"Integral calculated"<<endl;	
 		printf("Calculate integral takes %f(s)\n", omp_get_wtime() - apcstartTime);
@@ -469,7 +469,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //              	printf("Calculate heat deposition takes %.16g seconds\n", omp_get_wtime() - startTime);
 
 	}
-*/
+
     
 
 
@@ -879,11 +879,11 @@ void HyperbolicLPSolver::calculateHeatDeposition() {
 		double guright = sqrt(uright)*Bessel_K1(sqrt(uright))/4;
 		double nt=1.0/volume[index]/massNe;
 //parallel line case
-		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
-		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
+//		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
+//		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
 //spherical symmetry case
-//		Deltaq[index]=qinf*nt/tauinf*guleft;
-//		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
+		Deltaq[index]=qinf*nt/tauinf*guleft;
+		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
 	}
 
 }
