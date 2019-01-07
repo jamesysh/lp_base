@@ -68,12 +68,12 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         double Ts = Vinflow*Pinflow/R;
 
         double gamma0 = 5.0/3;
-   
-    double massflowrate = 0;
+    double massflowrate = 0; 
     for(int pi=0;pi<pelletn;pi++){
 		double pir=pelletir[pi];
 		double pr=pelletr[pi];
-        double r = 0.3;
+ 
+        double r = 0.4;
         double dis = 10;
         double dx0 = 0;
 		for(size_t i=fluidStartIndex;i<inflowEndIndex;i++)
@@ -119,13 +119,13 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
                 double uright = tauright/taueff;
                 double qinf=sqrt(2.0/M_PI/masse)*neinf*pow(heatK*teinf,1.5);
     
-                if(d_x>0)
+    /*            if(d_x>0)
 				    pelletqsum[pi] += qinf*0.5*uright*Bessel_Kn(2,sqrt(uright));
                 
                 else
                     pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
-             
-        //        pelletqsum[pi] += qplusminus[index];
+      */       
+               pelletqsum[pi] += qplusminus[index];
 
                 
 			    heatOnBoundary[pi] += dt*deltaq[index]*(m_fGamma-1);  
@@ -139,10 +139,11 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			return 0;
 		}
 		cout<<"Number of neighbor for pellet = "<<pelletneighbor[pi]<<endl;
-		pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*M_PI*pr*pr*2/M_PI;
+		pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*M_PI*pr*pr;
         heatOnBoundary[pi] /= pelletneighbor[pi];
+        cout<<"Heat on boundary = "<<heatOnBoundary[pi]<<endl;
         pelletneighbor[pi] = 0;
-       // double massflowrate=pellete[pi]/sublimationenergy;
+   //     double massflowrate=pellete[pi]/sublimationenergy;
 		cout<<"Mass flow rate = "<<massflowrate<<endl;
 
 		m_pParticleData->m_vMassFlowRate = massflowrate;
@@ -262,10 +263,10 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
            vx[inflowEndIndex] = oldv*d_x/dr;
            vy[inflowEndIndex] = oldv*d_y/dr;
            vz[inflowEndIndex] = oldv*d_z/dr;
-   	       volumeold[inflowEndIndex] = volume[inflowEndIndex]=volumeOnBoundary[pi]*dr*dr/pir/pir;
+   	       volumeold[inflowEndIndex] = volume[inflowEndIndex]=volumeOnBoundary[pi]*dr*dr*dr/pir/pir/pir;
            pressure[inflowEndIndex] = Ts*R/volume[inflowEndIndex];
            localParSpacing[inflowEndIndex]=dx;
-		   mass[inflowEndIndex]=dx*dx*dx/sqrt(2.0)/Vinflow;
+		   mass[inflowEndIndex]=dx*dx*dx/Vinflow/sqrt(2);
            sound[inflowEndIndex]=m_pEOS->getSoundSpeed(pressure[inflowEndIndex],1./volume[inflowEndIndex]);
 	
                 pelletid[inflowEndIndex]=pi;
