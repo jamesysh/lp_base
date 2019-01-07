@@ -165,7 +165,7 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
 
         searchNeighbourForFluidParticle(0);
 
-	computeSetupsForNextIteration();
+    	computeSetupsForNextIteration();
 		
         m_fTotalTime=0;
         m_fSolverTime=0;
