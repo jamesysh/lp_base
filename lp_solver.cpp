@@ -372,7 +372,7 @@ void HyperbolicLPSolver::computeIntegralSpherical(){
         int fluidStartIndex = m_pParticleData->getFluidStartIndex();
         int fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 
-	std::vector<std::pair<double,int>> vec(m_pParticleData->m_iFluidNum+m_pParticleData->m_iInflowNum);
+	std::vector<std::pair<double,int>> vec(m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum);
 	for(int index=fluidStartIndex; index<fluidEndIndex; index++)
 	{
 		double r2=positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index];
@@ -436,8 +436,8 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
     delete[] m_vPositionX_temp;
        
        }
-*/
 
+*/
 
 
 
@@ -470,7 +470,6 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 	}
 
-    
 
 
 //	cout<<"end building octree"<<endl;
@@ -919,7 +918,7 @@ void HyperbolicLPSolver::updateStatesByLorentzForce() {
 	double Magneticfield=0.0;//placeholder
 
         size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
 
 //      #ifdef _OPENMP
 //      #pragma omp parallel for
