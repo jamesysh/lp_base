@@ -144,7 +144,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
      else{
      layer_r[0] = dx/2;
      }
-    int numberOfParticleOnLayer = sqrt(2)*4*M_PI*(pr)*(pr)/dx/dx;//*Vinflow/volumeOnBoundary[pi];
+    int numberOfParticleOnLayer =   sqrt(2)*4*M_PI*(pr)*(pr)/dx/dx;//*Vinflow/volumeOnBoundary[pi];
 
 
     int n_tmp = layer_n*numberOfParticleOnLayer;
