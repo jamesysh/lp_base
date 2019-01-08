@@ -155,7 +155,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pr+dx/10)*(pr+dx/10) && r>pr*pr)
+			if(r<(pr+dx/5)*(pr+dx/5) && r>pr*pr)
 			{   
 
                 volumeOnBoundary[pi] += volume[index];
@@ -262,8 +262,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
            vx[inflowEndIndex] = oldv*d_x/dr;
            vy[inflowEndIndex] = oldv*d_y/dr;
            vz[inflowEndIndex] = oldv*d_z/dr;
-   	       volumeold[inflowEndIndex] = volume[inflowEndIndex]=volumeOnBoundary[pi]*dr*dr*dr/pir/pir/pir;
-           pressure[inflowEndIndex] = Ts*R/volume[inflowEndIndex];
+   	       volumeold[inflowEndIndex] = volume[inflowEndIndex]=volumeOnBoundary[pi]*dr*dr/pir/pir;
+           pressure[inflowEndIndex] = Ts*R/volumeOnBoundary[pi];
            localParSpacing[inflowEndIndex]=dx;
 		   mass[inflowEndIndex]=dx*dx*dx/Vinflow/sqrt(2);
            sound[inflowEndIndex]=m_pEOS->getSoundSpeed(pressure[inflowEndIndex],1./volume[inflowEndIndex]);
