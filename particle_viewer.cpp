@@ -772,7 +772,7 @@ if(m_pParticleData->getNumberofPellet()){
 
                     }
                     else
-                        fprintf(outfile,"%d\n",10);
+                        fprintf(outfile,"%d\n",0);
               }
         }
 #ifdef DEBUG_LW_V
