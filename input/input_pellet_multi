@@ -35,13 +35,8 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 0. 0. 0 0       z position of pellets
 0.2             radius
 0.24             outer radius
-2000        quadtree resolution
-30          binarytree resolution
+500        quadtree resolution
+20          binarytree resolution
 pressure
-timetrack
-localspacing
-soundspeed
-velocity
 allparticle
-velocityx
-velocityy
+density
