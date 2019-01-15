@@ -277,7 +277,7 @@ public:
         const double* const getPelletEnergy() const {return m_vPelletEnergy;}
         const int* const getPelletID() const {return m_vPelletID;}
         int getNumberofPellet() {return m_iNumberofPellet;}
-	double getMassFlowRate() {return m_vMassFlowRate;}
+	double* getMassFlowRate() {return m_vMassFlowRate;}
 	int getMaxParticlePerCell() {return m_iMaxParticlePerCell;}
 	int getQuadtreeResolution() const {return m_iQuadtreeResolution;}
     int getBinarytreeResolution() const {return m_iBinarytreeResolution;}
@@ -501,7 +501,7 @@ private:
 	double heatK;
 	double conductivity;
 	double sublimationenergy;
-	double m_vMassFlowRate;
+	double *m_vMassFlowRate;
 
 
 	double *m_vPhi;//< used by limiter

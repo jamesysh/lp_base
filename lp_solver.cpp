@@ -472,6 +472,8 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 */
 
+
+
 //	cout<<"end building octree"<<endl;
 
 	int *neighbourList = m_pParticleData->m_vNeighbourList;

@@ -120,6 +120,8 @@ ParticleData::ParticleData(Initializer& init) {
                     fill_n(m_vPelletEnergy, m_iNumberofPellet, 0);
                     m_vPelletVelocity = new double[m_iNumberofPellet];
                     fill_n(m_vPelletVelocity, m_iNumberofPellet, 0);
+                    m_vMassFlowRate = new double[m_iNumberofPellet];
+                    fill_n(m_vMassFlowRate,m_iNumberofPellet, 0);
                     m_vPelletID = new int[m_iCapacity];
                     fill_n(m_vPelletID, m_iCapacity, -1);
                 

@@ -1492,8 +1492,7 @@ if(outputerror){
                 return 1;
         }
 
-
-	fprintf(mfroutfile,"%.16g %.16g ",time,m_pParticleData->getMassFlowRate());
+    double *massflowrate = m_pParticleData->getMassFlowRate();
 
 
 	double r,dis,dx,dr,mfr;
@@ -1502,13 +1501,16 @@ if(outputerror){
 	const double* py = m_pParticleData->getPelletPositionY();
 	const double* pz = m_pParticleData->getPelletPositionZ();
 
-	
+	fprintf(mfroutfile,"%.16g ",time);
+
 	r=1;
 	dis=10;
 
 	for(int k=0;k<NumberofPellet;k++)
 	{
-		mfr = 0;
+		
+	    fprintf(mfroutfile,"%.16g ",massflowrate[k]);
+        mfr = 0;
 
 		for(size_t i=startIndex;i<endIndex;i++)
 		{

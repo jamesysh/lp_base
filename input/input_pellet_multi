@@ -29,14 +29,14 @@ free				type of boundary condition1
 0				compute error compared with exact solution (1) or not (0)
 none				name of exact solution to compare with (simplewave, shocktube, sod, gresho, yee, noh)
 pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletablation)
-1				distribution of pellet (number of pellets)
-0. 4. 0 0       x position of pellets
+2				distribution of pellet (number of pellets)
+0. 8. 0 0       x position of pellets
 0. 0. 4 3       y position of pellets
 0. 0. 0 0       z position of pellets
 0.2             radius
 0.24             outer radius
-500        quadtree resolution
-20          binarytree resolution
+1000        quadtree resolution
+30          binarytree resolution
 pressure
 allparticle
 density
