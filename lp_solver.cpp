@@ -861,8 +861,8 @@ void HyperbolicLPSolver::calculateHeatDeposition() {
 	double neinf = m_pParticleData->neinf;
 	double heatK = m_pParticleData->heatK;
 	double e = heatK*(2.99792458e7)/100;
-        size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        size_t ghostStartIndex = fluidStartIndex + m_pParticleData->getGhostStartIndex();
+    size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
+    size_t ghostStartIndex = fluidStartIndex + m_pParticleData->getGhostStartIndex();
 
     double lnLambda = log(2*teinf/INe*sqrt(exp(1)/2));
 //previous used lnlambda
@@ -3041,11 +3041,12 @@ int tid = omp_get_thread_num();
 for(size_t index=startIndex; index<endIndex; index++) {
 	double dx = localParSpacing[index];
 	double sound = soundSpeed[index];
-        double speed = vU[index]*vU[index]+vV[index]*vV[index];
+ /*   double speed = vU[index]*vU[index]+vV[index]*vV[index];
 	if(m_iDimension==3)
-		speed+=vW[index]*vW[index];
-	double cfl=dx*dx/max(sound*sound,speed);
-                #ifdef _OPENMP
+		speed+=vW[index]*vW[index];*/
+//	double cfl=dx*dx/max(sound*sound,speed);
+    double cfl = dx*dx/sound/sound;
+    #ifdef _OPENMP
 		if(cfl<mincfl[tid] || mincfl[tid]<0)
 			mincfl[tid]=cfl;
 		#else
