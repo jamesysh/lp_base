@@ -486,7 +486,8 @@ private:
 	double* m_vPelletOuterRadius;
     double* m_vPelletEnergy;//energy absorbed by each pellet, need to be updated in every time step
 	double* m_vPelletVelocity;
-	int* m_vPelletID;//the id of the pellet generating each inflow particle, size = m_iCapacity
+	int* m_vPelletState;
+    int* m_vPelletID;//the id of the pellet generating each inflow particle, size = m_iCapacity
 	double* m_vDeltaq;
 	double* m_vQplusminus;
 	double Magx;

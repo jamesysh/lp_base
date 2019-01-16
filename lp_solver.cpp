@@ -469,8 +469,8 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //              	printf("Calculate heat deposition takes %.16g seconds\n", omp_get_wtime() - startTime);
 
 	}
-
 */
+
 
 
 

@@ -124,7 +124,8 @@ ParticleData::ParticleData(Initializer& init) {
                     fill_n(m_vMassFlowRate,m_iNumberofPellet, 0);
                     m_vPelletID = new int[m_iCapacity];
                     fill_n(m_vPelletID, m_iCapacity, -1);
-                
+                    m_vPelletState = new int[m_iNumberofPellet];
+                    fill_n(m_vPelletState, m_iNumberofPellet, 1);
 
                 }
 
@@ -585,6 +586,8 @@ ParticleData::~ParticleData() {
 	delete[] m_vPelletOuterRadius;
     delete[] m_vPelletEnergy;
 	delete[] m_vPelletVelocity;
+    delete[] m_vMassFlowRate;
+    delete[] m_vPelletState;
     }
 	delete[] m_vVolume_x;
     delete[] m_vVolume_y;
