@@ -3,17 +3,18 @@ DEBUG  = -g
 OMP    = -fopenmp
 #OMP =
 LAPACK_DIR=/gpfs/home/shyyuan/local/lapack-3.8.0
+GSL_DIR=/home/syuan/local/gsl2.5/include/
 MAIN_DIR:=${CURDIR}
 BOUNDARY_DIR=$(MAIN_DIR)/boundary/
 STATE_DIR=$(MAIN_DIR)/state/
 GEOMETRY_DIR=$(MAIN_DIR)/geometry/
-INCS   = -I $(BOUNDARY_DIR) -I $(STATE_DIR) -I $(GEOMETRY_DIR) -I $(MAIN_DIR)
+INCS   = -I $(BOUNDARY_DIR) -I $(STATE_DIR) -I $(GEOMETRY_DIR) -I $(MAIN_DIR) -I $(GSL_DIR)
 LIBS   = -L $(LAPACK_DIR) 
 CFLAGS = -Wall -c -std=c++11 $(DEBUG) $(OMP) $(INCS)
 LFLAGS = -Wall  $(DEBUG) $(INCS) $(LIBS) $(OMP)
 vpath %.h $(GEOMETRY_DIR) $(STATE_DIR) $(BOUNDARY_DIR)
 MAIN_OBJS   = eos.o hexagonal_packing.o initializer.o lp_main.o lp_solver.o ls_solver.o\
-         neighbour_searcher.o octree.o particle_data.o\
+         neighbour_searcher.o octree.o particle_data.o pellet_solver.o\
 		 particle_viewer.o registrar.o time_controller.o
 
 
@@ -37,7 +38,7 @@ all: lp
  
 
 lp: build  $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) -o lp -lgomp -llapacke -llapack -lgfortran -lrefblas
+	$(CC) $(LFLAGS) $(OBJS) -o lp -lgomp -llapacke -llapack -lgfortran -lrefblas -lgsl -lgslcblas
 
 build:
 	cd $(BOUNDARY_DIR)&&make;
@@ -74,6 +75,9 @@ octree.o: octree.h octree.cpp
 
 particle_data.o: particle_data.h particle_data.cpp initializer.h
 	$(CC) $(CFLAGS) particle_data.cpp
+
+pellet_solver.o: pellet_solver.h pellet_solver.cpp
+	$(CC) $(CFLAGS) pellet_solver.cpp
 
 particle_viewer.o: particle_viewer.h particle_viewer.cpp particle_data.h
 	$(CC) $(CFLAGS) particle_viewer.cpp

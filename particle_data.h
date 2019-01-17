@@ -432,7 +432,7 @@ private:
         friend class Nozzle3DOutflowBoundary;
 	friend class PelletInflowBoundary;
 	friend class PelletOutflowBoundary;
-
+    friend class PelletSolver;
  
 
 

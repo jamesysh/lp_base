@@ -656,7 +656,14 @@ void Initializer::setEOS() {
 		m_pEOS = new PolytropicGasEOS(m_fGamma);
 	else if(m_iEOSChoice==2) // Stiffened Polytropic gas EOS
 		m_pEOS = new StiffPolytropicGasEOS(m_fGamma,m_fPinf,m_fEinf);
-	else {
+	else if(m_iEOSChoice==3) // Saha EOS
+	  {
+	    m_pEOS = new SahaEOS(m_fGamma);
+	    std::vector<double> eos_parameters;
+	    m_pEOS->getParameters(eos_parameters);
+	  }
+
+    else {
 		cout<<"The choice of EOS does not exist!!! Please correct the input file."<<endl;
 		assert(false);
 	}

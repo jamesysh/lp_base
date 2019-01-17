@@ -442,7 +442,6 @@ public:
 
 private:
 
-
     Octree* m_pOctree_integral;
 
 	Octree* m_pOctree;///< The octree

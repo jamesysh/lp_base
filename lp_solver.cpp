@@ -27,9 +27,12 @@ using namespace std;
 HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pData, NeighbourSearcher* ns) {
 	
 	srand(time(0));
-
+    
 	m_pParticleData = pData; 
-	m_pNeighbourSearcher = ns;
+    if(m_pParticleData->m_iNumberofPellet){
+    m_pPelletSolver = new PelletSolver(init,pData);
+    }
+    m_pNeighbourSearcher = ns;
 	m_pEOS = init.getEOS();
 	std::vector<double> eos_parameters;
 	m_pEOS->getParameters(eos_parameters);
@@ -178,6 +181,7 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
 
 HyperbolicLPSolver::~HyperbolicLPSolver() {
 	delete m_pEOS;
+    delete m_pPelletSolver;
 }
 
 
@@ -187,7 +191,7 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 
 	startTime = omp_get_wtime();
 
-	updateStatesByLorentzForce();
+	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
 
 	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
@@ -362,31 +366,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle() {
 	searchNeighbourForFluidParticle(0);
 }
 
-void HyperbolicLPSolver::computeIntegralSpherical(){
-        const double *positionX = m_pParticleData->m_vPositionX;
-        const double *positionY = m_pParticleData->m_vPositionY;
-        const double *positionZ = m_pParticleData->m_vPositionZ; // is all zero for the 2D case 
-        const double *mass = m_pParticleData->m_vMass;
-        double *leftintegral = m_pParticleData->m_vLeftIntegral;
 
-        int fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        int fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
-
-	std::vector<std::pair<double,int>> vec(m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum);
-	for(int index=fluidStartIndex; index<fluidEndIndex; index++)
-	{
-		double r2=positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index];
-		vec[index]={r2,index};
-	}
-	std::sort(vec.begin(),vec.end());
-	double integral=0;
-	for(int index=fluidEndIndex-1; index>=fluidStartIndex; index--)
-	{
-		double temp=mass[vec[index].second]/4.0/3.1416/vec[index].first;
-		leftintegral[vec[index].second]=integral+0.5*temp;
-		integral+=temp;
-	}
-}
 
 void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	
@@ -431,7 +411,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 
     	m_pNeighbourSearcher->computeIntegralQuadtree(mass, leftintegral, rightintegral, numberofParticle ,m_pParticleData->getQuadtreeResolution(),m_pParticleData->getBinarytreeResolution());
-        calculateHeatDeposition();
+        m_pPelletSolver->calculateHeatDeposition(m_fDt);
     
     delete[] m_vPositionX_temp;
        
@@ -464,7 +444,8 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //		cout<<"Integral calculated"<<endl;	
 		printf("Calculate integral takes %f(s)\n", omp_get_wtime() - apcstartTime);
 		startTime = omp_get_wtime();
-    calculateHeatDeposition();
+    m_pPelletSolver->calculateHeatDeposition(m_fDt);
+
 //		cout<<"Heat deposition calculated"<<endl;      
 //              	printf("Calculate heat deposition takes %.16g seconds\n", omp_get_wtime() - startTime);
 
@@ -661,288 +642,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //Supportive Bessel function for heat deposition calculation
 
 /* Bessel_I0 returns the modifies Bessel function I0(x) of positive real x  */
-
-float           Bessel_I0(
-	float           x)
-{
-        float   p1 = 1.0;
-        float   p2 = 3.5156229;
-        float   p3 = 3.0899424;
-        float   p4 = 1.2067492;
-        float   p5 = 0.2659732;
-        float   p6 = 0.360768e-1;
-        float   p7 = 0.45813e-2;
-	
-        float   q1 = 0.39894228;
-        float   q2 = 0.1328592e-1;
-        float   q3 = 0.225319e-2;
-        float   q4 = -0.157565e-2;
-        float   q5 = 0.916281e-2;
-        float   q6 = -0.2057706e-1;
-        float   q7 = 0.2635537e-1;
-        float   q8 = -0.1647633e-1;
-        float   q9 = 0.392377e-2;
-	
-	float   ax, y, value;
-	
-	if (fabs(x) < 3.75)
-	  {
-	    y = (x/3.75)*(x/3.75);//sqr
-	    value = p1+y*(p2+y*(p3+y*(p4+y*(p5+y*(p6+y*p7)))));
-	  }
-	else
-	  {
-	    ax = fabs(x);
-	    y = 3.75/ax;
-
-	    value = (exp(ax)/sqrt(ax))*(q1+y*(q2+y*(q3+y*(q4+y*(q5+y*(q6+y*(q7+y*(q8+y*q9))))))));
-	  }
-
-	return value;
-}
-
-
-/* Bessel_I1 returns the modifies Bessel function I1(x) of positive real x  */
-
-float           Bessel_I1(
-	float           x)
-{
-        float   p1 = 0.5;
-        float   p2 = 0.87890594;
-        float   p3 = 0.51498869;
-        float   p4 = 0.15084934;
-        float   p5 = 0.2658733e-1;
-        float   p6 = 0.301532e-2;
-        float   p7 = 0.32411e-3;
-	
-        float   q1 = 0.39894228;
-        float   q2 = -0.3988024e-1;
-        float   q3 = -0.362018e-2;
-        float   q4 = 0.163801e-2;
-        float   q5 = -0.1031555e-1;
-        float   q6 = 0.2282967e-1;
-        float   q7 = -0.2895312e-1;
-        float   q8 = 0.1787654e-1;
-        float   q9 = -0.420059e-2;
-	
-	float   ax, y, value;
-	
-	if (fabs(x) < 3.75)
-	  {
-	    y = (x/3.75)*(x/3.75);//sqr
-	    value = x*(p1+y*(p2+y*(p3+y*(p4+y*(p5+y*(p6+y*p7))))));
-	  }
-	else
-	  {
-	    ax = fabs(x);
-	    y = 3.75/ax;
-
-	    value = (exp(ax)/sqrt(ax))*(q1+y*(q2+y*(q3+y*(q4+y*(q5+y*(q6+y*(q7+y*(q8+y*q9))))))));
-	    if (x < 0)
-	      value *= -1.0;
-	  }
-	return value;
-}
-
-/* Bessel_K0 returns the modifies Bessel function K0(x) of positive real x  */
-
-float           Bessel_K0(
-	float           x)
-{
-        float   p1 = -0.57721566;
-	float   p2 = 0.4227842;
-	float   p3 = 0.23069756;
-	float   p4 = 0.348859e-1;
-	float   p5 = 0.262698e-2;
-	float   p6 = 0.1075e-3;
-	float   p7 = 0.74e-5;
-
-	float   q1 = 1.25331414;
-	float   q2 = -0.7832358e-1;
-	float   q3 = 0.2189568e-1;
-	float   q4 = -0.1062446e-1;
-	float   q5 = 0.587872e-2;
-	float   q6 = -0.25154e-2;
-	float   q7 = 0.53208e-3;
-
-	float   y, value;
-
-	if (x <= 2.0)
-	  {
-	    y = x*x/4.0;
-	    value = (-log(x/2.0)*Bessel_I0(x))+(p1+y*(p2+y*(p3+y*(p4+y*(p5+y*(p6+y*p7))))));
-	  }
-	else
-	  {
-	    y = 2.0/x;
-	    value = (exp(-x)/sqrt(x))*(q1+y*(q2+y*(q3+y*(q4+y*(q5+y*(q6+y*q7))))));
-	  }
-	return value;
-}
-
-/* Bessel_K1 returns the modifies Bessel function K1(x) of positive real x  */
-
-float           Bessel_K1(
-	float           x)
-{
-        float   p1 = 1.0;
-	float   p2 = 0.15443144;
-	float   p3 = -0.67278579;
-	float   p4 = -0.18156897;
-	float   p5 = -0.01919402;
-	float   p6 = -0.110404e-2;
-	float   p7 = -0.4686e-4;
-
-	float   q1 = 1.25331414;
-	float   q2 = 0.23498619;
-	float   q3 = -0.3655620e-1;
-	float   q4 = 0.1504268e-1;
-	float   q5 = -0.780353e-2;
-	float   q6 = 0.325614e-2;
-	float   q7 = -0.68245e-3;
-
-	float   y, value;
-
-	if (x <= 2.0)
-	  {
-	    y = x*x/4.0;
-	    value = (log(x/2.0)*Bessel_I1(x))+(1.0/x)*(p1+y*(p2+y*(p3+y*(p4+y*(p5+y*(p6+y*p7))))));
-	  }
-	else
-	  {
-	    y = 2.0/x;
-	    value = (exp(-x)/sqrt(x))*(q1+y*(q2+y*(q3+y*(q4+y*(q5+y*(q6+y*q7))))));
-	  }
-	return value;
-}
-				       		       
-
-/* Bessel_Kn returns the modifies Bessel function Kn(x) of positive real x for n >= 2 */
-
-float           Bessel_Kn(
-        int             n,
-	float           x)
-{
-        int    j;
-        float  bk, bkm, bkp, tox;
-
-	if (n < 2)
-	  {
-	    printf("Error in Bessel_Kn(), the order n < 2: n = %d\n",n);
-	    assert(false);
-	    return 0;
-	  }
-
-	tox = 2.0/x;
-	bkm = Bessel_K0(x);
-	bk = Bessel_K1(x);
-
-	for (j = 1; j < n; j++)
-	  {
-	    bkp = bkm + j*tox*bk;
-	    bkm = bk;
-	    bk = bkp;
-	  }
-
-	return bk;
-}
 //Pellet heat deposition calculation
-void HyperbolicLPSolver::calculateHeatDeposition() {
-	const double* leftintegral = m_pParticleData->m_vLeftIntegral;
-	const double* rightintegral = m_pParticleData->m_vRightIntegral;
-	const double* volume = m_pParticleData->m_vVolume;
-	double* Deltaq = m_pParticleData->m_vDeltaq;
-	double* Qplusminus = m_pParticleData->m_vQplusminus;
-	double masse = m_pParticleData->masse;
-	double massNe = m_pParticleData->massNe;
-	double teinf = m_pParticleData->teinf;
-	double INe = m_pParticleData->INe;
-	int ZNe = m_pParticleData->ZNe;
-	double neinf = m_pParticleData->neinf;
-	double heatK = m_pParticleData->heatK;
-	double e = heatK*(2.99792458e7)/100;
-    size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-    size_t ghostStartIndex = fluidStartIndex + m_pParticleData->getGhostStartIndex();
-
-    double lnLambda = log(2*teinf/INe*sqrt(exp(1)/2));
-//previous used lnlambda
-//	double lnLambda = log(2.5*teinf/(INe));
-
-//new lnlambda
-//	double lnLambda = log(2.0*teinf/(9.0*ZNe*(1.0 + 1.8*pow(ZNe,-2./3.))));
-
-
-	double k_warmup;
-        static double time;
-
-        time += m_fDt;
-
-        if (time > 0.01)
-          k_warmup = 1.0;
-        else
-          k_warmup = time/0.01;
-
-
-//        #ifdef _OPENMP
-//        #pragma omp parallel for
-//        #endif
-	for(size_t index=fluidStartIndex; index<ghostStartIndex; index++){
-		double tauleft = leftintegral[index]/massNe*ZNe;
-		double tauright = rightintegral[index]/massNe*ZNe;
-		double tauinf = heatK*heatK*teinf*teinf/(8.0*3.1416*e*e*e*e*lnLambda);
-		double taueff = tauinf*sqrt(2.0/(1.0+ZNe));
-		double uleft = tauleft/taueff;
-		double uright = tauright/taueff;
-		double qinf=sqrt(2.0/3.1416/masse)*neinf*pow(heatK*teinf,1.5);
-		double guleft = sqrt(uleft)*Bessel_K1(sqrt(uleft))/4;
-		double guright = sqrt(uright)*Bessel_K1(sqrt(uright))/4;
-		double nt=1.0/volume[index]/massNe;
-//parallel line case
-		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
-		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
-//spherical symmetry case
-//		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
-//		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
-	}
-
-}
-
-void HyperbolicLPSolver::updateStatesByLorentzForce() {
-	if(m_iDimension==2)
-		return;
-        const double *positionX = m_pParticleData->m_vPositionX;
-        const double *positionY = m_pParticleData->m_vPositionY;
-        const double *positionZ = m_pParticleData->m_vPositionZ;	
-        double *velocityU = m_pParticleData->m_vVelocityU;
-        double *velocityV = m_pParticleData->m_vVelocityV;
-        double *velocityW = m_pParticleData->m_vVelocityW;
-
-	double Magneticfield=0.0;//placeholder
-
-        size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
-
-//      #ifdef _OPENMP
-//      #pragma omp parallel for
-//      #endif
-        for(size_t index=fluidStartIndex; index<fluidEndIndex; index++){
-		double y=positionY[index];
-		double z=positionZ[index];
-		double vy=velocityV[index];
-		double vz=velocityW[index];
-		double r=sqrt(y*y+z*z);
-		if(r==0)
-			continue;
-		double vradial=vy*y/r+vz*z/r;
-		double vtheta=vy*(-z)/r+vz*y/r;
-
-		vradial=vradial+m_fDt*Magneticfield*vtheta;
-
-		velocityV[index]=vradial*y/r+vtheta*(-z)/r;
-		velocityW[index]=vradial*z/r+vtheta*y/r;
-	}
-}
-
 
 void HyperbolicLPSolver::SPHDensityEstimatorForFluidParticle(int choice) {
 	if(choice)
@@ -3382,7 +3082,10 @@ for(size_t index=startIndex; index<endIndex; index++) {
            if(m_pParticleData->m_iNumberofPellet)
 			{  
                 if(index<fluidEndIndex){
-				outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
+				    
+                    outPressure[index]+=m_fDt*m_pParticleData->m_vDeltaq[index]*(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1);
+
+                    //outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
                 }
 			}
 			if(LPFOrder0[index]*LPFOrder1[index]==0 && warningcount++==0)
@@ -3531,7 +3234,9 @@ bool HyperbolicLPSolver::solve_laxwendroff() {
                         }
                         if(m_pParticleData->m_iNumberofPellet)
                         {
-                                outPressure[index]+=m_fDt*m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
+                                outPressure[index]+=m_fDt*m_pParticleData->m_vDeltaq[index]*(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1);
+
+                              //  outPressure[index]+=m_fDt*m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
                         }
                         m_pParticleData->m_vPhi[index]=LPFOrder[index];
 

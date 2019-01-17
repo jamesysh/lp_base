@@ -28,12 +28,12 @@
 #include <fstream>
 #include <utility>
 #include <algorithm>
-
+#include "pellet_solver.h"
 class Initializer;
 class ParticleData;
 class NeighbourSearcher;
 class EOS;
-
+class PelletSolver;
 
 /**
  * \class LPSolver
@@ -149,6 +149,7 @@ private:
     //-----------------------Used for density integral-----------------------------------
 
 
+    PelletSolver* m_pPelletSolver;
     double* m_vPositionX_temp; //used for quadtree computation
 
 
@@ -528,10 +529,7 @@ void (HyperbolicLPSolver::*computeA) (size_t, const int *, const int*, size_t, s
 	void updateFluidVelocity();
 
     
-	void calculateHeatDeposition();
 
-	void updateStatesByLorentzForce();
 
-	void computeIntegralSpherical();
 };
 #endif
