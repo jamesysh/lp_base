@@ -20,7 +20,7 @@ free				type of boundary condition1
 1.4				EOS parameter: gamma
 0				EOS parameter: pinf (only meaningful for stiffened polytropic eos)
 0.				EOS parameter: einf (only meaningful for stiffened polytropic eos)
-0.01				initial particle spacing
+0.02				initial particle spacing
 0.				gravity
 0				switch to upwind method on local extremal points (1) or not(2) (only meaningful for Lax-Wendroff method with moving particles)
 0				Density estimator: 0: PDE, 1: SPH, 3: PDE with switch to SPH at discontinuity
@@ -35,8 +35,8 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 0. 0. 0 0       z position of pellets
 0.2             radius
 0.24             outer radius
-3000        quadtree resolution
-30          binarytree resolution
+500        quadtree resolution
+20          binarytree resolution
 pressure
 allparticle
 density

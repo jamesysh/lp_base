@@ -2,12 +2,14 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
+#include <cstring>
+#include <unistd.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_interp2d.h>
 #include <gsl/gsl_spline.h>
 #include <gsl/gsl_spline2d.h>
-
+using namespace std;
 #define INTERP_TYPE gsl_interp2d_bicubic // bicubic or bilinear
 
 static const gsl_interp2d_type *T_sound_speed = INTERP_TYPE;
@@ -138,20 +140,25 @@ void  SahaEOS::getParameters(std::vector<double>& params)
   int i,j;
 
   printf("ENTERED  SahaEOS::getParameters \n");
-
-  if (!(fp_rho = fopen("/home/rosamu/LP/Saha_EOS/tables_500/rho.dat","r")))
+  char* buffer;
+  buffer = getcwd(NULL,0);
+  string sub_dir = "/tables/ionization_Ne/pres-dens/tables_500_grd_st_is_1/";
+  string main_dir(buffer);
+  string dir = main_dir+sub_dir;
+  
+  if (!(fp_rho = fopen((dir+"rho.dat").c_str(),"r")))
     printf("CANNOT OPEN Saha EOS rho.dat file \n");
 
-  if (!(fp_pres = fopen("/home/rosamu/LP/Saha_EOS/tables_500/pres.dat","r")))
+  if (!(fp_pres = fopen((dir+"pres.dat").c_str(),"r")))
     printf("CANNOT OPEN Saha EOS pres.dat file \n");
 
-  if (!(fp_sound_speed = fopen("/home/rosamu/LP/Saha_EOS/tables_500/sound_speed.dat","r")))
+  if (!(fp_sound_speed = fopen((dir+"sound_speed.dat").c_str(),"r")))
     printf("CANNOT OPEN Saha EOS sound_speed.dat file \n");
 
-  if (!(fp_temperature = fopen("/home/rosamu/LP/Saha_EOS/tables_500/temp.dat","r")))
+  if (!(fp_temperature = fopen((dir+"temp.dat").c_str(),"r")))
     printf("CANNOT OPEN Saha EOS temp.dat file \n");
 
-  if (!(fp_conductivity = fopen("/home/rosamu/LP/Saha_EOS/tables_500/conductivity.dat","r")))
+  if (!(fp_conductivity = fopen((dir+"conductivity.dat").c_str(),"r")))
     printf("CANNOT OPEN Saha EOS conductivity.dat file \n");
 
   printf("Opend files in  SahaEOS::getParameters \n");
