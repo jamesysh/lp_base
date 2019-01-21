@@ -94,14 +94,14 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
                 double uleft = tauleft/taueff;
                 double uright = tauright/taueff;
                 double qinf=sqrt(2.0/M_PI/masse)*neinf*pow(heatK*teinf,1.5);
-    
+   /* 
                 if(d_x>0)
 				    pelletqsum[pi] += qinf*0.5*uright*Bessel_Kn(2,sqrt(uright));
                 
                 else
                     pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
-            
-    //           pelletqsum[pi] += qplusminus[index];
+     */       
+               pelletqsum[pi] += qplusminus[index];
                
                 
                 pelletneighbor[pi]++;
@@ -112,7 +112,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	    pellete[pi] = 0;
         }
         else{
-		    pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*M_PI*pir*pir*2/M_PI;
+		    pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*M_PI*pir*pir;
         }
             cout<<"Number of neighbor for pellet = "<<pelletneighbor[pi]<<endl;
         pelletneighbor[pi] = 0;
