@@ -11,7 +11,7 @@ float     Bessel_K1(float  x);
 float     Bessel_I1(float  x);
 
 
-PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100.0){}
+PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100){}
 
 double calculateMassFlowRate(double energy){
 	return energy;
@@ -85,7 +85,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pir+dx/5)*(pir+dx/5) &&  r>pir*pir)
+			if(r<(pir+dx)*(pir+dx) &&  r>pir*pir)
 			{   
                 double tauleft = leftintegral[index]/massNe*ZNe;
                 double tauright = rightintegral[index]/massNe*ZNe;
@@ -95,13 +95,13 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
                 double uright = tauright/taueff;
                 double qinf=sqrt(2.0/M_PI/masse)*neinf*pow(heatK*teinf,1.5);
     
-    /*            if(d_x>0)
+                if(d_x>0)
 				    pelletqsum[pi] += qinf*0.5*uright*Bessel_Kn(2,sqrt(uright));
                 
                 else
                     pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
-      */      
-              pelletqsum[pi] += qplusminus[index];
+            
+   //           pelletqsum[pi] += qplusminus[index];
                
                 
                 pelletneighbor[pi]++;
@@ -112,7 +112,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	    pellete[pi] = 0;
         }
         else{
-		    pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*M_PI*pir*pir;
+		    pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*M_PI*pir*pir*2/M_PI;
         }
             cout<<"Number of neighbor for pellet = "<<pelletneighbor[pi]<<endl;
         pelletneighbor[pi] = 0;
@@ -128,7 +128,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pir+dx)*(pir+dx) && r>pir*pir)
+			if(r<(pir+dx/3)*(pir+dx/3) && r>pir*pir)
 			{   
     
                 

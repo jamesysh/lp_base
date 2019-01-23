@@ -184,6 +184,7 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
 
 HyperbolicLPSolver::~HyperbolicLPSolver() {
 	delete m_pEOS;
+    delete m_pPelletSolver;
 }
 
 
@@ -193,7 +194,7 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 
 	startTime = omp_get_wtime();
 
-	updateStatesByLorentzForce();
+	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
 
 	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
@@ -425,7 +426,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	}
 
 //------start density integral computing--------------------
-/* 
+ 
         int numberofParticle = m_pParticleData->m_iFluidNum +  m_pParticleData->m_iInflowNum;
         if(m_pParticleData->m_iNumberofPellet){
             m_vPositionX_temp = new double[numberofParticle];
@@ -437,12 +438,12 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 
     	m_pNeighbourSearcher->computeIntegralQuadtree(mass, leftintegral, rightintegral, numberofParticle ,m_pParticleData->getQuadtreeResolution(),m_pParticleData->getBinarytreeResolution());
-        calculateHeatDeposition();
+        m_pPelletSolver->calculateHeatDeposition(m_fDt);
     
     delete[] m_vPositionX_temp;
        
        }
-*/
+
 
 
 
@@ -458,7 +459,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	m_pParticleData->m_iFluidStartIndex ,m_pParticleData->m_iFluidNum + m_pParticleData->m_iBoundaryNum);
 //	cout<<"Calculate integral"<<endl;
 //        printf("Build octree takes %.16g seconds\n", omp_get_wtime() - startTime);
-	if(m_pParticleData->m_iNumberofPellet){
+/*	if(m_pParticleData->m_iNumberofPellet){
 	      double  apcstartTime = omp_get_wtime();
 
 //Compute integral from x+ and x- directions using octree
@@ -476,7 +477,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 	}
 
-
+*/
 
 
 

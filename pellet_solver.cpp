@@ -70,11 +70,11 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 		double guright = sqrt(uright)*Bessel_K1(sqrt(uright))/4;
 		double nt=1.0/volume[index]/massNe;
 //parallel line case
-//		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
-//		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
+		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
+		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
 //spherical symmetry case
-		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
-		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
+//		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
+//		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
 	}
 
 }
@@ -117,10 +117,10 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
         double *pressure = m_pPelletData->m_vPressure;
         double *volume = m_pPelletData->m_vVolume;
         double LF;
-	    double MagneticField=40.0;//placeholder
+	    double MagneticField=10.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum() + m_pPelletData->getInflowNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();// + m_pPelletData->getInflowNum();
 
 //      #ifdef _OPENMP
 //      #pragma omp parallel for
@@ -139,14 +139,15 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 		double vradial=vy*y/r+vz*z/r;
 		double vtheta=vy*(-z)/r+vz*y/r;
         double T = m_pEOS->getTemperature(press,density);
-		double sc = m_pEOS->getSoundSpeed(press,density);
+		
+        double sc = m_pEOS->getSoundSpeed(press,density);
 		double cond = m_pEOS->getElectricConductivity(press,density);
 		double rad_cool = neon_radiation_power_density(density,T);
-		
 		LF = -cond*vradial*MagneticField*MagneticField/(c_light*c_light);
 		vradial = vradial + LF*dt*volume[index];
 
 
+	    cout<<"T "<<T<<" rad_cool "<<rad_cool<<" Pressure "<<press<< " Density "<<density <<endl;	
 		velocityV[index]=vradial*y/r+vtheta*(-z)/r;
 		velocityW[index]=vradial*z/r+vtheta*y/r;
         pressure[index] = press - (sc*sc*density/press - 1)*rad_cool*dt;
