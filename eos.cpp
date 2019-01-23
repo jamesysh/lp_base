@@ -245,7 +245,7 @@ double SahaEOS::getTemperature(double pressure, double density) {
   double R = 83.14;
   
    if (pressure < 1.e-7 || pressure > 60.0 || density < 1.e-9 || density > 1.4)
-      T = mu*pressure/(R*density);
+      T = mu*pressure/(R*density)/11604.525;
     else
     T =  gsl_spline2d_eval(spline_temperature, density, pressure, densacc, presacc);
  
