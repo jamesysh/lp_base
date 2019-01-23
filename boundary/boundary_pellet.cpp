@@ -128,7 +128,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pir+dx/3)*(pir+dx/3) && r>pir*pir)
+			if(r<(pir+dx)*(pir+dx) && r>pir*pir)
 			{   
     
                 
@@ -154,7 +154,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pir+dx/5)*(pir+dx/5) && r>pir*pir)
+			if(r<(pir+dx/2)*(pir+dx/2) && r>pir*pir)
 			{   
                 volumeOnBoundary[pi] += volume[index];
                 pressureOnBoundary[pi] += pressure[index];
