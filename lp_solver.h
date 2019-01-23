@@ -28,7 +28,7 @@
 #include <fstream>
 #include <utility>
 #include <algorithm>
-#include "pellet_solver.h"
+
 class Initializer;
 class ParticleData;
 class NeighbourSearcher;
@@ -149,7 +149,6 @@ private:
     //-----------------------Used for density integral-----------------------------------
 
 
-    PelletSolver* m_pPelletSolver;
     double* m_vPositionX_temp; //used for quadtree computation
 
 
@@ -163,7 +162,8 @@ private:
 	//--------------------------Info get from Initializer class------------------------------
 	
 	EOS* m_pEOS; ///< Pointer to the object for computing eos
-	double m_pGamma;///< gamma in polytropic and stiff polytropic eos
+	PelletSolver* m_pPelletSolver;
+    double m_pGamma;///< gamma in polytropic and stiff polytropic eos
 	double m_pPinf;///< p_inf in stiff polytropic eos
 	double m_pEinf;///< e_inf in still polytropic eos
 	int m_iNumThreads; ///< Number of threads	
@@ -529,7 +529,10 @@ void (HyperbolicLPSolver::*computeA) (size_t, const int *, const int*, size_t, s
 	void updateFluidVelocity();
 
     
+	void calculateHeatDeposition();
 
+	void updateStatesByLorentzForce();
 
+	void computeIntegralSpherical();
 };
 #endif

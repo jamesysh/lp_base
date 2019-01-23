@@ -94,14 +94,14 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
                 double uleft = tauleft/taueff;
                 double uright = tauright/taueff;
                 double qinf=sqrt(2.0/M_PI/masse)*neinf*pow(heatK*teinf,1.5);
-   /* 
-                if(d_x>0)
+    
+    /*            if(d_x>0)
 				    pelletqsum[pi] += qinf*0.5*uright*Bessel_Kn(2,sqrt(uright));
                 
                 else
                     pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
-     */       
-               pelletqsum[pi] += qplusminus[index];
+      */      
+              pelletqsum[pi] += qplusminus[index];
                
                 
                 pelletneighbor[pi]++;
