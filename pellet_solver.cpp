@@ -147,7 +147,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 		vradial = vradial + LF*dt*volume[index];
 
 
-	    cout<<"T "<<T<<" rad_cool "<<rad_cool<<" Pressure "<<press<< " Density "<<density <<endl;	
+	    //cout<<"T "<<T<<" rad_cool "<<rad_cool<<" Pressure "<<press<< " Density "<<density <<endl;	
 		velocityV[index]=vradial*y/r+vtheta*(-z)/r;
 		velocityW[index]=vradial*z/r+vtheta*y/r;
         pressure[index] = press - (sc*sc*density/press - 1)*rad_cool*dt;
