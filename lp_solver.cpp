@@ -56,7 +56,7 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
         }
 	else
 	{
-		m_pGamma=0.;
+		m_pGamma=5./3;
 		m_pPinf=0.;
 		m_pEinf=0.;
 		cout<<"Warning: Cannot recognize EOS."<<endl;
@@ -924,10 +924,10 @@ void HyperbolicLPSolver::updateStatesByLorentzForce() {
         double *velocityV = m_pParticleData->m_vVelocityV;
         double *velocityW = m_pParticleData->m_vVelocityW;
 
-	double Magneticfield=0.0;//placeholder
+	double Magneticfield=10.0;//placeholder
 
         size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();// + m_pParticleData->getInflowNum();
 
 //      #ifdef _OPENMP
 //      #pragma omp parallel for
@@ -3389,7 +3389,10 @@ for(size_t index=startIndex; index<endIndex; index++) {
            if(m_pParticleData->m_iNumberofPellet)
 			{  
                 if(index<fluidEndIndex){
-				outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
+				    outPressure[index] += realDt*m_pParticleData->m_vDeltaq[index]*(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1);
+                   // if(index == fluidEndIndex-1)
+                     //   cout<<"actual gamma"<<(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1)<<endl;
+                   //outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
                 }
 			}
 			if(LPFOrder0[index]*LPFOrder1[index]==0 && warningcount++==0)
@@ -3538,7 +3541,10 @@ bool HyperbolicLPSolver::solve_laxwendroff() {
                         }
                         if(m_pParticleData->m_iNumberofPellet)
                         {
-                                outPressure[index]+=m_fDt*m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
+                              //  outPressure[index]+=m_fDt*m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
+                            
+                            outPressure[index]+=m_fDt*m_pParticleData->m_vDeltaq[index]*(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1);
+
                         }
                         m_pParticleData->m_vPhi[index]=LPFOrder[index];
 

@@ -120,7 +120,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 	    double MagneticField=10.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum() + m_pPelletData->getInflowNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();// + m_pPelletData->getInflowNum();
 
 //      #ifdef _OPENMP
 //      #pragma omp parallel for
