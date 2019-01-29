@@ -120,7 +120,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 	    double MagneticField=10.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();// + m_pPelletData->getInflowNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum() + m_pPelletData->getInflowNum();
 
 //      #ifdef _OPENMP
 //      #pragma omp parallel for
@@ -151,7 +151,9 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 		velocityV[index]=vradial*y/r+vtheta*(-z)/r;
 		velocityW[index]=vradial*z/r+vtheta*y/r;
         pressure[index] = press - (sc*sc*density/press - 1)*rad_cool*dt;
-
+        if(press<0) cout<<"negative pressure"<<endl;
+        if(std::isnan(pressure[index]) || std::isinf(pressure[index])) 
+                cout<<"rad_cool "<<rad_cool<<" pressure "<<press<<" index "<<index<<endl; 
         }
 }
 

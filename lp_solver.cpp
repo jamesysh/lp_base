@@ -193,9 +193,11 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 	double startTime;
 
 	startTime = omp_get_wtime();
-
+    cout<<"first check"<<endl;
+        checkInvalid();
 	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
-
+        cout<<"second check"<<endl;
+        checkInvalid();
 	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
 	if(m_iSolidBoundary || m_iPeriodicBoundary) 
@@ -210,7 +212,7 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 //	printf("Search neighbours for all fluid particles takes %.16g seconds\n", omp_get_wtime() - startTime);
 
         updateLocalParSpacingByVolume();
-
+        cout<<"third check"<<endl;
         checkInvalid();
 
 	startTime = omp_get_wtime();
@@ -300,6 +302,9 @@ if(!phase_success) {
 	return 1;
 }
 updateFluidState();
+cout<<"zero check"<<endl;
+checkInvalid();
+
 if(m_iFixParticles==0)
 	moveFluidParticle();
 //moveFluidParticleAdjusted();
@@ -346,8 +351,10 @@ for(size_t index=fluidStartIndex; index<fluidEndIndex; index++) {
 		cout<<"invalid v"<<endl;
 		assert(false);
 	}
-	if(std::isnan(m_pParticleData->m_vPressure[index]) || std::isinf(m_pParticleData->m_vPressure[index])) {
-		cout<<"invalid p"<<endl;
+    if(m_pParticleData->m_vPressure[index]<0)
+        cout<<"negative pressure in the check function"<< " index "<<index<<endl;
+    if(std::isnan(m_pParticleData->m_vPressure[index]) || std::isinf(m_pParticleData->m_vPressure[index])) {
+		cout<<"invalid p"<< " index "<<index<<" fluid index "<<m_pParticleData->m_iFluidNum<<endl;
 		assert(false);
 	}
 	if(std::isnan(m_pParticleData->m_vVolume[index]) || std::isinf(m_pParticleData->m_vVolume[index])) {
@@ -3390,7 +3397,9 @@ for(size_t index=startIndex; index<endIndex; index++) {
 			{  
                 if(index<fluidEndIndex){
 				    outPressure[index] += realDt*m_pParticleData->m_vDeltaq[index]*(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1);
-                   // if(index == fluidEndIndex-1)
+           //       if(std::isnan(outPressure[index]) || std::isinf(outPressure[index])) 
+             //       cout<<"invalid p "<<"sc "<<m_pParticleData->m_vSoundSpeed[index]<<" pressure "<<m_pParticleData->m_vPressure[index]<<" volume "<<m_pParticleData->m_vVolume[index]<<endl;
+                      // if(index == fluidEndIndex-1)
                      //   cout<<"actual gamma"<<(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1)<<endl;
                    //outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
                 }
