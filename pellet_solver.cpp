@@ -128,7 +128,8 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
         for(size_t index=fluidStartIndex; index<fluidEndIndex; index++){
 		double y=positionY[index];
 		double z=positionZ[index];
-		double vy=velocityV[index];
+	    double x=positionX[index];
+        double vy=velocityV[index];
 		double vz=velocityW[index];
 		double density = 1./volume[index];
 		double press = pressure[index];
@@ -136,6 +137,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
         double r=sqrt(y*y+z*z);
 		if(r==0)
 			continue;
+        double radius = r*r + x*x;
 		double vradial=vy*y/r+vz*z/r;
 		double vtheta=vy*(-z)/r+vz*y/r;
         double T = m_pEOS->getTemperature(press,density);
@@ -151,7 +153,10 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 		velocityV[index]=vradial*y/r+vtheta*(-z)/r;
 		velocityW[index]=vradial*z/r+vtheta*y/r;
         pressure[index] = press - (sc*sc*density/press - 1)*rad_cool*dt;
-        if(press<0) cout<<"negative pressure"<<endl;
+        if(pressure[index]<0) {
+            pressure[index] = press;
+            cout<<"negative pressure index "<<index<<" pressure "<<press<<" position "<<radius<<endl;
+        }
         if(std::isnan(pressure[index]) || std::isinf(pressure[index])) 
                 cout<<"rad_cool "<<rad_cool<<" pressure "<<press<<" index "<<index<<endl; 
         }

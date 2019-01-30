@@ -101,7 +101,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
                 else
                     pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
             
-   //           pelletqsum[pi] += qplusminus[index];
+      //        pelletqsum[pi] += qplusminus[index];
                
                 
                 pelletneighbor[pi]++;
@@ -117,6 +117,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
             cout<<"Number of neighbor for pellet = "<<pelletneighbor[pi]<<endl;
         pelletneighbor[pi] = 0;
         massflowrate=pellete[pi]/sublimationenergy;
+        if(t_total == dt)
+            massflowrate = 0;
         cout<<"Mass flow rate = "<<massflowrate<<endl;
 
 		m_vmassflowrate[pi] = massflowrate;
@@ -160,7 +162,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pir+dx/10)*(pir+dx/10) && r>pir*pir)
+			if(r<(pir+dx/5)*(pir+dx/5) && r>pir*pir)
 			{   
                 volumeOnBoundary[pi] += volume[index];
                 pressureOnBoundary[pi] += pressure[index];
@@ -335,7 +337,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 
 }
 
-PelletOutflowBoundary::PelletOutflowBoundary():xmin(-20),xmax(20),ymin(-20),ymax(20),zmin(-20),zmax(20) {
+PelletOutflowBoundary::PelletOutflowBoundary():xmin(-10),xmax(10),ymin(-10),ymax(10),zmin(-10),zmax(10) {
 }
 
 int PelletOutflowBoundary::UpdateInflowBoundary(ParticleData *m_pParticleData, EOS* m_pEOS, double dt, double dx) {
