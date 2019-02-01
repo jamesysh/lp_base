@@ -441,7 +441,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
                  
         m_pNeighbourSearcher->buildSearchStructure_integral(m_vPositionX_temp, positionY, positionZ, mass, VolumeVoronoi,
-	m_pParticleData->m_iFluidStartIndex, numberofParticle, positionX);
+    	m_pParticleData->m_iFluidStartIndex, numberofParticle, positionX);
 
 
     	m_pNeighbourSearcher->computeIntegralQuadtree(mass, leftintegral, rightintegral, numberofParticle ,m_pParticleData->getQuadtreeResolution(),m_pParticleData->getBinarytreeResolution());
@@ -3400,7 +3400,9 @@ for(size_t index=startIndex; index<endIndex; index++) {
            //       if(std::isnan(outPressure[index]) || std::isinf(outPressure[index])) 
              //       cout<<"invalid p "<<"sc "<<m_pParticleData->m_vSoundSpeed[index]<<" pressure "<<m_pParticleData->m_vPressure[index]<<" volume "<<m_pParticleData->m_vVolume[index]<<endl;
                       // if(index == fluidEndIndex-1)
-                     //   cout<<"actual gamma"<<(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1)<<endl;
+                        double gamma = m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]);
+                        if (gamma -1.667>0.1)
+                            cout<<"warning wrong gamma"<<endl;
                    //outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
                 }
 			}

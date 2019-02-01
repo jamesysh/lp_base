@@ -17,7 +17,7 @@ free				type of boundary condition1
 1				use random order for direction splittig (1) or not(0)
 1				order of numerical scheme: 1: upwind method, 2: Lax-Wendroff method
 3				EOS choice: 1:polytropic 2:Stiffened polytropic
-1.4				EOS parameter: gamma
+1.667				EOS parameter: gamma
 0.				EOS parameter: pinf (only meaningful for stiffened polytropic eos)
 0.				EOS parameter: einf (only meaningful for stiffened polytropic eos)
 0.02				initial particle spacing

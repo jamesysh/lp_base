@@ -87,9 +87,9 @@ void PelletSolver::computeIntegralSpherical(){
         double *leftintegral = m_pPelletData->m_vLeftIntegral;
 
         int fluidStartIndex = m_pPelletData->getFluidStartIndex();
-        int fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum() + m_pPelletData->getInflowNum();
+        int fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
 
-	std::vector<std::pair<double,int>> vec(m_pPelletData->m_iFluidNum + m_pPelletData->m_iInflowNum);
+	std::vector<std::pair<double,int>> vec(m_pPelletData->m_iFluidNum);
 	for(int index=fluidStartIndex; index<fluidEndIndex; index++)
 	{
 		double r2=positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index];

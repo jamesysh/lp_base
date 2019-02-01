@@ -34,7 +34,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         double *mass = m_pParticleData->m_vMass;
         double *sound = m_pParticleData->m_vSoundSpeed;
         double *deltaq = m_pParticleData->m_vDeltaq;
-	double m_fGamma = 1.4;
+	double m_fGamma = 5./3;
     double masse = m_pParticleData->masse;
 	double massNe = m_pParticleData->massNe;
 	double teinf = m_pParticleData->teinf;
@@ -79,7 +79,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		double pr=pelletr[pi];
 
         double massflowrate = 0.;
-         for(size_t index=fluidStartIndex;index<inflowEndIndex;index++)
+         for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
 		{
 			double d_x=x[index]-pelletx[pi];
 			double d_y=y[index]-pellety[pi];
@@ -101,7 +101,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
                 else
                     pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
             
-      //        pelletqsum[pi] += qplusminus[index];
+        //      pelletqsum[pi] += qplusminus[index];
                
                 
                 pelletneighbor[pi]++;
@@ -127,11 +127,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
 		{
             
-         /*   double press = pressure[index];
-            double density = 1./volume[index];
-            if (press < 1.e-7 || press > 60.0 || density < 1.e-9 || density > 1.4)
-            cout<<"outside table domain "<<"pressure = "<<press<<" density "<<density<<endl;
-		*/
             double d_x=x[index]-pelletx[pi];
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
@@ -162,7 +157,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double d_y=y[index]-pellety[pi];
 			double d_z=z[index]-pelletz[pi];
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pir+dx/5)*(pir+dx/5) && r>pir*pir)
+			if(r<(pir+dx)*(pir+dx) && r>pir*pir)
 			{   
                 volumeOnBoundary[pi] += volume[index];
                 pressureOnBoundary[pi] += pressure[index];
