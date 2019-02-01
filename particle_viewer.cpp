@@ -541,7 +541,7 @@ int VTKParticleViewer::writeResult(double time, size_t writeStep) {
 	const double* velocityU = m_pParticleData->getVelocityU();
 	const double* velocityV = m_pParticleData->getVelocityV();
 	const double* velocityW = m_pParticleData->getVelocityW();
-
+    const double* temperature = m_pParticleData->getTemperature();
 	const double* volume = m_pParticleData->getVolume();
 	const double* mass = m_pParticleData->getMass();
 	const double* pressure = m_pParticleData->getPressure();
@@ -715,7 +715,14 @@ if(m_pParticleData->m_iPrintVelocityV){
 			fprintf(outfile,"%.16g\n",velocityW[i]);
     }
 }	
-	
+if(m_pParticleData->m_iPrintTemperature){
+	fprintf(outfile,"SCALARS temperature double\n");
+	fprintf(outfile,"LOOKUP_TABLE default\n");
+	for(size_t i=startIndex; i<endIndex; i++)
+		fprintf(outfile,"%.16g\n",temperature[i]);
+	}
+
+
 /*	fprintf(outfile,"SCALARS index int\n");
 	fprintf(outfile,"LOOKUP_TABLE default\n");
 	for(size_t i=startIndex; i<endIndex; i++)

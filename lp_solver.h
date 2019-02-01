@@ -528,7 +528,7 @@ void (HyperbolicLPSolver::*computeA) (size_t, const int *, const int*, size_t, s
 	 */
 	void updateFluidVelocity();
 
-    
+    void computeTemperature();
 	void calculateHeatDeposition();
 
 	void updateStatesByLorentzForce();

@@ -241,6 +241,7 @@ resetLPFOrder();
 
 
 // to determine the dt for next step
+computeTemperature();
 computeMinParticleSpacing();
 computeMaxSoundSpeed();
 computeMaxFluidVelocity();
@@ -891,10 +892,10 @@ void HyperbolicLPSolver::calculateHeatDeposition() {
 
         time += m_fDt;
 
-        if (time > 0.01)
+        if (time > 0.02)
           k_warmup = 1.0;
         else
-          k_warmup = time/0.01;
+          k_warmup = time/0.02;
 
 
 //        #ifdef _OPENMP
@@ -4820,6 +4821,22 @@ void HyperbolicLPSolver::updateFluidVelocity() {
 
 }
 
+void HyperbolicLPSolver::computeTemperature(){
+   	size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
+	size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
+	     
+    double* temperature = m_pParticleData->m_vTemperature;
+    double* pressure = m_pParticleData->m_vPressure;
+    double* volume = m_pParticleData->m_vVolume;
+    for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
+    {   
+        double press = pressure[index];
+        double density = 1./volume[index];
+        temperature[index] = m_pEOS->getTemperature(press,density); 
+    
+    }
+
+}
 ////////////////////////////////////////////////////////////////////////////////////////
 // End of HyperbolicLPSolver
 ////////////////////////////////////////////////////////////////////////////////////////
