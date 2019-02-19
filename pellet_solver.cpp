@@ -116,15 +116,16 @@ void PelletSolver::cleanBadStates(){
         const double* vV = m_pPelletData->m_vVelocityV;
         const double* vW = m_pPelletData->m_vVelocityW;
         const double* soundSpeed = m_pPelletData->m_vSoundSpeed;
-
+        const double* temperature = m_pPelletData->m_vTemperature;
         int* timetrack = m_pPelletData->m_vTimeTrack;
 
         int numberofBadParticles = 0;
         for(size_t i = fluidStartIndex; i<fluidEndIndex; i++){
                double speed = vU[i]*vU[i]+vV[i]*vV[i]+vW[i]*vW[i];
                double sound = soundSpeed[i]*soundSpeed[i]; 
+               double temperature_min = temperature[i]; 
                if (pressure[i] < 1.e-7 || pressure[i] > 60.0 || 1./volume[i] < 1.e-9 || 1./volume[i] > 1.4 ||
-                   speed > sound  ){
+                    temperature_min > 3 ){
                  
                                   if(i+1<fluidEndIndex)
                         {
