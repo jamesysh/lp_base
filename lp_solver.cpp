@@ -242,6 +242,9 @@ resetLPFOrder();
 
 // to determine the dt for next step
 computeTemperature();
+if(m_pParticleData->m_iNumberofPellet){
+m_pPelletSolver->cleanBadStates();
+}
 computeMinParticleSpacing();
 computeMaxSoundSpeed();
 computeMaxFluidVelocity();
@@ -3056,11 +3059,11 @@ int tid = omp_get_thread_num();
 for(size_t index=startIndex; index<endIndex; index++) {
 	double dx = localParSpacing[index];
 	double sound = soundSpeed[index];
- /*   double speed = vU[index]*vU[index]+vV[index]*vV[index];
+    double speed = vU[index]*vU[index]+vV[index]*vV[index];
 	if(m_iDimension==3)
-		speed+=vW[index]*vW[index];*/
-//	double cfl=dx*dx/max(sound*sound,speed);
-    double cfl = dx*dx/sound/sound;
+		speed+=vW[index]*vW[index];
+	double cfl=dx*dx/max(sound*sound,speed);
+//    double cfl = dx*dx/sound/sound;
     #ifdef _OPENMP
 		if(cfl<mincfl[tid] || mincfl[tid]<0)
 			mincfl[tid]=cfl;

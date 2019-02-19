@@ -324,11 +324,14 @@ void ParticleData::swap(size_t i, size_t j){
 	    double *rightintegral = m_vRightIntegral;
 	    double *Deltaq = m_vDeltaq;
 	    double *Qplusminus = m_vQplusminus;
+        double *temperature = m_vTemperature;
         bool *LeftInflow = m_bLeftInflow;
 	    int* pelletid = m_vPelletID;
         int* timetrack = m_vTimeTrack;
-std::swap(x[i],x[j]);
+    
+    std::swap(x[i],x[j]);
 	std::swap(y[i],y[j]);
+    std::swap(temperature[i],temperature[j]);
 	if(m_iDimension == 3) std::swap(z[i],z[j]);
 	std::swap(pressure[i],pressure[j]);
 	std::swap(velocityU[i],velocityU[j]);

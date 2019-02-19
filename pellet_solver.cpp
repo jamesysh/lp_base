@@ -105,7 +105,114 @@ void PelletSolver::computeIntegralSpherical(){
 	}
 }
 
+void PelletSolver::cleanBadStates(){
+        size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
+        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
+        size_t inflowEndIndex = fluidEndIndex + m_pPelletData->m_iInflowNum;
+        
+        const double* pressure = m_pPelletData->m_vPressure;
+        const double* volume = m_pPelletData->m_vVolume;
+        const double* vU = m_pPelletData->m_vVelocityU;
+        const double* vV = m_pPelletData->m_vVelocityV;
+        const double* vW = m_pPelletData->m_vVelocityW;
+        const double* soundSpeed = m_pPelletData->m_vSoundSpeed;
+
+        int* timetrack = m_pPelletData->m_vTimeTrack;
+
+        int numberofBadParticles = 0;
+        for(size_t i = fluidStartIndex; i<fluidEndIndex; i++){
+               double speed = vU[i]*vU[i]+vV[i]*vV[i]+vW[i]*vW[i];
+               double sound = soundSpeed[i]*soundSpeed[i]; 
+               if (pressure[i] < 1.e-7 || pressure[i] > 60.0 || 1./volume[i] < 1.e-9 || 1./volume[i] > 1.4 ||
+                   speed > sound  ){
+                 
+                                  if(i+1<fluidEndIndex)
+                        {
+                                m_pPelletData->swap(1,fluidEndIndex-1);
+                          }
+                        if(fluidEndIndex<inflowEndIndex)
+                        {
+                                m_pPelletData->swap(fluidEndIndex-1,inflowEndIndex-1);
+                        }
+                        numberofBadParticles++;
+                        fluidEndIndex--;
+                        inflowEndIndex--;
+			            timetrack[fluidEndIndex] = 0; //RESET TIMETRACK TO BE ZERO
+
+                 }
+
+        
+        }
+        m_pPelletData->m_iFluidNum=fluidEndIndex-fluidStartIndex;
+        m_pPelletData->m_iBoundaryStartIndex=fluidEndIndex;
+        m_pPelletData->m_iGhostStartIndex=inflowEndIndex;
+        m_pPelletData->m_iTotalNum=inflowEndIndex-fluidStartIndex;
+        if(numberofBadParticles){
+            printf("%d bad states fluid particles have been deleted.\n",numberofBadParticles);
+        }
+
+}
 void PelletSolver::updateStatesByLorentzForce( double dt) {
+	if(m_pPelletData->m_iDimension==2)
+		return;
+        const double *positionX = m_pPelletData->m_vPositionX;
+        const double *positionY = m_pPelletData->m_vPositionY;
+        const double *positionZ = m_pPelletData->m_vPositionZ;	
+        double *velocityU = m_pPelletData->m_vVelocityU;
+        double *velocityV = m_pPelletData->m_vVelocityV;
+        double *velocityW = m_pPelletData->m_vVelocityW;
+        double *pressure = m_pPelletData->m_vPressure;
+        double *volume = m_pPelletData->m_vVolume;
+        double LFy,LFz,d_vy,d_vz;
+	    double MagneticField=10.0;//placeholder
+
+        size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
+        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum() + m_pPelletData->getInflowNum();
+
+//      #ifdef _OPENMP
+//      #pragma omp parallel for
+//      #endif
+        for(size_t index=fluidStartIndex; index<fluidEndIndex; index++){
+        	double vy=velocityV[index];
+		double vz=velocityW[index];
+		double density = 1./volume[index];
+		double press = pressure[index];
+
+        	double T = m_pEOS->getTemperature(press,density);	
+        	double sc = m_pEOS->getSoundSpeed(press,density);
+		double cond = m_pEOS->getElectricConductivity(press,density);
+		double rad_cool = neon_radiation_power_density(density,T);
+
+		LFy = -cond*vy*MagneticField*MagneticField/c_light/c_light;
+		LFz = -cond*vz*MagneticField*MagneticField/c_light/c_light;
+		d_vy = LFy*dt*volume[index];
+		d_vz = LFz*dt*volume[index];
+	    
+		//cout<<"T "<<T<<" rad_cool "<<rad_cool<<" Pressure "<<press<< " Density "<<density <<endl;	
+		
+		velocityV[index]= velocityV[index] + d_vy;
+		velocityW[index]= velocityW[index] + d_vz;
+
+		//change in energy term	
+		//press = press + (sc*sc*density/press - 1)*density*(vy*d_vy + vz*d_vz); 
+	 	//cout<<"change in energy term ="<<press<<endl;	
+		
+		//radiation cooling term
+        	pressure[index] = press - (sc*sc*density/press - 1)*rad_cool*dt;
+       
+
+		double radius = sqrt(positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index]);
+ 		if(pressure[index]<0) {
+            		pressure[index] = press;
+            		cout<<"negative pressure index "<<index<<" pressure "<<press<<" position "<<radius<<endl;
+        	}
+        	if(std::isnan(pressure[index]) || std::isinf(pressure[index])) 
+                	cout<<"rad_cool "<<rad_cool<<" pressure "<<press<<" index "<<index<<endl; 
+        	}
+}
+
+
+/*void PelletSolver::updateStatesByLorentzForce( double dt) {
 	if(m_pPelletData->m_iDimension==2)
 		return;
         const double *positionX = m_pPelletData->m_vPositionX;
@@ -161,7 +268,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
                 cout<<"rad_cool "<<rad_cool<<" pressure "<<press<<" index "<<index<<endl; 
         }
 }
-
+*/
 
 double PelletSolver::neon_radiation_power_density(
 	double rho,

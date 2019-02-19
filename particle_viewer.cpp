@@ -772,7 +772,7 @@ if(m_pParticleData->getNumberofPellet()){
                 fprintf(outfile,"SCALARS timetrack int\n");
                 fprintf(outfile,"LOOKUP_TABLE default\n");
                 for(size_t i=startIndex; i<endIndex; i++){
-                    double t = pressure[i]*volume[i]/4.12023/1.160452e4;
+                    double t = temperature[i];
                     if (t>1&&timetrack[i]==0){
                         timetrack[i] = timelabel;
                         fprintf(outfile,"%d\n",timelabel);
@@ -1486,6 +1486,38 @@ if(outputerror){
 #endif
     }
 	if(auxiliaryoutput=="pelletablation"){
+    /*	string coupledquantity  = m_sOutputfileName + rightFlush(writeStep, m_iNumDigits) + ".txt";
+	    FILE *outfile;
+	    outfile = fopen(coupledquantity.c_str(), "w");
+	    if(outfile==nullptr) {
+		printf("Unable to open file: %s\n",filename.c_str()); 
+		return 1;
+	    }
+        for(size_t i = startIndex; i<endIndex;i++){
+            if(timetrack[i] == timelabel) {
+           
+           double x = positionX[i];
+           double y = positionY[i];
+           double z = positionZ[i];
+           
+           double vx = velocityU[i];
+           double vy = velocityV[i];
+           double vz = velocityW[i];
+           
+
+           double r_cord = sqrt(y*y+z*z);
+           double phi = atan(z/y);
+           double v_phi = vy*(-z)/r_cord + vz*y/r_cord;
+           double v_r = vy*y/r_cord + vz*z/r_cord;
+           double T = temperature[i];
+           double V = volume[i];
+
+            
+            }
+        
+        } 
+
+*/
         string mfrfilename = m_sOutputfileName + "_massflowrate.txt";
         FILE *mfroutfile;
         if(writeStep>0)
