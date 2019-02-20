@@ -124,8 +124,7 @@ void PelletSolver::cleanBadStates(){
                double speed = vU[i]*vU[i]+vV[i]*vV[i]+vW[i]*vW[i];
                double sound = soundSpeed[i]*soundSpeed[i]; 
                double temperature_min = temperature[i]; 
-               if (pressure[i] < 1.e-7 || pressure[i] > 60.0 || 1./volume[i] < 1.e-9 || 1./volume[i] > 1.4 ||
-                    temperature_min > 3 ){
+               if (pressure[i] < 1.e-7 || pressure[i] > 60.0 || 1./volume[i] < 1.e-9 || 1./volume[i] > 1.4 ){
                  
                                   if(i+1<fluidEndIndex)
                         {
