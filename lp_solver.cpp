@@ -243,7 +243,7 @@ resetLPFOrder();
 // to determine the dt for next step
 computeTemperature();
 if(m_pParticleData->m_iNumberofPellet){
-m_pPelletSolver->cleanBadStates();
+//m_pPelletSolver->cleanBadStates();
 }
 computeMinParticleSpacing();
 computeMaxSoundSpeed();
@@ -3082,6 +3082,8 @@ m_fMinCFL = mincfl[0];
 
 assert(m_fMinCFL != -1);
 m_fMinCFL =sqrt(m_fMinCFL);
+if(m_fMinCFL<2e-5)
+    m_fMinCFL = 2e-5;
 cout<<"m_fMinCFL = "<<m_fMinCFL<<endl;
 }
 
