@@ -1486,7 +1486,7 @@ if(outputerror){
 #endif
     }
 	if(auxiliaryoutput=="pelletablation"){
-    /*	string coupledquantity  = m_sOutputfileName + rightFlush(writeStep, m_iNumDigits) + ".txt";
+    	string coupledquantity  = m_sOutputfileName + "_test_" + rightFlush(writeStep, m_iNumDigits) + ".txt";
 	    FILE *outfile;
 	    outfile = fopen(coupledquantity.c_str(), "w");
 	    if(outfile==nullptr) {
@@ -1494,7 +1494,6 @@ if(outputerror){
 		return 1;
 	    }
         for(size_t i = startIndex; i<endIndex;i++){
-            if(timetrack[i] == timelabel) {
            
            double x = positionX[i];
            double y = positionY[i];
@@ -1511,13 +1510,13 @@ if(outputerror){
            double v_r = vy*y/r_cord + vz*z/r_cord;
            double T = temperature[i];
            double V = volume[i];
-
-            
-            }
+           double P = pressure[i];
+          
+           fprintf(outfile,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",r_cord,phi,x,v_r,v_phi,vx,T,V,P,1./V );
         
         } 
 
-*/
+
         string mfrfilename = m_sOutputfileName + "_massflowrate.txt";
         FILE *mfroutfile;
         if(writeStep>0)
