@@ -193,11 +193,7 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 	double startTime;
 
 	startTime = omp_get_wtime();
-    cout<<"first check"<<endl;
-        checkInvalid();
 	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
-        cout<<"second check"<<endl;
-        checkInvalid();
 	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
 	if(m_iSolidBoundary || m_iPeriodicBoundary) 
@@ -242,9 +238,7 @@ resetLPFOrder();
 
 // to determine the dt for next step
 computeTemperature();
-if(m_pParticleData->m_iNumberofPellet){
-//m_pPelletSolver->cleanBadStates();
-}
+
 computeMinParticleSpacing();
 computeMaxSoundSpeed();
 computeMaxFluidVelocity();
@@ -306,14 +300,14 @@ if(!phase_success) {
 	return 1;
 }
 updateFluidState();
-cout<<"zero check"<<endl;
-checkInvalid();
 
 if(m_iFixParticles==0)
 	moveFluidParticle();
 //moveFluidParticleAdjusted();
 updateFluidVelocity();	
-
+if(m_pParticleData->m_iNumberofPellet){
+    m_pPelletSolver->cleanBadStates();
+}
 computeSetupsForNextIteration();
 m_fTotalTime+=omp_get_wtime() - currentstepstartTime;
 m_iCount++;
@@ -3082,8 +3076,8 @@ m_fMinCFL = mincfl[0];
 
 assert(m_fMinCFL != -1);
 m_fMinCFL =sqrt(m_fMinCFL);
-if(m_fMinCFL<2e-5)
-    m_fMinCFL = 2e-5;
+    if(m_fMinCFL<1e-5)
+        m_fMinCFL = 1e-5;
 cout<<"m_fMinCFL = "<<m_fMinCFL<<endl;
 }
 

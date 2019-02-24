@@ -120,15 +120,19 @@ void PelletSolver::cleanBadStates(){
         int* timetrack = m_pPelletData->m_vTimeTrack;
 
         int numberofBadParticles = 0;
+        
+               int swaptime=0;
+        cout<<"fluid number = "<<fluidEndIndex<<endl;
         for(size_t i = fluidStartIndex; i<fluidEndIndex; i++){
                double speed = vU[i]*vU[i]+vV[i]*vV[i]+vW[i]*vW[i];
                double sound = soundSpeed[i]*soundSpeed[i]; 
-               double temperature_min = temperature[i]; 
+               double temperature_min = temperature[i];
                if (pressure[i] < 1.e-7 || pressure[i] > 60.0 || 1./volume[i] < 1.e-9 || 1./volume[i] > 1.4 ){
                  
                                   if(i+1<fluidEndIndex)
-                        {
-                                m_pPelletData->swap(1,fluidEndIndex-1);
+                        {       
+                                swaptime++;
+                                m_pPelletData->swap(i,fluidEndIndex-1);
                           }
                         if(fluidEndIndex<inflowEndIndex)
                         {
@@ -143,13 +147,16 @@ void PelletSolver::cleanBadStates(){
 
         
         }
+       
         m_pPelletData->m_iFluidNum=fluidEndIndex-fluidStartIndex;
+       cout<<"fluid number after deletion = "<<m_pPelletData->m_iFluidNum<<endl;
         m_pPelletData->m_iBoundaryStartIndex=fluidEndIndex;
         m_pPelletData->m_iGhostStartIndex=inflowEndIndex;
         m_pPelletData->m_iTotalNum=inflowEndIndex-fluidStartIndex;
         if(numberofBadParticles){
             printf("%d bad states fluid particles have been deleted.\n",numberofBadParticles);
-        }
+            cout<<"swap time = "<<swaptime<<endl;
+       }
 
 }
 void PelletSolver::updateStatesByLorentzForce( double dt) {
@@ -167,7 +174,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 	    double MagneticField=10.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum() + m_pPelletData->getInflowNum();
+        size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
 
 //      #ifdef _OPENMP
 //      #pragma omp parallel for
@@ -198,11 +205,13 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 	 	//cout<<"change in energy term ="<<press<<endl;	
 		
 		//radiation cooling term
-        	pressure[index] = press - (sc*sc*density/press - 1)*rad_cool*dt;
+        if(press > 60) cout<<"pressure > 60"<<endl;
+        pressure[index] = press - (sc*sc*density/press - 1)*rad_cool*dt;
        
 
 		double radius = sqrt(positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index]);
- 		if(pressure[index]<0) {
+ 	
+        if(pressure[index]<0) {
             		pressure[index] = press;
             		cout<<"negative pressure index "<<index<<" pressure "<<press<<" position "<<radius<<endl;
         	}

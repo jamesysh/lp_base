@@ -1486,6 +1486,12 @@ if(outputerror){
 #endif
     }
 	if(auxiliaryoutput=="pelletablation"){
+        
+       /* double E = 0;
+        for(size_t i = startIndex; i<endIndex;i++){
+           double e = m_fDt*mass[i]*volume[i]*Deltaq[i];
+           E += e;
+        }*/
     	string coupledquantity  = m_sOutputfileName + "_test_" + rightFlush(writeStep, m_iNumDigits) + ".txt";
 	    FILE *outfile;
 	    outfile = fopen(coupledquantity.c_str(), "w");
@@ -1512,7 +1518,7 @@ if(outputerror){
            double V = volume[i];
            double P = pressure[i];
           
-           fprintf(outfile,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",r_cord,phi,x,v_r,v_phi,vx,T,V,P,1./V );
+           fprintf(outfile,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",r_cord,phi,x,v_r,v_phi,vx,T,V,P,1./V);
         
         } 
 
