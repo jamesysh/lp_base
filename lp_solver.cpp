@@ -306,7 +306,7 @@ if(m_iFixParticles==0)
 //moveFluidParticleAdjusted();
 updateFluidVelocity();	
 if(m_pParticleData->m_iNumberofPellet){
-    m_pPelletSolver->cleanBadStates();
+//    m_pPelletSolver->cleanBadStates();
 }
 computeSetupsForNextIteration();
 m_fTotalTime+=omp_get_wtime() - currentstepstartTime;
@@ -3076,8 +3076,6 @@ m_fMinCFL = mincfl[0];
 
 assert(m_fMinCFL != -1);
 m_fMinCFL =sqrt(m_fMinCFL);
-    if(m_fMinCFL<1e-5)
-        m_fMinCFL = 1e-5;
 cout<<"m_fMinCFL = "<<m_fMinCFL<<endl;
 }
 

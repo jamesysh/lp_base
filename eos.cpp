@@ -142,7 +142,7 @@ void  SahaEOS::getParameters(std::vector<double>& params)
   printf("ENTERED  SahaEOS::getParameters \n");
   char* buffer;
   buffer = getcwd(NULL,0);
-  string sub_dir = "/tables_500_grd_st_is_1/";
+  string sub_dir = "/tables_1000/";
   string main_dir(buffer);
   string dir = main_dir+sub_dir;
   
