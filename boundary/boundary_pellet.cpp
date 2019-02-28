@@ -34,7 +34,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         double *mass = m_pParticleData->m_vMass;
         double *sound = m_pParticleData->m_vSoundSpeed;
         double *deltaq = m_pParticleData->m_vDeltaq;
-	double m_fGamma = 1.667;
+	double m_fGamma = 1.67;
     double masse = m_pParticleData->masse;
 	double massNe = m_pParticleData->massNe;
 	double teinf = m_pParticleData->teinf;
@@ -71,7 +71,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
     double R = 83.1446/20.1797;
     double Ts = Vinflow*Pinflow/R;
 
-    double gamma0 = 1.667;
+    double gamma0 = 1.67;
     for(int pi=0;pi<pelletn;pi++){
         if(!pelletstate[pi]) 
             continue;

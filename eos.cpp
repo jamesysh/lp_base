@@ -134,15 +134,19 @@ double  StiffPolytropicGasEOS::getTemperature(double pressure, double density) {
 void  SahaEOS::getParameters(std::vector<double>& params)
 {
   FILE *fp_rho, *fp_pres, *fp_sound_speed, *fp_temperature, *fp_conductivity;
-  int dim = 500;
-  double rho[dim], pres[dim], sound_speed[dim*dim], temperature[dim*dim],  conductivity[dim*dim];
+  int dim = 1000;
+  double* rho = new double[dim];
+  double* pres = new double[dim];
+  double* sound_speed = new double[dim*dim];
+  double* temperature = new double[dim*dim];
+  double* conductivity = new double[dim*dim];
   double rho_entry, pres_entry, sc_entry, t_entry, cond_entry;
   int i,j;
 
   printf("ENTERED  SahaEOS::getParameters \n");
   char* buffer;
   buffer = getcwd(NULL,0);
-  string sub_dir = "/tables_500_grd_st_is_1/";
+  string sub_dir = "/tables_1000/";
   string main_dir(buffer);
   string dir = main_dir+sub_dir;
   
@@ -198,6 +202,11 @@ void  SahaEOS::getParameters(std::vector<double>& params)
   gsl_spline2d_init(spline_sound_speed, rho, pres, sound_speed, dim, dim);
   gsl_spline2d_init(spline_temperature, rho, pres, temperature, dim, dim);
   gsl_spline2d_init(spline_conductivity, rho, pres, conductivity, dim, dim);
+  delete[] rho;
+  delete[] pres;
+  delete[] sound_speed;
+  delete[] temperature;
+  delete[] conductivity;
 }
 
 
@@ -214,7 +223,7 @@ double SahaEOS::getSoundSpeed(double pressure, double density) {
   static gsl_interp_accel *presacc = gsl_interp_accel_alloc();
   double sc;
 
-  if (pressure < 1.e-7 || pressure > 60.0 || density < 1.e-9 || density > 1.4)
+  if (pressure < 1.e-10 || pressure > 200.0 || density < 1.e-12 || density > 2)
     sc = sqrt(1.67*pressure/density);
   else
     sc =  gsl_spline2d_eval(spline_sound_speed, density, pressure, densacc, presacc);
@@ -229,7 +238,7 @@ double SahaEOS::getElectricConductivity(double pressure, double density) {
   static gsl_interp_accel *presacc = gsl_interp_accel_alloc();
   double cond;
 
-   if (pressure < 1.e-7 || pressure > 60.0 || density < 1.e-9 || density > 1.4)
+   if (pressure < 1.e-10 || pressure > 200.0 || density < 1.e-12 || density > 2)
       cond = 0.0;
     else
     cond =  gsl_spline2d_eval(spline_conductivity, density, pressure, densacc, presacc);
@@ -244,13 +253,41 @@ double SahaEOS::getTemperature(double pressure, double density) {
   double mu = 20.18;
   double R = 83.14;
   
-   if (pressure < 1.e-7 || pressure > 60.0 || density < 1.e-9 || density > 1.4)
+   if (pressure < 1.e-10 || pressure > 200.0 || density < 1.e-12 || density > 2)
       T = mu*pressure/(R*density)/11604.525;
     else
     T =  gsl_spline2d_eval(spline_temperature, density, pressure, densacc, presacc);
  
   return T;
 }
+void SahaEOS::diagnosis(double rho0, double rho1, double p0, double p1){
+    
+    int rho_n = 5; 
+    double rho_offset = (rho1-rho0)/(rho_n-1);
+    int p_n = 20000;
+    double p_offset = (p1-p0)/(p_n-1);
+    for(int rho_i = 0; rho_i<rho_n; rho_i++){
+          string PT = "pres_temp_"+to_string(rho0+rho_i*rho_offset)+".txt";
+           FILE * file1 = fopen(PT.c_str(),"w");
+  
+          string CT = "cond_temp_"+to_string(rho0+rho_i*rho_offset)+".txt";
+          FILE* file2 = fopen(CT.c_str(),"w");
+
+        for(int p_i = 0; p_i<p_n; p_i++){
+
+            double temp = getTemperature(p0+p_i*p_offset,rho0+rho_i*rho_offset); 
+            fprintf(file1, "%.16g %.16g\n", p0+p_i*p_offset,temp);
+            double conductivity = getElectricConductivity(p0+p_i*p_offset,rho0+rho_i*rho_offset);
+            fprintf(file2, "%.16g %.16g\n",conductivity,temp);
+            }
+        fclose(file1);
+        fclose(file2);
+        
+        }
+
+    
+    }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // End of SahaEOS

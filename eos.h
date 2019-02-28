@@ -26,6 +26,7 @@ public:
  	virtual double getTemperature(double pressure, double density) = 0;
       	virtual double getSoundSpeed(double pressure, double density) = 0;
 	virtual double getElectricConductivity(double pressure, double density) = 0;
+    virtual void diagnosis(double rho0, double rho1, double t0, double t1) = 0;
 };
 
 
@@ -44,6 +45,8 @@ public:
 	virtual double getTemperature(double pressure, double density);
 	virtual double getSoundSpeed(double pressure, double density);
 	virtual double getElectricConductivity(double pressure, double density);
+    virtual void diagnosis(double rho0, double rho1, double t0, double t1){};
+
 };
 
 
@@ -71,6 +74,8 @@ public:
 	virtual double getTemperature(double pressure, double density);
 	virtual double getSoundSpeed(double pressure, double density);
 	virtual double getElectricConductivity(double pressure, double density);
+     virtual void diagnosis(double rho0, double rho1, double t0, double t1){};
+
 };
 
 
@@ -91,6 +96,8 @@ public:
 	virtual double getTemperature(double pressure, double density);
 	virtual double getSoundSpeed(double pressure, double density);
 	virtual double getElectricConductivity(double pressure, double density);
+    virtual void diagnosis(double rho0, double rho1, double p0, double p1);
+
 };
 
 

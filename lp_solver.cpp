@@ -193,11 +193,7 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 	double startTime;
 
 	startTime = omp_get_wtime();
-    cout<<"first check"<<endl;
-        checkInvalid();
 	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
-        cout<<"second check"<<endl;
-        checkInvalid();
 	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
 	if(m_iSolidBoundary || m_iPeriodicBoundary) 
@@ -243,7 +239,7 @@ resetLPFOrder();
 // to determine the dt for next step
 computeTemperature();
 if(m_pParticleData->m_iNumberofPellet){
-m_pPelletSolver->cleanBadStates();
+//m_pPelletSolver->cleanBadStates();
 }
 computeMinParticleSpacing();
 computeMaxSoundSpeed();
@@ -925,41 +921,6 @@ void HyperbolicLPSolver::calculateHeatDeposition() {
 
 }
 
-void HyperbolicLPSolver::updateStatesByLorentzForce() {
-	if(m_iDimension==2)
-		return;
-        const double *positionX = m_pParticleData->m_vPositionX;
-        const double *positionY = m_pParticleData->m_vPositionY;
-        const double *positionZ = m_pParticleData->m_vPositionZ;	
-        double *velocityU = m_pParticleData->m_vVelocityU;
-        double *velocityV = m_pParticleData->m_vVelocityV;
-        double *velocityW = m_pParticleData->m_vVelocityW;
-
-	double Magneticfield=10.0;//placeholder
-
-        size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();// + m_pParticleData->getInflowNum();
-
-//      #ifdef _OPENMP
-//      #pragma omp parallel for
-//      #endif
-        for(size_t index=fluidStartIndex; index<fluidEndIndex; index++){
-		double y=positionY[index];
-		double z=positionZ[index];
-		double vy=velocityV[index];
-		double vz=velocityW[index];
-		double r=sqrt(y*y+z*z);
-		if(r==0)
-			continue;
-		double vradial=vy*y/r+vz*z/r;
-		double vtheta=vy*(-z)/r+vz*y/r;
-
-		vradial=vradial+m_fDt*Magneticfield*vtheta;
-
-		velocityV[index]=vradial*y/r+vtheta*(-z)/r;
-		velocityW[index]=vradial*z/r+vtheta*y/r;
-	}
-}
 
 
 void HyperbolicLPSolver::SPHDensityEstimatorForFluidParticle(int choice) {
@@ -3044,7 +3005,7 @@ const double* soundSpeed = m_pParticleData->m_vSoundSpeed;
 m_fMinCFL = -1;
 
 size_t startIndex = m_pParticleData->getFluidStartIndex();
-size_t endIndex = startIndex + m_pParticleData->getFluidNum() + m_pParticleData->getInflowNum();
+size_t endIndex = startIndex + m_pParticleData->getFluidNum();
 #ifdef _OPENMP
 size_t numThreads = min(omp_get_max_threads(), m_iNumThreads);
 vector<double> mincfl(numThreads,-1);
@@ -3062,8 +3023,8 @@ for(size_t index=startIndex; index<endIndex; index++) {
     double speed = vU[index]*vU[index]+vV[index]*vV[index];
 	if(m_iDimension==3)
 		speed+=vW[index]*vW[index];
-	double cfl=dx*dx/max(sound*sound,speed);
-//    double cfl = dx*dx/sound/sound;
+//	double cfl=dx*dx/max(sound*sound,speed);
+    double cfl = dx*dx/sound/sound;
     #ifdef _OPENMP
 		if(cfl<mincfl[tid] || mincfl[tid]<0)
 			mincfl[tid]=cfl;
@@ -3405,8 +3366,6 @@ for(size_t index=startIndex; index<endIndex; index++) {
              //       cout<<"invalid p "<<"sc "<<m_pParticleData->m_vSoundSpeed[index]<<" pressure "<<m_pParticleData->m_vPressure[index]<<" volume "<<m_pParticleData->m_vVolume[index]<<endl;
                       // if(index == fluidEndIndex-1)
                         double gamma = m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]);
-                        if (gamma -1.667>0.1)
-                            cout<<"warning wrong gamma"<<endl;
                    //outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
                 }
 			}
