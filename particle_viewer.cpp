@@ -1486,7 +1486,7 @@ if(outputerror){
 #endif
     }
 	if(auxiliaryoutput=="pelletablation"){
-/*
+
         string coupledquantity  = m_sOutputfileName + "_cloud_" + rightFlush(writeStep, m_iNumDigits) + ".txt";
 	    FILE *outfile;
 	    outfile = fopen(coupledquantity.c_str(), "w");
@@ -1502,14 +1502,14 @@ if(outputerror){
            double y = positionY[i];
            double z = positionZ[i];
            
-           double vx = velocityU[i]*10e3;
-           double vy = velocityV[i]*10e3;
-           double vz = velocityW[i]*10e3;
+           double vx = velocityU[i]*1e3;
+           double vy = velocityV[i]*1e3;
+           double vz = velocityW[i]*1e3;
            
 
            double V = volume[i];
-           double P = pressure[i]*10e6;
-           double dq = Deltaq[i]*10e9; 
+           double P = pressure[i]*1e6;
+           double dq = Deltaq[i]*1e9; 
            fprintf(outfile,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",y,z,x,vy,vz,vx,T,1./V,P,dq);
         
         } 
@@ -1532,20 +1532,20 @@ if(outputerror){
            double y = positionY[i];
            double z = positionZ[i];
            
-           double vx = velocityU[i]*10e3;
-           double vy = velocityV[i]*10e3;
-           double vz = velocityW[i]*10e3;
+           double vx = velocityU[i]*1e3;
+           double vy = velocityV[i]*1e3;
+           double vz = velocityW[i]*1e3;
            
 
            double V = volume[i];
-           double P = pressure[i]*10e6;
-           double dq = Deltaq[i]*10e9; 
+           double P = pressure[i]*1e6;
+           double dq = Deltaq[i]*1e9; 
            fprintf(outfile1,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",y,z,x,vy,vz,vx,T,1./V,P,dq);
         
         } 
         fclose(outfile1);
 
-*/
+
         string mfrfilename = m_sOutputfileName + "_massflowrate.txt";
         FILE *mfroutfile;
         if(writeStep>0)
