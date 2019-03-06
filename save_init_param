@@ -17,7 +17,7 @@ m_vBoundaryObjectTypes2 free
 m_iRandomDirSplitOrder 1
 m_iLPFOrder 1
 m_iEOSChoice 3
-m_fGamma 1.667
+m_fGamma 1.67
 m_fPinf 0
 m_fEinf 0
 m_fInitParticleSpacing 0.01
