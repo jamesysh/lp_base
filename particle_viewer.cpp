@@ -554,9 +554,9 @@ int VTKParticleViewer::writeResult(double time, size_t writeStep) {
     
     int* timetrack = m_pParticleData->getTimeTrack();
 
+	const double* phi = m_pParticleData->getPhi();
 #ifdef LW_DEBUG        
         
-//	const double* phi = m_pParticleData->getPhi();
         const double* perror0 = m_pParticleData->getPError0();
         const double* perror1 = m_pParticleData->getPError1();
         const double* velerror0 = m_pParticleData->getVelError0();
@@ -1509,8 +1509,9 @@ if(outputerror){
 
            double V = volume[i];
            double P = pressure[i]*1e6;
-           double dq = Deltaq[i]*1e9; 
-           fprintf(outfile,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",y,z,x,vy,vz,vx,T,1./V,P,dq);
+           double dq = Deltaq[i]*1e9;
+           double rad = phi[i];
+           fprintf(outfile,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",y,z,x,vy,vz,vx,T,1./V,P,dq,rad);
         
         } 
         fclose(outfile);
@@ -1540,7 +1541,8 @@ if(outputerror){
            double V = volume[i];
            double P = pressure[i]*1e6;
            double dq = Deltaq[i]*1e9; 
-           fprintf(outfile1,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",y,z,x,vy,vz,vx,T,1./V,P,dq);
+           double rad = phi[i];
+           fprintf(outfile1,"%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",y,z,x,vy,vz,vx,T,1./V,P,dq,rad);
         
         } 
         fclose(outfile1);

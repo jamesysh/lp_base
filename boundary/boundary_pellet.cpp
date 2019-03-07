@@ -163,7 +163,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 
 }
 
-PelletOutflowBoundary::PelletOutflowBoundary():xmin(-40),xmax(40),ymin(-40),ymax(40),zmin(-40),zmax(40) {
+PelletOutflowBoundary::PelletOutflowBoundary():xmin(-40),xmax(40),ymin(-16),ymax(16),zmin(-16),zmax(16) {
 }
 
 int PelletOutflowBoundary::UpdateInflowBoundary(ParticleData *m_pParticleData, EOS* m_pEOS, double dt, double dx) {

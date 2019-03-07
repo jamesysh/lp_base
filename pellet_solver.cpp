@@ -54,6 +54,30 @@ void PelletSolver::calculateHeatDeposition( double dt) {
         else
           k_warmup = time/0.01;
 
+        static bool FIRST=true;                                                                              
+        static double one_plus_Zstar;                                                                        
+        static std::map<double, double> map_one_plus_Zstar;                                                     
+                                                                                                             
+        if (FIRST)                                                                                           
+	  {                                                                                                    
+	    map_one_plus_Zstar[1000] = 4.93908;                                                               
+	    map_one_plus_Zstar[2000] = 4.92710;                                                               
+	    map_one_plus_Zstar[3000] = 4.93727;                                                               
+	    map_one_plus_Zstar[4000] = 4.94743;                                                               
+	    map_one_plus_Zstar[6000] = 4.96337;                                                               
+	    map_one_plus_Zstar[8000] = 4.97493;                                                               
+	    map_one_plus_Zstar[10000] = 4.98376;                                                              
+                                                                                                             
+	    one_plus_Zstar = map_one_plus_Zstar[teinf];                                          
+        cout<<"one plus zstar = "<<one_plus_Zstar<<endl;                                                                                                     
+	    if (floor(one_plus_Zstar) != 4)                                                                   
+	      printf("in %s, line %d, function %s: error in map initialization of 1+Z*\n", __FILE__,__LINE__,\
+		     __PRETTY_FUNCTION__);                                                                                        
+                                                                                                             
+	    FIRST = false;                                                                                    
+	  }                             
+
+
 
 //        #ifdef _OPENMP
 //        #pragma omp parallel for
@@ -62,7 +86,7 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 		double tauleft = leftintegral[index]/massNe*ZNe;
 		double tauright = rightintegral[index]/massNe*ZNe;
 		double tauinf = heatK*heatK*teinf*teinf/(8.0*3.1416*e*e*e*e*lnLambda);
-		double taueff = tauinf*sqrt(2.0/(1.0+ZNe));
+		double taueff = tauinf*sqrt(2/(1+ZNe));//tauinf/(0.625+0.55*sqrt(one_plus_Zstar));
 		double uleft = tauleft/taueff;
 		double uright = tauright/taueff;
 		double qinf=sqrt(2.0/3.1416/masse)*neinf*pow(heatK*teinf,1.5);
@@ -163,8 +187,10 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
         double *velocityW = m_pPelletData->m_vVelocityW;
         double *pressure = m_pPelletData->m_vPressure;
         double *volume = m_pPelletData->m_vVolume;
+
+        double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
-	    double MagneticField=10.0;//placeholder
+	    double MagneticField=20.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
@@ -182,7 +208,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
         	double sc = m_pEOS->getSoundSpeed(press,density);
 		double cond = m_pEOS->getElectricConductivity(press,density);
 		double rad_cool = neon_radiation_power_density(density,T);
-
+        phi[index] = rad_cool*1.e9;
 		LFy = -cond*vy*MagneticField*MagneticField/c_light/c_light;
 		LFz = -cond*vz*MagneticField*MagneticField/c_light/c_light;
 		d_vy = LFy*dt*volume[index];
@@ -274,7 +300,7 @@ double PelletSolver::neon_radiation_power_density(
 	double rho,
 	double T)
 {
-        double temp,Tl,Tr,Z,Zl,Zr,L,Ll,Lr,k,n_rho;
+    double temp,Tl,Tr,Z,Zl,Zr,L,Ll,Lr,k,n_rho;
 	int j;
 	// radiation power density = n^2 * Z * L * 1.e-15 [W/cm^3]
 

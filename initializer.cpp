@@ -2003,7 +2003,7 @@ void Initializer::setPelletQuantity(){
         masse=9.109e-28;
         massNe=3.35e-23;
         teinf=2000;//kev
-       	INe=137;//kev
+       	INe=135.5;//kev
         ZNe=10;
         neinf=1.682e+13;
         heatK=1.602e-18;//eVu
