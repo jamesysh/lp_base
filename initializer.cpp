@@ -2005,7 +2005,7 @@ void Initializer::setPelletQuantity(){
         teinf=2000;//kev
        	INe=135.5;//kev
         ZNe=10;
-        neinf=1.682e+13;
+        neinf=1.204910e+13;
         heatK=1.602e-18;//eVu
         conductivity=0;
         sublimationenergy=1363;

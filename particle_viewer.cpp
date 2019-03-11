@@ -1486,7 +1486,7 @@ if(outputerror){
 #endif
     }
 	if(auxiliaryoutput=="pelletablation"){
-
+/*
         string coupledquantity  = m_sOutputfileName + "_cloud_" + rightFlush(writeStep, m_iNumDigits) + ".txt";
 	    FILE *outfile;
 	    outfile = fopen(coupledquantity.c_str(), "w");
@@ -1547,7 +1547,7 @@ if(outputerror){
         } 
         fclose(outfile1);
 
-
+*/
         string mfrfilename = m_sOutputfileName + "_massflowrate.txt";
         FILE *mfroutfile;
         if(writeStep>0)

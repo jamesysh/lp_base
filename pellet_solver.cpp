@@ -86,7 +86,7 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 		double tauleft = leftintegral[index]/massNe*ZNe;
 		double tauright = rightintegral[index]/massNe*ZNe;
 		double tauinf = heatK*heatK*teinf*teinf/(8.0*3.1416*e*e*e*e*lnLambda);
-		double taueff = tauinf*sqrt(2/(1+ZNe));//tauinf/(0.625+0.55*sqrt(one_plus_Zstar));
+		double taueff = tauinf/(0.625+0.55*sqrt(one_plus_Zstar)); //tauinf*sqrt(2./(1.+ZNe));//tauinf/(0.625+0.55*sqrt(one_plus_Zstar));
 		double uleft = tauleft/taueff;
 		double uright = tauright/taueff;
 		double qinf=sqrt(2.0/3.1416/masse)*neinf*pow(heatK*teinf,1.5);
@@ -190,7 +190,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 
         double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
-	    double MagneticField=20.0;//placeholder
+	    double MagneticField=40.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
