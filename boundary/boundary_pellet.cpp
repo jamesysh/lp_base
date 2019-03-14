@@ -149,7 +149,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	
         double oldv=sqrt(vx[index]*vx[index]+vy[index]*vy[index]+vz[index]*vz[index]);
 		double newv=pelletvelocity[pelletid[index]];
-		 volumeold[index] = volume[index]=volumeOnBoundary[pi]*dr*dr/pr/pr;
+		 volumeold[index] = volume[index]=volumeOnBoundary[pi];//*dr*dr/pr/pr;
          pressure[index] = Ts*R/volume[index];
          localParSpacing[index]=dx;
 		 mass[index]=dx*dx*dx/Vinflow/sqrt(2);
