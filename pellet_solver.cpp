@@ -190,7 +190,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 
         double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
-	    double MagneticField=40.0;//placeholder
+	    double MagneticField=60.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();

@@ -2,14 +2,15 @@ CC     = g++
 DEBUG  = -g
 OMP    = -fopenmp
 #OMP =
-LAPACK_DIR=/gpfs/home/shyyuan/local/lapack-3.8.0
-GSL_DIR=/home/syuan/local/gsl2.5/include/
+LAPACK_DIR=/home/shaohua/local/lapack-3.8.0
+GSL_DIR=/home/shaohua/local/gsl2.5/include/
+GSL_LIB=/home/shaohua/local/gsl2.5/lib/
 MAIN_DIR:=${CURDIR}
 BOUNDARY_DIR=$(MAIN_DIR)/boundary/
 STATE_DIR=$(MAIN_DIR)/state/
 GEOMETRY_DIR=$(MAIN_DIR)/geometry/
 INCS   = -I $(BOUNDARY_DIR) -I $(STATE_DIR) -I $(GEOMETRY_DIR) -I $(MAIN_DIR) -I $(GSL_DIR)
-LIBS   = -L $(LAPACK_DIR) 
+LIBS   = -L $(LAPACK_DIR) -L $(GSL_LIB) 
 CFLAGS = -Wall -c -std=c++11 $(DEBUG) $(OMP) $(INCS)
 LFLAGS = -Wall  $(DEBUG) $(INCS) $(LIBS) $(OMP)
 vpath %.h $(GEOMETRY_DIR) $(STATE_DIR) $(BOUNDARY_DIR)

@@ -1572,7 +1572,7 @@ if(outputerror){
 
 	fprintf(mfroutfile,"%.16g ",time);
 
-	r=1;
+	r=5;
 	dis=10;
 
 	for(int k=0;k<NumberofPellet;k++)
