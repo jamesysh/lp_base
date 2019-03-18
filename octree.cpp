@@ -741,7 +741,8 @@ void Octree::computeIntegralQuadtree(const double* mass, double* left_integral, 
 
 
    while(!integral_queue.empty())
-   {
+   {   
+
        int i = integral_queue.front();
        integral_queue.pop();
        int inode = old_index[i], l = level[i];
