@@ -46,7 +46,7 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 
 
 	double k_warmup;
-        static double time;
+     static double time = 0;
 
         time += dt;
 

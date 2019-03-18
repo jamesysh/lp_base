@@ -65,6 +65,20 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
     double R = 83.1446/20.1797;
     double Ts = Vinflow*Pinflow/R;
 
+    double k_warmup;
+    static double time = 0;
+
+        time += dt;
+
+        if (time > 0.01)
+          k_warmup = 1.0;
+        else
+          k_warmup = time/0.01;
+
+                                                                                                             
+
+
+
     double gamma0 = 1.67;
 
 
@@ -127,12 +141,16 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
                 double uleft = tauleft/taueff;
                 double uright = tauright/taueff;
                 double qinf=sqrt(2.0/M_PI/masse)*neinf*pow(heatK*teinf,1.5);
-    
-                if(d_x>0)
-				    pelletqsum[pi] += qinf*0.5*uright*Bessel_Kn(2,sqrt(uright));
+        
+                if(abs(d_y)>pr || abs(d_z)>pr)
+
+                    pelletqsum[pi] += qplusminus[index];
+
+                else if(d_x>0)
+				    pelletqsum[pi] += qinf*0.5*uright*Bessel_Kn(2,sqrt(uright))*k_warmup;
                 
                 else
-                    pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
+                    pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
          
                // pelletqsum[pi]+=qplusminus[index];
 				pelletneighbor[pi]++;
