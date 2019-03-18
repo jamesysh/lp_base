@@ -190,7 +190,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 
         double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
-	    double MagneticField=60.0;//placeholder
+	    double MagneticField=20.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
@@ -199,32 +199,36 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 //      #pragma omp parallel for
 //      #endif
         for(size_t index=fluidStartIndex; index<fluidEndIndex; index++){
-        	double vy=velocityV[index];
+        	double vx = velocityU[index];
+		double vy=velocityV[index];
 		double vz=velocityW[index];
 		double density = 1./volume[index];
 		double press = pressure[index];
 
-        	double T = m_pEOS->getTemperature(press,density);	
         	double sc = m_pEOS->getSoundSpeed(press,density);
 		double cond = m_pEOS->getElectricConductivity(press,density);
-		double rad_cool = neon_radiation_power_density(density,T);
-        phi[index] = rad_cool*1.e9;
 		LFy = -cond*vy*MagneticField*MagneticField/c_light/c_light;
 		LFz = -cond*vz*MagneticField*MagneticField/c_light/c_light;
 		d_vy = LFy*dt*volume[index];
 		d_vz = LFz*dt*volume[index];
 	    
 		//cout<<"T "<<T<<" rad_cool "<<rad_cool<<" Pressure "<<press<< " Density "<<density <<endl;	
-		
+	
 		velocityV[index]= velocityV[index] + d_vy;
 		velocityW[index]= velocityW[index] + d_vz;
 
+		double delta_E = 0.5*density*((vx*vx + velocityV[index]*velocityV[index] + velocityW[index]*velocityW[index]) - (vx*vx+vy*vy+vz*vz));
+
 		//change in energy term	
-		//press = press + (sc*sc*density/press - 1)*density*(vy*d_vy + vz*d_vz); 
-	 	//cout<<"change in energy term ="<<press<<endl;	
-		
+		//pressure[index] = press + (sc*sc*density/press - 1)*delta_E;     //density*(velocityV[index]*d_vy + velocityW[index]*d_vz); 
+	
+
+       double T = m_pEOS->getTemperature(press,density);	
+	   double rad_cool = neon_radiation_power_density(density,T);	
+       		phi[index] = rad_cool*1.e9;
+
 		//radiation cooling term
-        	pressure[index] = press - (sc*sc*density/press - 1)*rad_cool*dt;
+       	pressure[index] = press - (sc*sc*density/pressure[index] - 1)*rad_cool*dt;
        
 
 		double radius = sqrt(positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index]);
