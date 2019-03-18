@@ -71,7 +71,8 @@ ParticleData::ParticleData(Initializer& init) {
 	ZNe = init.getZNe();
 	neinf = init.getneinf();
 	heatK = init.getheatK();
-	conductivity = init.getconductivity();
+	one_plus_Zstar = init.getOnePlusZstar();
+    conductivity = init.getconductivity();
 	sublimationenergy = init.getsublimationenergy();
 
     //------------output option control--------------------

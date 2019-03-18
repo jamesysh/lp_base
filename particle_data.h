@@ -296,7 +296,7 @@ public:
 	double getheatK() {return heatK;}
 	double getconductivity() {return conductivity;}
 	double getsublimationenergy() {return sublimationenergy;}
-
+    double getOnePlusZstar() {return one_plus_Zstar;}
     const double* const getPhi() const {return m_vPhi;}
 
 
@@ -502,7 +502,8 @@ private:
 	double heatK;
 	double conductivity;
 	double sublimationenergy;
-	double *m_vMassFlowRate;
+	double one_plus_Zstar;
+    double *m_vMassFlowRate;
 
 
 	double *m_vPhi;//< used by limiter

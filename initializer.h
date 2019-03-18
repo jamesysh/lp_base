@@ -416,7 +416,7 @@ public:
         double getheatK() {return heatK;}
         double getconductivity() {return conductivity;}
         double getsublimationenergy() {return sublimationenergy;}
-
+        double getOnePlusZstar(){return one_plus_Zstar;}
 	
 	
 	/**
@@ -956,6 +956,7 @@ private:
         double INe;
         int ZNe;
         double neinf;
+        double one_plus_Zstar;
         double heatK;
         double conductivity;
         double sublimationenergy;

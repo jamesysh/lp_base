@@ -16,7 +16,7 @@ class PelletSolver {
 	void computeIntegralSpherical();
 	void updateStatesByLorentzForce(double dt);
 
-    void cleanBadStates();
+    void cleanBadStates(); //TO DO
  	double neon_radiation_power_density(double,double);
 
 	double neon_radiation_data(int,int);

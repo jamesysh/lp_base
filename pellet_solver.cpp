@@ -32,7 +32,8 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 	int ZNe = m_pPelletData->ZNe;
 	double neinf = m_pPelletData->neinf;
 	double heatK = m_pPelletData->heatK;
-	double e = heatK*(2.99792458e7)/100;
+	double one_plus_zstar = m_pPelletData->one_plus_Zstar;
+    double e = heatK*(2.99792458e7)/100;
     size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
     size_t ghostStartIndex = fluidStartIndex + m_pPelletData->getGhostStartIndex();
 
@@ -54,28 +55,7 @@ void PelletSolver::calculateHeatDeposition( double dt) {
         else
           k_warmup = time/0.01;
 
-        static bool FIRST=true;                                                                              
-        static double one_plus_Zstar;                                                                        
-        static std::map<double, double> map_one_plus_Zstar;                                                     
                                                                                                              
-        if (FIRST)                                                                                           
-	  {                                                                                                    
-	    map_one_plus_Zstar[1000] = 4.93908;                                                               
-	    map_one_plus_Zstar[2000] = 4.92710;                                                               
-	    map_one_plus_Zstar[3000] = 4.93727;                                                               
-	    map_one_plus_Zstar[4000] = 4.94743;                                                               
-	    map_one_plus_Zstar[6000] = 4.96337;                                                               
-	    map_one_plus_Zstar[8000] = 4.97493;                                                               
-	    map_one_plus_Zstar[10000] = 4.98376;                                                              
-                                                                                                             
-	    one_plus_Zstar = map_one_plus_Zstar[teinf];                                          
-        cout<<"one plus zstar = "<<one_plus_Zstar<<endl;                                                                                                     
-	    if (floor(one_plus_Zstar) != 4)                                                                   
-	      printf("in %s, line %d, function %s: error in map initialization of 1+Z*\n", __FILE__,__LINE__,\
-		     __PRETTY_FUNCTION__);                                                                                        
-                                                                                                             
-	    FIRST = false;                                                                                    
-	  }                             
 
 
 
@@ -86,7 +66,7 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 		double tauleft = leftintegral[index]/massNe*ZNe;
 		double tauright = rightintegral[index]/massNe*ZNe;
 		double tauinf = heatK*heatK*teinf*teinf/(8.0*3.1416*e*e*e*e*lnLambda);
-		double taueff = tauinf/(0.625+0.55*sqrt(one_plus_Zstar)); //tauinf*sqrt(2./(1.+ZNe));//tauinf/(0.625+0.55*sqrt(one_plus_Zstar));
+		double taueff = tauinf/(0.625+0.55*sqrt(one_plus_zstar)); //tauinf*sqrt(2./(1.+ZNe));//tauinf/(0.625+0.55*sqrt(one_plus_Zstar));
 		double uleft = tauleft/taueff;
 		double uright = tauright/taueff;
 		double qinf=sqrt(2.0/3.1416/masse)*neinf*pow(heatK*teinf,1.5);
@@ -188,7 +168,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
         double *pressure = m_pPelletData->m_vPressure;
         double *volume = m_pPelletData->m_vVolume;
 
-        double* phi = m_pPelletData->m_vPhi;
+       // double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
 	    double MagneticField=20.0;//placeholder
 
@@ -225,7 +205,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 
        double T = m_pEOS->getTemperature(press,density);	
 	   double rad_cool = neon_radiation_power_density(density,T);	
-       		phi[index] = rad_cool*1.e9;
+       	//	phi[index] = rad_cool*1.e9;
 
 		//radiation cooling term
        	pressure[index] = press - (sc*sc*density/pressure[index] - 1)*rad_cool*dt;

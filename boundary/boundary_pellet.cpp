@@ -4,6 +4,12 @@
 #include <cassert>
 using namespace std;
 
+float     Bessel_Kn( int n,float  x);
+float     Bessel_I0(float  x);
+float     Bessel_K1(float  x);
+float     Bessel_I1(float  x);
+
+
 PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100){}
 
 double calculateMassFlowRate(double energy){
@@ -27,7 +33,19 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         double *mass = m_pParticleData->m_vMass;
         double *sound = m_pParticleData->m_vSoundSpeed;
         double *m_vmassflowrate = m_pParticleData->m_vMassFlowRate; 
-
+    double masse = m_pParticleData->masse;
+	double massNe = m_pParticleData->massNe;
+	double teinf = m_pParticleData->teinf;
+	double INe = m_pParticleData->INe;
+	int ZNe = m_pParticleData->ZNe;
+	double one_plus_zstar = m_pParticleData->one_plus_Zstar;
+    double neinf = m_pParticleData->neinf;
+	double heatK = m_pParticleData->heatK;
+	double e = heatK*(2.99792458e7)/100;
+    double lnLambda = log(2*teinf/INe*sqrt(exp(1)/2));
+	const double* leftintegral = m_pParticleData->m_vLeftIntegral;
+	const double* rightintegral = m_pParticleData->m_vRightIntegral;
+	
 	int *pelletid = m_pParticleData->m_vPelletID;
 	size_t pelletn = m_pParticleData->m_iNumberofPellet;
 	double *pelletx = m_pParticleData->m_vPelletPositionX;
@@ -39,7 +57,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	double *qplusminus = m_pParticleData->m_vQplusminus;
 	double sublimationenergy = m_pParticleData->sublimationenergy;
 	double *pelletvelocity = m_pParticleData->m_vPelletVelocity;
-	vector<double> pelletqsum(pelletn,0);
+	
+    vector<double> pelletqsum(pelletn,0);
 	vector<int> pelletneighbor(pelletn,0);
     vector<double> volumeOnBoundary(pelletn,0);
     vector<double> pressureOnBoundary(pelletn,0);
@@ -101,7 +120,21 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			double r=d_x*d_x+d_y*d_y+d_z*d_z;
 			if(r<(pr+dx)*(pr+dx) && r>pr*pr)
 			{
-				pelletqsum[pi]+=qplusminus[index];
+                double tauleft = leftintegral[index]/massNe*ZNe;
+                double tauright = rightintegral[index]/massNe*ZNe;
+                double tauinf = heatK*heatK*teinf*teinf/(8.0*M_PI*e*e*e*e*lnLambda);
+                double taueff = tauinf/(0.625+0.55*sqrt(one_plus_zstar)); 
+                double uleft = tauleft/taueff;
+                double uright = tauright/taueff;
+                double qinf=sqrt(2.0/M_PI/masse)*neinf*pow(heatK*teinf,1.5);
+    
+                if(d_x>0)
+				    pelletqsum[pi] += qinf*0.5*uright*Bessel_Kn(2,sqrt(uright));
+                
+                else
+                    pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft));
+         
+               // pelletqsum[pi]+=qplusminus[index];
 				pelletneighbor[pi]++;
 			}
 		}
