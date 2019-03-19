@@ -156,6 +156,7 @@ void PelletSolver::cleanBadStates(){
         }
 
 }
+
 void PelletSolver::updateStatesByLorentzForce( double dt) {
 	if(m_pPelletData->m_iDimension==2)
 		return;
@@ -221,8 +222,8 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
         	}
 }
 
-
-/*void PelletSolver::updateStatesByLorentzForce( double dt) {
+/*
+void PelletSolver::updateStatesByLorentzForce( double dt) {
 	if(m_pPelletData->m_iDimension==2)
 		return;
         const double *positionX = m_pPelletData->m_vPositionX;
@@ -234,7 +235,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
         double *pressure = m_pPelletData->m_vPressure;
         double *volume = m_pPelletData->m_vVolume;
         double LF;
-	    double MagneticField=0.0;//placeholder
+	    double MagneticField=40.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum() + m_pPelletData->getInflowNum();

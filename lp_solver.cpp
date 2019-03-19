@@ -193,7 +193,7 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 	double startTime;
 
 	startTime = omp_get_wtime();
-	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
+	//m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
 	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
 	if(m_iSolidBoundary || m_iPeriodicBoundary) 

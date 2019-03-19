@@ -152,7 +152,12 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
                 else
                     pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
          
-               // pelletqsum[pi]+=qplusminus[index];
+      //          double right = qinf*0.5*uright*Bessel_Kn(2,sqrt(uright))*k_warmup;
+
+        //        double left = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
+         //       printf("x %.8g y %.8g z %.8g right %.8g left %.8g both %.8g add %.8g\n ",x[index],y[index],z[index],right,left,qplusminus[index],right+left);
+             //   pelletqsum[pi] += qplusminus[index];
+
 				pelletneighbor[pi]++;
 			}
 		}

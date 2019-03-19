@@ -41,3 +41,6 @@ pressure
 temperature
 density
 timetrack
+leftintegral
+rightintegral
+

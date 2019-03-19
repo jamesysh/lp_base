@@ -755,7 +755,11 @@ void Octree::computeIntegralQuadtree(const double* mass, double* left_integral, 
        double z_length = z_size[l];
               
        m_vParticleKeyIndex_integral = new KeyIndex_integral[numberofParticleInBox];
-
+      /* int position_id = m_vFirstParticleIndex[inode];
+       double positiony = m_vCoordY[position_id];
+       double positionz = m_vCoordZ[position_id];
+       printf("Position (%f,%f), y length %f, z length %f, number of particle %d.\n",positiony,positionz,y_length,z_length,numberofParticleInBox);
+       */
        for(int k=m_vFirstParticleIndex[inode],id_particle=0;k<m_vFirstParticleIndex[inode] + numberofParticleInBox;k++,id_particle++)
        {
             int j = m_vParticleKeyIndex[k].index;
