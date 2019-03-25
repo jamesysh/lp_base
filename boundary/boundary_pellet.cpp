@@ -4,7 +4,7 @@
 #include <cassert>
 using namespace std;
 
-PelletInflowBoundary::PelletInflowBoundary():Pinflow(15), Uinflow(0), Vinflow(50){}
+PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100){}
 
 double calculateMassFlowRate(double energy){
 	return energy;
@@ -50,7 +50,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	vector<double> ssOnBoundary(pelletn,0);	
 
     	double R = 83.1446/20.1797;
-    	double Ts = Vinflow*Pinflow/R;
+    	double Ts = 200;//Vinflow*Pinflow/R;
     	double gamma0 = 1.67;
 	double gamma1 = gamma0 - 1;
 
