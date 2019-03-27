@@ -505,7 +505,6 @@ private:
 	double one_plus_Zstar;
     double *m_vMassFlowRate;
 
-
 	double *m_vPhi;//< used by limiter
     
 	int *m_vIfSPHDensity;

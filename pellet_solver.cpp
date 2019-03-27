@@ -74,11 +74,11 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 		double guright = sqrt(uright)*Bessel_K1(sqrt(uright))/4;
 		double nt=1.0/volume[index]/massNe;
 //parallel line case
-		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
-		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
+//		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
+//		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
 //spherical symmetry case
-//		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
-//		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
+		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
+		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
 	}
 
 }
@@ -91,9 +91,9 @@ void PelletSolver::computeIntegralSpherical(){
         double *leftintegral = m_pPelletData->m_vLeftIntegral;
 
         int fluidStartIndex = m_pPelletData->getFluidStartIndex();
-        int fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
+        int fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum()+m_pPelletData->getInflowNum();
 
-	std::vector<std::pair<double,int>> vec(m_pPelletData->m_iFluidNum);
+	std::vector<std::pair<double,int>> vec(m_pPelletData->m_iFluidNum+m_pPelletData->m_iInflowNum);
 	for(int index=fluidStartIndex; index<fluidEndIndex; index++)
 	{
 		double r2=positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index];
@@ -171,7 +171,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 
        // double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
-	    double MagneticField=20.0;//placeholder
+	    double MagneticField=60.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
