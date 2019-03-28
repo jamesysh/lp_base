@@ -137,7 +137,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         cout<<"massflowrate is "<<massflowrate<<endl;
     
         volumeOnBoundary[pi] = volumeOnBoundary[pi]/pelletneighbor[pi];
-	    	
+	    ssOnBoundary[pi] /= pelletneighbor[pi];    	
         pressureOnBoundary[pi] = pressureOnBoundary[pi]/pelletneighbor[pi];
         uOnBoundary[pi] = uOnBoundary[pi]/pelletneighbor[pi];
         if(uOnBoundary[pi]<0) 
