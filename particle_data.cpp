@@ -94,7 +94,20 @@ ParticleData::ParticleData(Initializer& init) {
     m_iPrintTimeTrack = init.getPrintTimeTrack();
 
 	try {
-		m_vVolumeOld = new double[m_iCapacity];	
+        m_vPositionXOld = new double[m_iCapacity];	
+        for(size_t i=0; i<m_iCapacity; i++) m_vPositionXOld[i]=m_vPositionX[i];
+
+        m_vPositionYOld = new double[m_iCapacity];	
+        for(size_t i=0; i<m_iCapacity; i++) m_vPositionYOld[i]=m_vPositionY[i];
+
+        m_vPositionZOld = new double[m_iCapacity];	
+        for(size_t i=0; i<m_iCapacity; i++) m_vPositionZOld[i]=m_vPositionZ[i];
+
+         m_vVelocityRadialOld;
+
+
+
+        m_vVolumeOld = new double[m_iCapacity];	
 		for(size_t i=0; i<m_iCapacity; i++) m_vVolumeOld[i]=m_vVolume[i];
 
                 m_vVolumeVoronoi = new double[m_iCapacity];
