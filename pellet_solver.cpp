@@ -83,6 +83,14 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 
 }
 
+void PelletSolver::copyOldStates(int fluidstart, int fluidend){
+    
+    
+    
+    }
+
+
+
 void PelletSolver::computeIntegralSpherical(){
         const double *positionX = m_pPelletData->m_vPositionX;
         const double *positionY = m_pPelletData->m_vPositionY;

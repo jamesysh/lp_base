@@ -103,7 +103,14 @@ ParticleData::ParticleData(Initializer& init) {
         m_vPositionZOld = new double[m_iCapacity];	
         for(size_t i=0; i<m_iCapacity; i++) m_vPositionZOld[i]=m_vPositionZ[i];
 
-         m_vVelocityRadialOld;
+         m_vVelocityRadialOld = new double[m_iCapacity];
+         fill_n(m_vVelocityRadialOld,m_iCapacity,0);
+
+         m_vSoundSpeedOld = new double[m_iCapacity];	
+		for(size_t i=0; i<m_iCapacity; i++) m_vSoundSpeedOld[i]=m_vSoundSpeed[i];
+
+        m_vPressure = new double[m_iCapacity];	
+		for(size_t i=0; i<m_iCapacity; i++) m_vPressureOld[i]=m_vPressure[i];
 
 
 
