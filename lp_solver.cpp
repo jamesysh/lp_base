@@ -168,8 +168,6 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
         m_fOctreeTime=0;
         m_fNeighbourTime=0;
         m_fBoundaryTime=0;
-       
-        //m_pPelletSolver->computeBoundaryCondition(0.,m_fInitParticleSpacing);
 
         searchNeighbourForFluidParticle(0);
 
@@ -195,8 +193,7 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 	double startTime;
 
 	startTime = omp_get_wtime();
-//	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
-   
+	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
 	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
 	if(m_iSolidBoundary || m_iPeriodicBoundary) 
@@ -257,11 +254,9 @@ m_fDt = dt;
 #pragma omp parallel for
 #endif
 for(size_t index=m_pParticleData->m_iFluidStartIndex;
-index<m_pParticleData->m_iFluidStartIndex+m_pParticleData->m_iFluidNum+m_pParticleData->m_iInflowNum; index++) {
+index<m_pParticleData->m_iFluidStartIndex+m_pParticleData->m_iFluidNum; index++) {
 	m_pParticleData->m_vVolumeOld[index] = m_pParticleData->m_vVolume[index];
 }
-
-//m_pPelletSolver->computeBoundaryCondition(dt,m_fInitParticleSpacing);
 
 double startTime;
 startTime = omp_get_wtime();
@@ -302,6 +297,8 @@ if(!phase_success) {
 	return 1;
 }
 updateFluidState();
+cout<<"zero check"<<endl;
+checkInvalid();
 
 if(m_iFixParticles==0)
 	moveFluidParticle();
@@ -431,7 +428,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	}
 
 //------start density integral computing--------------------
-/* 
+ 
         int numberofParticle = m_pParticleData->m_iFluidNum +  m_pParticleData->m_iInflowNum;
         if(m_pParticleData->m_iNumberofPellet){
             m_vPositionX_temp = new double[numberofParticle];
@@ -451,7 +448,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 
 
-*/
+
 
 
 //------------------------------------------------------------
@@ -464,7 +461,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	m_pParticleData->m_iFluidStartIndex ,m_pParticleData->m_iFluidNum + m_pParticleData->m_iBoundaryNum);
 //	cout<<"Calculate integral"<<endl;
 //        printf("Build octree takes %.16g seconds\n", omp_get_wtime() - startTime);
-	if(m_pParticleData->m_iNumberofPellet){
+/*	if(m_pParticleData->m_iNumberofPellet){
 	      double  apcstartTime = omp_get_wtime();
 
 //Compute integral from x+ and x- directions using octree
@@ -482,7 +479,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 	}
 
-
+*/
 
 
 
@@ -492,7 +489,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	int *neighbourListSize = m_pParticleData->m_vNeighbourListSize;	
 
 	size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-	size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->m_iInflowNum;
+	size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
 	size_t inflowEndIndex = fluidEndIndex + m_pParticleData->getInflowNum();
     int *pelletid = m_pParticleData->m_vPelletID;
 	size_t pelletn = m_pParticleData->m_iNumberofPellet;
@@ -1075,7 +1072,7 @@ bool HyperbolicLPSolver::generateSolidBoundaryByMirrorParticles() {
 	cout<<"-------HyperbolicLPSolver::generateSolidBoundaryByMirrorParticles()-------"<<endl;	
 
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
 
 
 	#ifdef _OPENMP
@@ -1318,7 +1315,7 @@ bool HyperbolicLPSolver::generatePeriodicBoundaryByMirrorParticles() {
 	cout<<"-------HyperbolicLPSolver::generatePeriodicBoundaryByMirrorParticles()-------"<<endl;	
 
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
 
 
 	#ifdef _OPENMP
@@ -1585,7 +1582,7 @@ bool HyperbolicLPSolver::generateGhostParticleByFillingVacancy() {
 	size_t ghostIndex = m_pParticleData->getGhostStartIndex();
 //	cout<<"ghostStartIndex="<<ghostIndex<<endl;
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
 
 	#ifdef _OPENMP
 	size_t numThreads = min(omp_get_max_threads(), m_iNumThreads);
@@ -2431,7 +2428,7 @@ void HyperbolicLPSolver::setUpwindNeighbourList() {
 	size_t maxNeiNumInOneDir = m_pParticleData->m_iMaxNeighbourNumInOneDir;
 
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum+ m_pParticleData->m_iInflowNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
 	
 	#ifdef _OPENMP
 	#pragma omp parallel
@@ -2724,7 +2721,7 @@ cout<<"-------END HyperbolicLPSolver::setUpwindNeighbourList()-------"<<endl;
 
 void HyperbolicLPSolver::resetLPFOrder() {
 size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;	
-size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum+ m_pParticleData->m_iInflowNum;
+size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
 if(m_iDimension==3) {
 	#ifdef _OPENMP
 	#pragma omp parallel for
@@ -2990,6 +2987,7 @@ for(size_t index=startIndex; index<endIndex; index++) {
 cout<<"m_fMaxSoundSpeed="<<m_fMaxSoundSpeed<<endl;
 //cout<<"--------------------------------------------------------"<<endl;
 assert(m_fMaxSoundSpeed != -1);
+
 }
 
 
@@ -3313,7 +3311,7 @@ if(m_iDimension==2) {multiplier1st=2; multiplier2nd=m_fDt/2.;}
 else if(m_iDimension==3) {multiplier1st=3; multiplier2nd=m_fDt*3./4.;}
 // iteration start index
 size_t startIndex = m_pParticleData->m_iFluidStartIndex;
-size_t endIndex = startIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
+size_t endIndex = startIndex + m_pParticleData->m_iFluidNum;
 size_t fluidEndIndex = startIndex + m_pParticleData->m_iFluidNum;
 int additional=0;
 int warningcount=0;
@@ -4556,7 +4554,7 @@ void HyperbolicLPSolver::setMirrorPressureAndVelocity(int phase) {
 	if((m_iDimension==2 && phase==2) || (m_iDimension==3 && phase==4)) return;
 
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
 	size_t boundaryStartIndex = m_pParticleData->m_iBoundaryStartIndex + m_pParticleData->m_iInflowNum;
 	size_t boundaryEndIndex = m_pParticleData->m_iBoundaryStartIndex + m_pParticleData->m_iBoundaryNum;
 	
@@ -4664,7 +4662,7 @@ void HyperbolicLPSolver::setGhostVelocity(int phase) {
 //	if((m_iDimension==2 && (phase==0 || phase==2)) || 
 //	   (m_iDimension==3 && (phase==0 || phase==1 || phase==4))) return;
 	size_t fluidStartIndex = m_pParticleData->m_iFluidStartIndex;
-	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum + m_pParticleData->m_iInflowNum;
+	size_t fluidEndIndex = m_pParticleData->m_iFluidStartIndex + m_pParticleData->m_iFluidNum;
 	size_t ghostStartIndex = m_pParticleData->getGhostStartIndex();
 	
 	if(m_iDimension==3) {
@@ -4733,7 +4731,7 @@ void HyperbolicLPSolver::updateFluidState() {
 void HyperbolicLPSolver::moveFluidParticle() {
 		
 	size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-	size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum() + m_pParticleData->m_iInflowNum;
+	size_t fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
 	
 	if(m_iDimension==2) {
 		#ifdef _OPENMP
