@@ -168,6 +168,8 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
         m_fOctreeTime=0;
         m_fNeighbourTime=0;
         m_fBoundaryTime=0;
+       
+        //m_pPelletSolver->computeBoundaryCondition(0.,m_fInitParticleSpacing);
 
         searchNeighbourForFluidParticle(0);
 
@@ -258,6 +260,8 @@ for(size_t index=m_pParticleData->m_iFluidStartIndex;
 index<m_pParticleData->m_iFluidStartIndex+m_pParticleData->m_iFluidNum+m_pParticleData->m_iInflowNum; index++) {
 	m_pParticleData->m_vVolumeOld[index] = m_pParticleData->m_vVolume[index];
 }
+
+//m_pPelletSolver->computeBoundaryCondition(dt,m_fInitParticleSpacing);
 
 double startTime;
 startTime = omp_get_wtime();

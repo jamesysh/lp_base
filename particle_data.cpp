@@ -94,6 +94,7 @@ ParticleData::ParticleData(Initializer& init) {
     m_iPrintTimeTrack = init.getPrintTimeTrack();
 
 	try {
+        /*
         m_vPositionXOld = new double[m_iCapacity];	
         for(size_t i=0; i<m_iCapacity; i++) m_vPositionXOld[i]=m_vPositionX[i];
 
@@ -112,7 +113,7 @@ ParticleData::ParticleData(Initializer& init) {
         m_vPressure = new double[m_iCapacity];	
 		for(size_t i=0; i<m_iCapacity; i++) m_vPressureOld[i]=m_vPressure[i];
 
-
+*/
 
         m_vVolumeOld = new double[m_iCapacity];	
 		for(size_t i=0; i<m_iCapacity; i++) m_vVolumeOld[i]=m_vVolume[i];
@@ -128,7 +129,13 @@ ParticleData::ParticleData(Initializer& init) {
                     
 		// allocate pellet memory 
                 if(m_iNumberofPellet){
-                   m_vLeftIntegral = new double[m_iCapacity];
+                    pelletqsum = new double[m_iNumberofPellet];
+                    volumeOnBoundary = new double[m_iNumberofPellet];
+                    pressureOnBoundary = new double[m_iNumberofPellet];
+                    ssOnBoundary = new double[m_iNumberofPellet];
+                    uOnBoundary = new double[m_iNumberofPellet];
+
+                    m_vLeftIntegral = new double[m_iCapacity];
                     fill_n(m_vLeftIntegral, m_iCapacity, 0);
                     m_vRightIntegral = new double[m_iCapacity];
                     fill_n(m_vRightIntegral, m_iCapacity, 0);

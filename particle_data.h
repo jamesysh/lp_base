@@ -492,7 +492,12 @@ private:
 	double* m_vPelletInnerRadius;
 	double* m_vPelletOuterRadius;
     double* m_vPelletEnergy;//energy absorbed by each pellet, need to be updated in every time step
-	double* m_vPelletVelocity;
+	double* pelletqsum;
+    double* volumeOnBoundary;
+    double* ssOnBoundary; //soundspeed
+    double* uOnBoundary; //radial velocity
+    double* pressureOnBoundary;
+   double* m_vPelletVelocity;
 	int* m_vPelletState;
     int* m_vPelletID;//the id of the pellet generating each inflow particle, size = m_iCapacity
 	double* m_vDeltaq;

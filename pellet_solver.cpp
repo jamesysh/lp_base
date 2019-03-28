@@ -74,22 +74,14 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 		double guright = sqrt(uright)*Bessel_K1(sqrt(uright))/4;
 		double nt=1.0/volume[index]/massNe;
 //parallel line case
-//		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
-//		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
+		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
+		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
 //spherical symmetry case
-		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
-		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
+//		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
+//		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
 	}
 
 }
-
-void PelletSolver::copyOldStates(int fluidstart, int fluidend){
-    
-    
-    
-    }
-
-
 
 void PelletSolver::computeIntegralSpherical(){
         const double *positionX = m_pPelletData->m_vPositionX;
@@ -99,9 +91,9 @@ void PelletSolver::computeIntegralSpherical(){
         double *leftintegral = m_pPelletData->m_vLeftIntegral;
 
         int fluidStartIndex = m_pPelletData->getFluidStartIndex();
-        int fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum()+m_pPelletData->getInflowNum();
+        int fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
 
-	std::vector<std::pair<double,int>> vec(m_pPelletData->m_iFluidNum+m_pPelletData->m_iInflowNum);
+	std::vector<std::pair<double,int>> vec(m_pPelletData->m_iFluidNum);
 	for(int index=fluidStartIndex; index<fluidEndIndex; index++)
 	{
 		double r2=positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index];
@@ -179,7 +171,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 
        // double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
-	    double MagneticField=60.0;//placeholder
+	    double MagneticField=20.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
@@ -608,6 +600,108 @@ rad[90][2] =  4.661804e-11;
 
  return rad[i][j];
 }
+
+void PelletSolver::computeBoundaryCondition( double dt, double dx){
+        
+        const double *x = m_pPelletData->m_vPositionX;
+        const double *y = m_pPelletData->m_vPositionY;
+        const double *z = m_pPelletData->m_vPositionZ; // is all zero for the 2D case 
+        const double *pressure = m_pPelletData->m_vPressure;
+        const double *sound = m_pPelletData->m_vSoundSpeed;
+        const double *vx = m_pPelletData->m_vVelocityU;
+        const double *vy = m_pPelletData->m_vVelocityV;
+        const double *vz = m_pPelletData->m_vVelocityW;
+        double *volume = m_pPelletData->m_vVolume;
+
+    	double *pelletx = m_pPelletData->m_vPelletPositionX;
+	    double *pellety = m_pPelletData->m_vPelletPositionY;
+	    double *pelletz = m_pPelletData->m_vPelletPositionZ;
+	    double *pelletr = m_pPelletData->m_vPelletRadius;
+	    double *pelletir = m_pPelletData->m_vPelletInnerRadius;
+        double *pre_bc = m_pPelletData->pressureOnBoundary;
+        double *vol_bc = m_pPelletData->volumeOnBoundary;
+        double *ss_bc = m_pPelletData->ssOnBoundary;
+        double *qsum_bc = m_pPelletData->pelletqsum;
+        double *u_bc = m_pPelletData->uOnBoundary;
+    	double *pellete = m_pPelletData->m_vPelletEnergy;
+	    double *qplusminus = m_pPelletData->m_vQplusminus;
+	     double *m_vmassflowrate = m_pPelletData->m_vMassFlowRate; 
+
+        double sublimationenergy = m_pPelletData->sublimationenergy;
+        int pelletn = m_pPelletData->m_iNumberofPellet;
+        vector<int> pelletneighbor(pelletn,0);
+
+        size_t fluidStartIndex = m_pPelletData->m_iFluidStartIndex;
+        size_t fluidEndIndex = m_pPelletData->m_iFluidStartIndex + m_pPelletData->m_iFluidNum;
+
+	for(int pi=0;pi<pelletn;pi++)
+	{
+		double pr=pelletr[pi];
+       	pelletir[pi] = pr;
+		double pir=pelletir[pi];
+        qsum_bc[pi] = 0;
+        vol_bc[pi] = 0;
+        pre_bc[pi] = 0;
+        ss_bc[pi] = 0;
+        u_bc[pi] = 0;
+
+        for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
+		{
+			
+            double ss = sound[index];
+            double shift = ss*dt;
+            double d_x=x[index]-pelletx[pi];
+			double d_y=y[index]-pellety[pi];
+			double d_z=z[index]-pelletz[pi];
+			double r=d_x*d_x+d_y*d_y+d_z*d_z;
+            double r_shift = (sqrt(r)-shift)*(sqrt(r)-shift);
+
+
+
+			if(r_shift<(pr+dx/5)*(pr+dx/5) && r_shift > (pr-dx/5)*(pr-dx/5) && r>(pr)*(pr) && r<(pr+dx)*(pr+dx))
+			
+		//	if( r>pr*pr && r<(pr+dx/2)*(pr+dx/2))
+            {
+                
+				qsum_bc[pi]+=qplusminus[index];
+                vol_bc[pi] += volume[index];
+                pre_bc[pi] += pressure[index];
+				ss_bc[pi] += sound[index];
+				double vr = (vx[index]*d_x + vy[index]*d_y + vz[index]*d_z)/sqrt(r);
+				u_bc[pi] += vr;
+				pelletneighbor[pi]++;
+			}
+		}
+		if(pelletneighbor[pi]==0)
+		{
+			cout<<"Error: cannot find neighbor for pellet"<<endl;
+			assert(false);
+		}
+		cout<<"Number of neighbor for pellet = "<<pelletneighbor[pi]<<endl;
+        qsum_bc[pi] /=pelletneighbor[pi];
+        vol_bc[pi] /= pelletneighbor[pi];
+	    ss_bc[pi] /= pelletneighbor[pi];    	
+        pre_bc[pi] /= pelletneighbor[pi];
+        u_bc[pi] = u_bc[pi]/pelletneighbor[pi];
+        
+        cout<<"qsum on boundary = " <<qsum_bc[pi]<<endl;
+        cout<<"volumeOnBoundary = "<<vol_bc[pi]<<endl;
+        cout<<"pressureOnBoundary = "<<pre_bc[pi]<<endl;
+        cout<<"soundspeed on Boundary = "<<ss_bc[pi]<<endl;
+        cout<<"radial velocity on Boundary = "<<u_bc[pi]<<endl;
+
+       pellete[pi] = qsum_bc[pi]*4*M_PI*pr*pr*2/M_PI;
+   
+   double massflowrate=pellete[pi]/sublimationenergy;
+
+		m_vmassflowrate[pi] = massflowrate;
+    
+
+    
+    }
+}
+
+
 
 
 
