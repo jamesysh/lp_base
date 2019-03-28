@@ -50,7 +50,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
     static double t_total = 0;
     t_total += dt; 
     	double R = 83.1446/20.1797;
-    	double Ts = 200;//Vinflow*Pinflow/R;
+    	double Ts = Vinflow*Pinflow/R;
     	double gamma0 = 1.67;
 	double gamma1 = gamma0 - 1;
 
@@ -172,6 +172,27 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         	cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
         	cout<<"pellet ablation velocity = "<<pelletvelocity[pi]<<endl;
 
+/*
+    string mfrfilename =  "data_bb_20.txt";
+
+    FILE *mfroutfile;
+                mfroutfile = fopen(mfrfilename.c_str(), "a");
+		
+        	if(mfroutfile==nullptr) 
+		{
+                	printf("Unable to open file: %s\n",mfrfilename.c_str());
+                	return 1;
+        	}
+		fprintf(mfroutfile,"%.16g ",t_total);
+
+
+ 		fprintf(mfroutfile,"%.16g %.16g %.16g %.16g\n",pelletvelocity[pi],1./volumeOnBoundary[pi],pressureOnBoundary[pi],pelletqsum[pi]/pelletneighbor[pi]);
+		fclose(mfroutfile);
+	 
+*/
+
+ 
+ 
  } 
 /* 
     for(size_t index=fluidEndIndex;index<inflowEndIndex;index++)
@@ -235,12 +256,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	       		vx[inflowEndIndex] = m_voldv[pi]*d_x/dr*dr*dr/pr/pr;
            		vy[inflowEndIndex] = m_voldv[pi]*d_y/dr*dr*dr/pr/pr;
            		vz[inflowEndIndex] = m_voldv[pi]*d_z/dr*dr*dr/pr/pr;
-        volumeold[inflowEndIndex] = volume[inflowEndIndex]=volumeOnBoundary[pi];
-       	pressure[inflowEndIndex] = pressureOnBoundary[pi];
-       	localParSpacing[inflowEndIndex]=dx;
-		mass[inflowEndIndex]=dx*dx*dx/Vinflow/sqrt(2);
-       	sound[inflowEndIndex]=m_pEOS->getSoundSpeed(pressure[inflowEndIndex],1./volume[inflowEndIndex]);
-
 			pelletid[inflowEndIndex]=pi;
 			inflowEndIndex++;
 		}
@@ -270,7 +285,15 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		vy[index]=newv*d_y/dr;
 		vz[index]=newv*d_z/dr;
 		dr+=dt*0.5*(old_v+newv);
-		if(dr>pelletr[pelletid[index]])//change label from inflow to fluid if r>pr
+		
+        volumeold[index] = volume[index]=volumeOnBoundary[pi]*dr*dr/pr/pr;
+       	pressure[index] = pressureOnBoundary[pi]*pr*pr/dr/dr;
+       	localParSpacing[index]=dx;
+		mass[index]=dx*dx*dx/Vinflow/sqrt(2);
+       	sound[index]=m_pEOS->getSoundSpeed(pressure[index],1./volume[index]);
+
+
+        if(dr>pelletr[pelletid[index]])//change label from inflow to fluid if r>pr
 		{
 		 	volumeold[index] = volume[index]=volumeOnBoundary[pi];
          	pressure[index] = pressureOnBoundary[pi];;
