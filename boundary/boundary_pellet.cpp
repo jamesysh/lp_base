@@ -4,7 +4,7 @@
 #include <cassert>
 using namespace std;
 
-PelletInflowBoundary::PelletInflowBoundary():Pinflow(13), Uinflow(0), Vinflow(80){}
+PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100){}
 
 double calculateMassFlowRate(double energy){
 	return energy;
@@ -57,9 +57,9 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	for(int pi=0;pi<pelletn;pi++)
     {
 
-	    	cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
-        	cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
-        	cout<<"soundspeed on boundary is "<<ssOnBoundary[pi]<<endl;
+	    	cout<<"average volume on boundary is "<<volumeOnBoundary[pi]<<endl;
+        	cout<<"average pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
+        	cout<<"average soundspeed on boundary is "<<ssOnBoundary[pi]<<endl;
             cout<<"average radial velocity = "<<uOnBoundary[pi]<<endl;
         
 
@@ -86,26 +86,27 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		double C = -(massflowrate/4/M_PI/pr/pr)*R*Ts*volumeOnBoundary[pi]/ssOnBoundary[pi];
 	
 		cout<<"B ="<<B<<" "<<"C ="<<C<<endl;
-        cout<<"u average is "<<uOnBoundary[pi]<<endl;	
         if(massflowrate == 0)
 		{
-			pelletvelocity[pi] = 0.0;
+			pelletvelocity[pi] = uOnBoundary[pi];
 			volumeOnBoundary[pi] = Vinflow;
-			pressureOnBoundary[pi] = Pinflow;
+		    pressureOnBoundary[pi] = Pinflow;
 		}
 		else
 		{
 
-           pelletvelocity[pi] = (-B + sqrt(B*B - 4*C))/2;
-		    cout<<"fake u = "<<(-B-sqrt(B*B-4*C))/2<<endl;
+            pelletvelocity[pi] = (-B + sqrt(B*B - 4*C))/2;
             volumeOnBoundary[pi] = pelletvelocity[pi]/(massflowrate/4/M_PI/pr/pr);
 			pressureOnBoundary[pi] = R*Ts/volumeOnBoundary[pi];
 		}
            
+           cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
+        	cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
+
     cout<<"pellet velocity is "<<pelletvelocity[pi]<<endl;
     cout<<"massflowrate is "<<massflowrate<<endl;            
            double D =  (pressureOnBoundary[pi]+dt*gamma1*(pelletqsum[pi]))*volumeOnBoundary[pi]/ssOnBoundary[pi]; 
-           cout<<"D is "<<D<<endl; 
+         //  cout<<"D is "<<D<<endl; 
         //pelletvelocity[pi]=massflowrate*volumeOnBoundary[pi]/4.0/M_PI/pr/pr;
 /*
     string mfrfilename =  "data_bb_20.txt";

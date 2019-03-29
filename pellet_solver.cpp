@@ -74,11 +74,11 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 		double guright = sqrt(uright)*Bessel_K1(sqrt(uright))/4;
 		double nt=1.0/volume[index]/massNe;
 //parallel line case
-		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
-		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
+//		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
+//		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
 //spherical symmetry case
-//		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
-//		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
+		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
+		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
 	}
 
 }
@@ -104,8 +104,10 @@ void PelletSolver::computeIntegralSpherical(){
 	for(int index=fluidEndIndex-1; index>=fluidStartIndex; index--)
 	{
 		double temp=mass[vec[index].second]/4.0/3.1416/vec[index].first;
-		leftintegral[vec[index].second]=integral+0.5*temp;
-		integral+=temp;
+		
+        leftintegral[vec[index].second]=integral+0.5*temp;
+		
+        integral+=temp;
 	}
 }
 
@@ -658,8 +660,8 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
 
 
 
-			if(r_shift<(pr+dx/10)*(pr+dx/10) && r_shift > (pr-dx/5)*(pr-dx/5) && r>(pr)*(pr))
-			
+			if(r_shift<(pr+dx/10)*(pr+dx/10)  && r>(pr)*(pr))
+		//	&& r_shift > (pr-dx/5)*(pr-dx/5)
 		//	if( r>pr*pr && r<(pr+dx/2)*(pr+dx/2))
             {
                 
@@ -696,7 +698,7 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
    double massflowrate=pellete[pi]/sublimationenergy;
 
 		m_vmassflowrate[pi] = massflowrate;
-  //      cout<<"mass flow rate is " <<massflowrate<<endl; 
+        cout<<"mass flow rate in integral is " <<massflowrate<<endl; 
 
     
     }

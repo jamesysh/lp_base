@@ -168,10 +168,14 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
         m_fOctreeTime=0;
         m_fNeighbourTime=0;
         m_fBoundaryTime=0;
-        m_pPelletSolver->computeBoundaryCondition(0.,m_fInitParticleSpacing);
+
         searchNeighbourForFluidParticle(0);
 
-    	computeSetupsForNextIteration();
+    if(m_pParticleData->m_iNumberofPellet){
+            m_pPelletSolver->computeBoundaryCondition(0.,m_fInitParticleSpacing);
+        cout<<"Compute Boundary condition"<<endl;}
+    	
+        computeSetupsForNextIteration();
 		
         m_fTotalTime=0;
         m_fSolverTime=0;
@@ -257,8 +261,9 @@ for(size_t index=m_pParticleData->m_iFluidStartIndex;
 index<m_pParticleData->m_iFluidStartIndex+m_pParticleData->m_iFluidNum; index++) {
 	m_pParticleData->m_vVolumeOld[index] = m_pParticleData->m_vVolume[index];
 }
-    
-m_pPelletSolver->computeBoundaryCondition(dt,m_fInitParticleSpacing);
+
+if(m_pParticleData->m_iNumberofPellet)
+    m_pPelletSolver->computeBoundaryCondition(dt,m_fInitParticleSpacing);
 
 
 double startTime;
@@ -3358,7 +3363,7 @@ for(size_t index=startIndex; index<endIndex; index++) {
                                                         &outVolume[index], &outVelocity[index], &outPressure[index]); // output
            if(m_pParticleData->m_iNumberofPellet)
 			{  
-				    outPressure[index] += realDt*m_pParticleData->m_vDeltaq[index]*(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1);
+				    outPressure[index] += realDt*m_pParticleData->m_vDeltaq[index]*(inSoundSpeed[index]*inSoundSpeed[index]/(inVolume[index]*inPressure[index]) - 1);
                    //outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
 			}
 			if(LPFOrder0[index]*LPFOrder1[index]==0 && warningcount++==0)
