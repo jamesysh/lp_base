@@ -91,9 +91,9 @@ void PelletSolver::computeIntegralSpherical(){
         double *leftintegral = m_pPelletData->m_vLeftIntegral;
 
         int fluidStartIndex = m_pPelletData->getFluidStartIndex();
-        int fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
+        int fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum()+m_pPelletData->getInflowNum();
 
-	std::vector<std::pair<double,int>> vec(m_pPelletData->m_iFluidNum);
+	std::vector<std::pair<double,int>> vec(m_pPelletData->m_iFluidNum+m_pPelletData->m_iInflowNum);
 	for(int index=fluidStartIndex; index<fluidEndIndex; index++)
 	{
 		double r2=positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index];
@@ -171,7 +171,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 
        // double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
-	    double MagneticField=20.0;//placeholder
+	    double MagneticField=30.0;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
@@ -658,7 +658,7 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
 
 
 
-			if(r_shift<(pr+dx/5)*(pr+dx/5) && r_shift > (pr-dx/5)*(pr-dx/5) && r>(pr)*(pr) && r<(pr+dx)*(pr+dx))
+			if(r_shift<(pr+dx/10)*(pr+dx/10) && r_shift > (pr-dx/5)*(pr-dx/5) && r>(pr)*(pr))
 			
 		//	if( r>pr*pr && r<(pr+dx/2)*(pr+dx/2))
             {
@@ -682,26 +682,24 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
         vol_bc[pi] /= pelletneighbor[pi];
 	    ss_bc[pi] /= pelletneighbor[pi];    	
         pre_bc[pi] /= pelletneighbor[pi];
-        u_bc[pi] = u_bc[pi]/pelletneighbor[pi];
-        
+        u_bc[pi] /= pelletneighbor[pi];
+       /* 
         cout<<"qsum on boundary = " <<qsum_bc[pi]<<endl;
         cout<<"volumeOnBoundary = "<<vol_bc[pi]<<endl;
         cout<<"pressureOnBoundary = "<<pre_bc[pi]<<endl;
         cout<<"soundspeed on Boundary = "<<ss_bc[pi]<<endl;
         cout<<"radial velocity on Boundary = "<<u_bc[pi]<<endl;
-
+*/
        pellete[pi] = qsum_bc[pi]*4*M_PI*pr*pr*2/M_PI;
    
    double massflowrate=pellete[pi]/sublimationenergy;
 
 		m_vmassflowrate[pi] = massflowrate;
-    
+  //      cout<<"mass flow rate is " <<massflowrate<<endl; 
 
     
     }
 }
-
-
 
 
 
