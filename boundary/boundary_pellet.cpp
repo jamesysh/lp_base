@@ -4,7 +4,7 @@
 #include <cassert>
 using namespace std;
 
-PelletInflowBoundary::PelletInflowBoundary():Pinflow(13), Uinflow(0), Vinflow(100){}
+PelletInflowBoundary::PelletInflowBoundary():Pinflow(13), Uinflow(0), Vinflow(80){}
 
 double calculateMassFlowRate(double energy){
 	return energy;
@@ -53,16 +53,14 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
     	double gamma0 = 1.67;
 	double gamma1 = gamma0 - 1;
 
-//	cout<<"insert particles"<<endl;
-//	cout<<inflowEndIndex<<endl;
-//	cout<<m_pParticleData->m_iCapacity<<endl;
 
 	for(int pi=0;pi<pelletn;pi++)
     {
 
 	    	cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
         	cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
-        	cout<<"average radial velocity = "<<uOnBoundary[pi]<<endl;
+        	cout<<"soundspeed on boundary is "<<ssOnBoundary[pi]<<endl;
+            cout<<"average radial velocity = "<<uOnBoundary[pi]<<endl;
         
 
         double pr=pelletr[pi];
@@ -99,7 +97,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		{
 
            pelletvelocity[pi] = (-B + sqrt(B*B - 4*C))/2;
-			volumeOnBoundary[pi] = pelletvelocity[pi]/(massflowrate/4/M_PI/pr/pr);
+		    cout<<"fake u = "<<(-B-sqrt(B*B-4*C))/2<<endl;
+            volumeOnBoundary[pi] = pelletvelocity[pi]/(massflowrate/4/M_PI/pr/pr);
 			pressureOnBoundary[pi] = R*Ts/volumeOnBoundary[pi];
 		}
            

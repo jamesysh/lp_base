@@ -676,7 +676,8 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
 		{
 			cout<<"Error: cannot find neighbor for pellet"<<endl;
 			assert(false);
-		}
+		    return;
+        }
 		cout<<"Number of neighbor for pellet = "<<pelletneighbor[pi]<<endl;
         qsum_bc[pi] /=pelletneighbor[pi];
         vol_bc[pi] /= pelletneighbor[pi];
@@ -690,7 +691,7 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
         cout<<"soundspeed on Boundary = "<<ss_bc[pi]<<endl;
         cout<<"radial velocity on Boundary = "<<u_bc[pi]<<endl;
 */
-       pellete[pi] = qsum_bc[pi]*4*M_PI*pr*pr*2/M_PI;
+       pellete[pi] = qsum_bc[pi]*4*M_PI*pr*pr;
    
    double massflowrate=pellete[pi]/sublimationenergy;
 
