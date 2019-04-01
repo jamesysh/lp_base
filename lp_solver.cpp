@@ -168,21 +168,18 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
         m_fOctreeTime=0;
         m_fNeighbourTime=0;
         m_fBoundaryTime=0;
-
-        searchNeighbourForFluidParticle(0);
-
-    if(m_pParticleData->m_iNumberofPellet){
+ 
        		m_pPelletSolver->computeIntegralSpherical();
 
-//		cout<<"Integral calculated"<<endl;	
-        m_pPelletSolver->calculateHeatDeposition(m_fDt);
+        m_pPelletSolver->calculateHeatDeposition(0.);
 
-        cout<<"Compute Boundary condition"<<endl;}
        m_pPelletSolver->computeBoundaryCondition(0.,m_fInitParticleSpacing);
+        searchNeighbourForFluidParticle(0);
     	
         computeSetupsForNextIteration();
 		
-        m_fTotalTime=0;
+
+       m_fTotalTime=0;
         m_fSolverTime=0;
         m_fSPHTime=0;
         m_fOctreeTime=0;

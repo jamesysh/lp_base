@@ -53,7 +53,7 @@ void PelletSolver::calculateHeatDeposition( double dt) {
         if (time > 0.01)
           k_warmup = 1.0;
         else
-          k_warmup = time/0.01;
+          k_warmup = 1.;//time/0.01;
 
                                                                                                              
 
@@ -79,7 +79,6 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 //spherical symmetry case
 		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
 		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
-        cout<<"qplusminus ="<<Qplusminus[index]<<endl;
     }
 
 }
@@ -661,8 +660,8 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
 
 
 
-			if(r_shift<(pr+dx/10)*(pr+dx/10)  && r>(pr)*(pr))
-		//	&& r_shift > (pr-dx/5)*(pr-dx/5)
+			if(r_shift<(pr+dx/10)*(pr+dx/10) 	&& r_shift > (pr-dx/5)*(pr-dx/5) && r>(pr)*(pr))
+//			&& r_shift > (pr-dx/5)*(pr-dx/5)
 		//	if( r>pr*pr && r<(pr+dx/2)*(pr+dx/2))
             {
                 

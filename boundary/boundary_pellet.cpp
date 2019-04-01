@@ -4,7 +4,7 @@
 #include <cassert>
 using namespace std;
 
-PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100){}
+PelletInflowBoundary::PelletInflowBoundary():Pinflow(8), Uinflow(0), Vinflow(10){}
 
 double calculateMassFlowRate(double energy){
 	return energy;
@@ -77,7 +77,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
             {   
                 
                 FIRST = false;
-                massflowrate = 0;
                 m_voldv[pi] = 0;
                 
                 }
