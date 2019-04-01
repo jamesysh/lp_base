@@ -576,7 +576,7 @@ void Initializer::setParams() {
 	if(m_iDimension==3)
 		m_fTimesCapacity = 3 ;//1.5
 
-	m_fAdditionalCapacity = 2000000;
+	m_fAdditionalCapacity = 200000;
 //	if(m_iDimension==3)
 //		m_fAdditionalCapacity = 1000000;	
 	// compute the number of particles within m_fNeiSearchRadius based on the initial packing of particles

@@ -79,7 +79,8 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 //spherical symmetry case
 		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
 		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
-	}
+        cout<<"qplusminus ="<<Qplusminus[index]<<endl;
+    }
 
 }
 
@@ -698,8 +699,7 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
    double massflowrate=pellete[pi]/sublimationenergy;
 
 		m_vmassflowrate[pi] = massflowrate;
-        cout<<"mass flow rate in integral is " <<massflowrate<<endl; 
-
+        printf("massflowrate is %.16g\n",massflowrate);
     
     }
 }
