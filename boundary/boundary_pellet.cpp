@@ -4,7 +4,7 @@
 #include <cassert>
 using namespace std;
 
-PelletInflowBoundary::PelletInflowBoundary():Pinflow(8), Uinflow(0), Vinflow(10){}
+PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100){}
 
 double calculateMassFlowRate(double energy){
 	return energy;
@@ -108,21 +108,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
          //  cout<<"D is "<<D<<endl; 
         //pelletvelocity[pi]=massflowrate*volumeOnBoundary[pi]/4.0/M_PI/pr/pr;
 /*
-    string mfrfilename =  "data_bb_20.txt";
-
-    FILE *mfroutfile;
-                mfroutfile = fopen(mfrfilename.c_str(), "a");
-		
-        	if(mfroutfile==nullptr) 
-		{
-                	printf("Unable to open file: %s\n",mfrfilename.c_str());
-                	return 1;
-        	}
-		fprintf(mfroutfile,"%.16g ",t_total);
-
-
- 		fprintf(mfroutfile,"%.16g %.16g %.16g %.16g\n",pelletvelocity[pi],1./volumeOnBoundary[pi],pressureOnBoundary[pi],pelletqsum[pi]/pelletneighbor[pi]);
-		fclose(mfroutfile);
 	 
 */
 
@@ -130,26 +115,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
  
  } 
 /* 
-    for(size_t index=fluidEndIndex;index<inflowEndIndex;index++)
-	    {
-        	int pi = pelletid[index];
-        	double d_x=x[index]-pelletx[pi];
-		double d_y=y[index]-pellety[pi];
-		double d_z=z[index]-pelletz[pi];
-		double dr=sqrt(d_x*d_x+d_y*d_y+d_z*d_z);
-		double pir=pelletir[pi];
-		double pr=pelletr[pi];
-		if(dr>pelletr[pi])//change label from inflow to fluid if r>pr
-		{
-		 //	volumeold[index] = volume[index]=volumeOnBoundary[pi];
-         //	pressure[index] = pressureOnBoundary[pi];
-       	//	sound[index]=m_pEOS->getSoundSpeed(pressure[index],1./volume[index]);
-       		if(index>fluidEndIndex)
-                        	m_pParticleData->swap(index,fluidEndIndex);
-			fluidEndIndex++;
-            pelletid[fluidEndIndex-1] = -1; 
-		}
-	}
 
  */
 	    	inflowEndIndex = fluidEndIndex; 
