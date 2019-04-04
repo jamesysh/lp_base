@@ -4,13 +4,7 @@
 #include <cassert>
 using namespace std;
 
-float     Bessel_Kn( int n,float  x);
-float     Bessel_I0(float  x);
-float     Bessel_K1(float  x);
-float     Bessel_I1(float  x);
-
-
-PelletInflowBoundary::PelletInflowBoundary():Pinflow(30), Uinflow(0), Vinflow(100){}
+PelletInflowBoundary::PelletInflowBoundary():Pinflow(10), Uinflow(0), Vinflow(100){}
 
 double calculateMassFlowRate(double energy){
 	return energy;
@@ -31,21 +25,11 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
         double *volumeold = m_pParticleData->m_vVolumeOld;
         double *localParSpacing = m_pParticleData->m_vLocalParSpacing;
         double *mass = m_pParticleData->m_vMass;
-        double *sound = m_pParticleData->m_vSoundSpeed;
-        double *m_vmassflowrate = m_pParticleData->m_vMassFlowRate; 
-    double masse = m_pParticleData->masse;
-	double massNe = m_pParticleData->massNe;
-	double teinf = m_pParticleData->teinf;
-	double INe = m_pParticleData->INe;
-	int ZNe = m_pParticleData->ZNe;
-	double one_plus_zstar = m_pParticleData->one_plus_Zstar;
-    double neinf = m_pParticleData->neinf;
-	double heatK = m_pParticleData->heatK;
-	double e = heatK*(2.99792458e7)/100;
-    double lnLambda = log(2*teinf/INe*sqrt(exp(1)/2));
-	const double* leftintegral = m_pParticleData->m_vLeftIntegral;
-	const double* rightintegral = m_pParticleData->m_vRightIntegral;
-	
+       double *sound = m_pParticleData->m_vSoundSpeed;
+
+      double *m_vmassflowrate = m_pParticleData->m_vMassFlowRate; 
+        int *pelletstate = m_pParticleData->m_vPelletState; 
+
 	int *pelletid = m_pParticleData->m_vPelletID;
 	size_t pelletn = m_pParticleData->m_iNumberofPellet;
 	double *pelletx = m_pParticleData->m_vPelletPositionX;
@@ -53,56 +37,106 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 	double *pelletz = m_pParticleData->m_vPelletPositionZ;
 	double *pelletr = m_pParticleData->m_vPelletRadius;
 	double *pelletir = m_pParticleData->m_vPelletInnerRadius;
-	double *pellete = m_pParticleData->m_vPelletEnergy;
-	double *qplusminus = m_pParticleData->m_vQplusminus;
 	double sublimationenergy = m_pParticleData->sublimationenergy;
 	double *pelletvelocity = m_pParticleData->m_vPelletVelocity;
-	
-    vector<double> pelletqsum(pelletn,0);
-	vector<int> pelletneighbor(pelletn,0);
-    vector<double> volumeOnBoundary(pelletn,0);
-    vector<double> pressureOnBoundary(pelletn,0);
-    double R = 83.1446/20.1797;
-    double Ts = Vinflow*Pinflow/R;
-
-    double k_warmup;
-    static double time = 0;
-
-        time += dt;
-
-        if (time > 0.01)
-          k_warmup = 1.0;
-        else
-          k_warmup = time/0.01;
-
-                                                                                                             
+    double *volumeOnBoundary = m_pParticleData->volumeOnBoundary;
+    double *ssOnBoundary = m_pParticleData->ssOnBoundary;
+    double *pelletqsum = m_pParticleData->pelletqsum;
+    double *pressureOnBoundary = m_pParticleData->pressureOnBoundary;
+    double *uOnBoundary = m_pParticleData->uOnBoundary;
+    static bool FIRST = true;    
+    vector<double> m_voldv(pelletn,0);
+    static double t_total = 0;
+    t_total += dt; 
+    	double R = 83.1446/20.1797;
+    	double Ts = Vinflow*Pinflow/R;
+    	double gamma0 = 1.67;
+	double gamma1 = gamma0 - 1;
 
 
+	for(int pi=0;pi<pelletn;pi++)
+    {
 
-    double gamma0 = 1.67;
+	    	cout<<"average volume on boundary is "<<volumeOnBoundary[pi]<<endl;
+        	cout<<"average pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
+        	cout<<"average soundspeed on boundary is "<<ssOnBoundary[pi]<<endl;
+            cout<<"average radial velocity = "<<uOnBoundary[pi]<<endl;
+        
 
-
-//	cout<<"insert particles"<<endl;
-//	cout<<inflowEndIndex<<endl;
-//	cout<<m_pParticleData->m_iCapacity<<endl;
-	for(int pi=0;pi<pelletn;pi++){
-//		cout<<pi<<endl;
+        double pr=pelletr[pi];
+       	pelletir[pi] = pr;
 		double pir=pelletir[pi];
-		double pr=pelletr[pi];
-		//generate new inflow particles in region 0<r<pir
-		int n=4.0*3.1416*pir*pr*pr/dx/dx/dx*sqrt(2.0);
+		
+
+		double massflowrate = m_vmassflowrate[pi];
+         
+      
+        m_voldv[pi] = pelletvelocity[pi];
+
+        if(FIRST)
+            {   
+                
+                FIRST = false;
+                m_voldv[pi] = 0;
+                
+                }
+
+		double B = (pressureOnBoundary[pi]+dt*gamma1*(pelletqsum[pi]))*volumeOnBoundary[pi]/ssOnBoundary[pi] - uOnBoundary[pi];
+		double C = -(massflowrate/4/M_PI/pr/pr)*R*Ts*volumeOnBoundary[pi]/ssOnBoundary[pi];
+	
+		cout<<"B ="<<B<<" "<<"C ="<<C<<endl;
+        if(massflowrate == 0)
+		{
+			pelletvelocity[pi] = uOnBoundary[pi];
+			volumeOnBoundary[pi] = Vinflow;
+		    pressureOnBoundary[pi] = Pinflow;
+		}
+		else
+		{
+
+            pelletvelocity[pi] = (-B + sqrt(B*B - 4*C))/2;
+            volumeOnBoundary[pi] = pelletvelocity[pi]/(massflowrate/4/M_PI/pr/pr);
+			pressureOnBoundary[pi] = R*Ts/volumeOnBoundary[pi];
+		}
+           
+           cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
+        	cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
+
+    cout<<"pellet velocity is "<<pelletvelocity[pi]<<endl;
+    cout<<"massflowrate is "<<massflowrate<<endl;            
+           double D =  (pressureOnBoundary[pi]+dt*gamma1*(pelletqsum[pi]))*volumeOnBoundary[pi]/ssOnBoundary[pi]; 
+         //  cout<<"D is "<<D<<endl; 
+        //pelletvelocity[pi]=massflowrate*volumeOnBoundary[pi]/4.0/M_PI/pr/pr;
+/*
+	 
+*/
+
+ 
+ 
+ } 
+/* 
+
+ */
+	    	inflowEndIndex = fluidEndIndex; 
+ //generate new inflow particles in region 0<r<pir
+
+    for(int pi=0;pi<pelletn;pi++){
+    	double pr=pelletr[pi];
+       	pelletir[pi] = pr;
+		double pir=pelletir[pi];
+		
+    int n=4.0*3.1416*pr*pr*pr/dx/dx/dx*sqrt(2.0)*Vinflow/volumeOnBoundary[pi];
 //		cout<<n<<endl;
 		if(inflowEndIndex+n>=m_pParticleData->m_iCapacity) {
 			cout<<"Error: too many inflow particles: n = "<<n<<endl;
 			return 1;//too many
 		}
-		double newpir=pir-n*dx*dx*dx/4.0/3.1416/pr/pr/sqrt(2.0);
-		for(int i=0;i<n;i++)
+		double newpir=pir-n*dx*dx*dx/4.0/3.1416/pr/pr/sqrt(2.0)*volumeOnBoundary[pi]/Vinflow;
+        	for(int i=0;i<n;i++)
 		{
-//			if(i%1000==0)
-//			cout<<i<<endl;
 			double tx=1,ty=1,tz=1,tr;
-			while(tx*tx+ty*ty+tz*tz>1){
+			while(tx*tx+ty*ty+tz*tz>1)
+			{
 				tx=2*(double)rand()/(double)RAND_MAX-1;
 				ty=2*(double)rand()/(double)RAND_MAX-1;
 				tz=2*(double)rand()/(double)RAND_MAX-1;
@@ -113,97 +147,57 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 			x[inflowEndIndex]=pelletx[pi]+tx*tr;
 			y[inflowEndIndex]=pellety[pi]+ty*tr;
 			z[inflowEndIndex]=pelletz[pi]+tz*tr;
-			vx[inflowEndIndex]=vy[inflowEndIndex]=vz[inflowEndIndex]=0;
-			pressure[inflowEndIndex]=Pinflow;
-			volumeold[inflowEndIndex]=volume[inflowEndIndex]=Vinflow;
-			localParSpacing[inflowEndIndex]=dx;
-			mass[inflowEndIndex]=dx*dx*dx/sqrt(2.0)/Vinflow;
-//			mass[inflowEndIndex]=dx*dx*dx/sqrt(2.0)/Vinflow*tr/pr*tr/pr;
-			sound[inflowEndIndex]=m_pEOS->getSoundSpeed(pressure[inflowEndIndex],1./volume[inflowEndIndex]);
+            double d_x = tx*tr;
+            double d_y = ty*tr;
+            double d_z = tz*tr;
+            double dr = sqrt(d_x*d_x+d_y*d_y+d_z*d_z);
+	       		vx[inflowEndIndex] = m_voldv[pi]*d_x/dr;
+           		vy[inflowEndIndex] = m_voldv[pi]*d_y/dr;
+           		vz[inflowEndIndex] = m_voldv[pi]*d_z/dr;
 			pelletid[inflowEndIndex]=pi;
 			inflowEndIndex++;
 		}
-//		cout<<"calculate velocity"<<endl;
-		pelletir[pi]=newpir;
-		//calculate ablation velocity
-		for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
-		{
-			double d_x=x[index]-pelletx[pi];
-			double d_y=y[index]-pellety[pi];
-			double d_z=z[index]-pelletz[pi];
-			double r=d_x*d_x+d_y*d_y+d_z*d_z;
-			if(r<(pr+dx)*(pr+dx) && r>pr*pr)
-			{
-                double tauleft = leftintegral[index]/massNe*ZNe;
-                double tauright = rightintegral[index]/massNe*ZNe;
-                double tauinf = heatK*heatK*teinf*teinf/(8.0*M_PI*e*e*e*e*lnLambda);
-                double taueff = tauinf/(0.625+0.55*sqrt(one_plus_zstar)); 
-                double uleft = tauleft/taueff;
-                double uright = tauright/taueff;
-                double qinf=sqrt(2.0/M_PI/masse)*neinf*pow(heatK*teinf,1.5);
-        
-                if(sqrt(d_y*d_y+d_z*d_z)>pr)
-
-                    pelletqsum[pi] += qplusminus[index];
-
-                else if(d_x>0)
-				    pelletqsum[pi] += qinf*0.5*uright*Bessel_Kn(2,sqrt(uright))*k_warmup;
-                
-                else
-                    pelletqsum[pi] += qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
-         
-      //          double right = qinf*0.5*uright*Bessel_Kn(2,sqrt(uright))*k_warmup;
-
-        //        double left = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
-         //       printf("x %.8g y %.8g z %.8g right %.8g left %.8g both %.8g add %.8g\n ",x[index],y[index],z[index],right,left,qplusminus[index],right+left);
-             //   pelletqsum[pi] += qplusminus[index];
-
-				pelletneighbor[pi]++;
-			}
-		}
-		if(pelletneighbor[pi]==0)
-		{
-			cout<<"Error: cannot find neighbor for pellet"<<endl;
-			assert(false);
-			return 0;
-		}
-		cout<<"Number of neighbor for pellet = "<<pelletneighbor[pi]<<endl;
-		pellete[pi]=pelletqsum[pi]/pelletneighbor[pi]*4*3.1416*pr*pr*2/M_PI;
-		double massflowrate=pellete[pi]/sublimationenergy;
-		cout<<"Mass flow rate = "<<massflowrate<<endl;
-
-		m_vmassflowrate[pi] = massflowrate;
-
-		double oldv=pelletvelocity[pi];
-		pelletvelocity[pi]=massflowrate*Vinflow/4.0/3.1416/pr/pr;
-		cout<<"pellet ablation velocity = "<<pelletvelocity[pi]<<endl;
-//		pelletvelocity[pi]=15;
-		pelletir[pi]+=dt*0.5*(oldv+pelletvelocity[pi]);
-	}	
+	}
+	
 //	cout<<"move particles"<<endl;
-
 	for(size_t index=fluidEndIndex;index<inflowEndIndex;index++)
 	{
-		//move particle[index]
-		double d_x=x[index]-pelletx[pelletid[index]];
-		double d_y=y[index]-pellety[pelletid[index]];
-		double d_z=z[index]-pelletz[pelletid[index]];
+        	int pi = pelletid[index];
+        	double d_x=x[index]-pelletx[pi];
+		double d_y=y[index]-pellety[pi];
+		double d_z=z[index]-pelletz[pi];
 		double dr=sqrt(d_x*d_x+d_y*d_y+d_z*d_z);
-		double oldv=sqrt(vx[index]*vx[index]+vy[index]*vy[index]+vz[index]*vz[index]);
-		double newv=pelletvelocity[pelletid[index]];
-		x[index]+=dt*0.5*(oldv+newv)*d_x/dr;
-		y[index]+=dt*0.5*(oldv+newv)*d_y/dr;
-		z[index]+=dt*0.5*(oldv+newv)*d_z/dr;
+		double pir=pelletir[pi];
+		double pr=pelletr[pi];
+        double old_v=sqrt(vx[index]*vx[index]+vy[index]*vy[index]+vz[index]*vz[index]);
+		double newv=pelletvelocity[pi];
+    //		volumeold[index] = volume[index]=volumeOnBoundary[pi];
+  //     	pressure[index] = pressureOnBoundary[pi];
+    //   	localParSpacing[index]=dx;
+	//	mass[index]=dx*dx*dx/Vinflow/sqrt(2);
+     //  	sound[index]=m_pEOS->getSoundSpeed(pressure[index],1./volume[index]);
+       	x[index]+=dt*0.5*(old_v+newv)*d_x/dr;
+		y[index]+=dt*0.5*(old_v+newv)*d_y/dr;
+		z[index]+=dt*0.5*(old_v+newv)*d_z/dr;
 		vx[index]=newv*d_x/dr;
 		vy[index]=newv*d_y/dr;
 		vz[index]=newv*d_z/dr;
-		dr+=dt*0.5*(oldv+newv);
-//                mass[index]=dx*dx*dx/sqrt(2.0)/Vinflow*dr/pelletr[pelletid[index]]*dr/pelletr[pelletid[index]];
-		if(dr>pelletr[pelletid[index]])//change label from inflow to fluid if r>pr
+		dr+=dt*0.5*(old_v+newv);
+		
+        volumeold[index] = volume[index]=volumeOnBoundary[pi];//*dr*dr/pr/pr;
+       	pressure[index] = pressureOnBoundary[pi];//*pr*pr/dr/dr;
+       	localParSpacing[index]=dx;
+		mass[index]=dx*dx*dx/Vinflow/sqrt(2);
+       	sound[index]=m_pEOS->getSoundSpeed(pressure[index],1./volume[index]);
+
+
+        if(dr>pelletr[pelletid[index]])//change label from inflow to fluid if r>pr
 		{
-//			mass[index]=dx*dx*dx/sqrt(2.0)/Vinflow;
-			if(index>fluidEndIndex)
-                                        m_pParticleData->swap(index,fluidEndIndex);
+		 	volumeold[index] = volume[index] = volumeOnBoundary[pi];
+         	pressure[index] = pressureOnBoundary[pi];
+       		sound[index]=m_pEOS->getSoundSpeed(pressure[index],1./volume[index]);
+       		if(index>fluidEndIndex)
+                        	m_pParticleData->swap(index,fluidEndIndex);
 			fluidEndIndex++;
             pelletid[fluidEndIndex-1] = -1; 
 		}
@@ -219,7 +213,7 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 
 }
 
-PelletOutflowBoundary::PelletOutflowBoundary():xmin(-16),xmax(16),ymin(-16),ymax(16),zmin(-16),zmax(16) {
+PelletOutflowBoundary::PelletOutflowBoundary():xmin(-20),xmax(20),ymin(-20),ymax(20),zmin(-20),zmax(20) {
 }
 
 int PelletOutflowBoundary::UpdateInflowBoundary(ParticleData *m_pParticleData, EOS* m_pEOS, double dt, double dx) {
@@ -244,13 +238,14 @@ int PelletOutflowBoundary::UpdateInflowBoundary(ParticleData *m_pParticleData, E
                         {
                                 m_pParticleData->swap(index,fluidEndIndex-1);
                           }
+                        
+			            timetrack[fluidEndIndex-1] = 0; //RESET TIMETRACK TO BE ZERO
                         if(fluidEndIndex<inflowEndIndex)
                         {
                                 m_pParticleData->swap(fluidEndIndex-1,inflowEndIndex-1);
                         }
                         fluidEndIndex--;
                         inflowEndIndex--;
-			            timetrack[fluidEndIndex] = 0; //RESET TIMETRACK TO BE ZERO
 	             }
         }
         m_pParticleData->m_iFluidNum=fluidEndIndex-fluidStartIndex;

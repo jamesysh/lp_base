@@ -168,12 +168,18 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
         m_fOctreeTime=0;
         m_fNeighbourTime=0;
         m_fBoundaryTime=0;
+ 
+       	//	m_pPelletSolver->computeIntegralSpherical();
+
+       // m_pPelletSolver->calculateHeatDeposition(0.);
 
         searchNeighbourForFluidParticle(0);
-
-    	computeSetupsForNextIteration();
+    	
+       m_pPelletSolver->computeBoundaryCondition(0.,m_fInitParticleSpacing);
+        computeSetupsForNextIteration();
 		
-        m_fTotalTime=0;
+
+       m_fTotalTime=0;
         m_fSolverTime=0;
         m_fSPHTime=0;
         m_fOctreeTime=0;
@@ -193,7 +199,7 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 	double startTime;
 
 	startTime = omp_get_wtime();
-	m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
+	//m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
 	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
 	if(m_iSolidBoundary || m_iPeriodicBoundary) 
@@ -257,6 +263,10 @@ for(size_t index=m_pParticleData->m_iFluidStartIndex;
 index<m_pParticleData->m_iFluidStartIndex+m_pParticleData->m_iFluidNum; index++) {
 	m_pParticleData->m_vVolumeOld[index] = m_pParticleData->m_vVolume[index];
 }
+
+if(m_pParticleData->m_iNumberofPellet)
+    m_pPelletSolver->computeBoundaryCondition(dt,m_fInitParticleSpacing);
+
 
 double startTime;
 startTime = omp_get_wtime();
@@ -430,7 +440,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //------start density integral computing--------------------
  
         int numberofParticle = m_pParticleData->m_iFluidNum +  m_pParticleData->m_iInflowNum;
-        if(m_pParticleData->m_iNumberofPellet){
+   /*     if(m_pParticleData->m_iNumberofPellet){
             m_vPositionX_temp = new double[numberofParticle];
             fill_n(m_vPositionX_temp, numberofParticle, 0);
 
@@ -446,7 +456,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
        
        }
 
-
+*/
 
 
 
@@ -461,11 +471,11 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	m_pParticleData->m_iFluidStartIndex ,m_pParticleData->m_iFluidNum + m_pParticleData->m_iBoundaryNum);
 //	cout<<"Calculate integral"<<endl;
 //        printf("Build octree takes %.16g seconds\n", omp_get_wtime() - startTime);
-/*	if(m_pParticleData->m_iNumberofPellet){
+	if(m_pParticleData->m_iNumberofPellet){
 	      double  apcstartTime = omp_get_wtime();
 
 //Compute integral from x+ and x- directions using octree
-//		m_pNeighbourSearcher->computeIntegralAPCloud(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
+		//m_pNeighbourSearcher->computeIntegralAPCloud(mass, leftintegral, rightintegral, m_pParticleData->m_iFluidNum + m_pParticleData->getInflowNum(),m_pParticleData->getMaxParticlePerCell());
 
 //Compute integral for spherical symmetry case
 		m_pPelletSolver->computeIntegralSpherical();
@@ -479,7 +489,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 	}
 
-*/
+
 
 
 
@@ -3355,7 +3365,7 @@ for(size_t index=startIndex; index<endIndex; index++) {
                                                         &outVolume[index], &outVelocity[index], &outPressure[index]); // output
            if(m_pParticleData->m_iNumberofPellet)
 			{  
-				    outPressure[index] += realDt*m_pParticleData->m_vDeltaq[index]*(m_pParticleData->m_vSoundSpeed[index]*m_pParticleData->m_vSoundSpeed[index]/(m_pParticleData->m_vVolume[index]*m_pParticleData->m_vPressure[index]) - 1);
+				    outPressure[index] += realDt*m_pParticleData->m_vDeltaq[index]*(inSoundSpeed[index]*inSoundSpeed[index]/(inVolume[index]*inPressure[index]) - 1);
                    //outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
 			}
 			if(LPFOrder0[index]*LPFOrder1[index]==0 && warningcount++==0)

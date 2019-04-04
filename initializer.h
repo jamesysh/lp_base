@@ -866,7 +866,7 @@ private:
 	std::string m_sExactSolutionName;///<name of exact solution
 	std::string m_sAuxiliaryOutput;////<name of auxiliary output type
 	int m_iPelletDistribution;
-	int m_iMaxParticlePerCell = 50;	
+	int m_iMaxParticlePerCell = 100;	
     int m_iQuadtreeResolution;
     int m_iBinarytreeResolution;
 

@@ -453,14 +453,21 @@ private:
 	double* m_vPositionX;///< x
 	double* m_vPositionY;///< y
 	double* m_vPositionZ;///< z
-	double* m_vVelocityU;///< velocity in x-coordinate
+	double* m_vPositionXOld;///< x
+	double* m_vPositionYOld;///< y
+	double* m_vPositionZOld;///< z
+
+    double* m_vVelocityU;///< velocity in x-coordinate
 	double* m_vVelocityV;///< velocity in y-coordinate
 	double* m_vVelocityW;///< velocity in z-coordinate
+    double* m_vVelocityRadialOld;
 	double* m_vVolume;///< volume
 	double* m_vVolumeOld;///< volume
 	double* m_vVolumeVoronoi;
 	double* m_vPressure;///< pressure	
-	double* m_vSoundSpeed;///< sound speed
+	double* m_vPressureOld;
+    double* m_vSoundSpeed;///< sound speed
+    double* m_vSoundSpeedOld;
     double* m_vTemperature;
     int* m_vTimeTrack;
     double* m_vLocalParSpacing;///<local inter-particle spacing
@@ -485,7 +492,12 @@ private:
 	double* m_vPelletInnerRadius;
 	double* m_vPelletOuterRadius;
     double* m_vPelletEnergy;//energy absorbed by each pellet, need to be updated in every time step
-	double* m_vPelletVelocity;
+	double* pelletqsum;
+    double* volumeOnBoundary;
+    double* ssOnBoundary; //soundspeed
+    double* uOnBoundary; //radial velocity
+    double* pressureOnBoundary;
+   double* m_vPelletVelocity;
 	int* m_vPelletState;
     int* m_vPelletID;//the id of the pellet generating each inflow particle, size = m_iCapacity
 	double* m_vDeltaq;
@@ -504,7 +516,6 @@ private:
 	double sublimationenergy;
 	double one_plus_Zstar;
     double *m_vMassFlowRate;
-
 
 	double *m_vPhi;//< used by limiter
     

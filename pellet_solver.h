@@ -20,7 +20,7 @@ class PelletSolver {
  	double neon_radiation_power_density(double,double);
 
 	double neon_radiation_data(int,int);
-       
+    void computeBoundaryCondition(double,double);       
     private:
 
         
