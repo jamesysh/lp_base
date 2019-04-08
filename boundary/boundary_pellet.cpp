@@ -4,7 +4,7 @@
 #include <cassert>
 using namespace std;
 
-PelletInflowBoundary::PelletInflowBoundary():Pinflow(10), Uinflow(0), Vinflow(100){}
+PelletInflowBoundary::PelletInflowBoundary():Pinflow(20), Uinflow(0), Vinflow(100){}
 
 double calculateMassFlowRate(double energy){
 	return energy;
@@ -101,7 +101,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
            
            cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
         	cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
-
+     //   volumeOnBoundary[pi] = Vinflow;
+       // pressureOnBoundary[pi] = Pinflow;
     cout<<"pellet velocity is "<<pelletvelocity[pi]<<endl;
     cout<<"massflowrate is "<<massflowrate<<endl;            
            double D =  (pressureOnBoundary[pi]+dt*gamma1*(pelletqsum[pi]))*volumeOnBoundary[pi]/ssOnBoundary[pi]; 
@@ -184,8 +185,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		vz[index]=newv*d_z/dr;
 		dr+=dt*0.5*(old_v+newv);
 		
-        volumeold[index] = volume[index]=volumeOnBoundary[pi];//*dr*dr/pr/pr;
-       	pressure[index] = pressureOnBoundary[pi];//*pr*pr/dr/dr;
+        volumeold[index] = volume[index]=Vinflow*dr*dr/pr/pr;
+       	pressure[index] = Pinflow*pr*pr/dr/dr;
        	localParSpacing[index]=dx;
 		mass[index]=dx*dx*dx/Vinflow/sqrt(2);
        	sound[index]=m_pEOS->getSoundSpeed(pressure[index],1./volume[index]);

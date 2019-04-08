@@ -55,6 +55,8 @@ ParticleData::ParticleData(Initializer& init) {
 	m_iMaxParticlePerCell=init.getMaxParticlePerCell();
 	m_iQuadtreeResolution = init.getQuadtreeResolution();
     m_iBinarytreeResolution = init.getBinarytreeResolution();
+    m_iHeatModel = init.getHeatModel();
+    m_iMagneticField = init.getMagneticField();
     m_vPelletPositionX = init.getPelletPositionX();
 	m_vPelletPositionY = init.getPelletPositionY();
 	m_vPelletPositionZ = init.getPelletPositionZ();

@@ -35,8 +35,10 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 0. 0. 0 0       z position of pellets
 0.2             radius
 0.24             outer radius
-4000        quadtree resolution
-40          binarytree resolution
+1           heating model
+2000        quadtree resolution
+50          binarytree resolution
+60          magnetic field  
 pressure
 temperature
 density

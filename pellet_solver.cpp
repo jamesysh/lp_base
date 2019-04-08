@@ -74,11 +74,22 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 		double guright = sqrt(uright)*Bessel_K1(sqrt(uright))/4;
 		double nt=1.0/volume[index]/massNe;
 //parallel line case
-		//Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
-		//Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
+        if(m_pPelletData->m_iHeatModel == 1){
+            Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
+		    Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
+            }
+
 //spherical symmetry case
-    	Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
-    	Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
+        else if(m_pPelletData->m_iHeatModel == 0){
+    	    Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
+    	    Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
+            }
+        else
+            {
+            cout<<"Heating model is not detected."<<endl;
+            assert(false);
+            return;
+            }
     }
 
 }
@@ -173,7 +184,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
 
        // double* phi = m_pPelletData->m_vPhi;
         double LFy,LFz,d_vy,d_vz;
-	    double MagneticField=30.0;//placeholder
+	    double MagneticField = m_pPelletData->m_iMagneticField;//placeholder
 
         size_t fluidStartIndex = m_pPelletData->getFluidStartIndex();
         size_t fluidEndIndex = fluidStartIndex + m_pPelletData->getFluidNum();
@@ -646,7 +657,8 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
         pre_bc[pi] = 0;
         ss_bc[pi] = 0;
         u_bc[pi] = 0;
-        for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
+/*
+    for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
 		{
 			
             double ss = sound[index];
@@ -677,7 +689,7 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
         cout<<"dis is "<<dis<<endl;
         ss_bc[pi] = 0;
         pelletneighbor[pi] = 0;
-        for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
+  */      for(size_t index=fluidStartIndex;index<fluidEndIndex;index++)
 		{
 			
             double ss = sound[index];
@@ -690,9 +702,9 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
 
 
 
-//			if(r_shift<(pr+dx/10)*(pr+dx/10) 	&& r_shift > (pr-dx/10)*(pr-dx/10) && r>(pr)*(pr))
+			if(r_shift<(pr+dx/10)*(pr+dx/10) 	&& r_shift > (pr-dx/10)*(pr-dx/10) && r>(pr)*(pr))
 //			&& r_shift > (pr-dx/5)*(pr-dx/5)
-			if( r>(pr+dis-dx/5)*(pr+dis-dx/5) && r<(pr+dis+dx/5)*(pr+dis+dx/5))
+//			if( r>(pr+dis-dx/5)*(pr+dis-dx/5) && r<(pr+dis+dx/5)*(pr+dis+dx/5))
             {
                 
 				qsum_bc[pi]+=qplusminus[index];
@@ -724,7 +736,9 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
         cout<<"radial velocity on Boundary = "<<u_bc[pi]<<endl;
 */
        pellete[pi] = qsum_bc[pi]*4*M_PI*pr*pr;
-   
+        if(m_pPelletData->m_iHeatModel)
+            pellete[pi] *= 2/M_PI;
+
    double massflowrate=pellete[pi]/sublimationenergy;
 
 		m_vmassflowrate[pi] = massflowrate;

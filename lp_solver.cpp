@@ -199,8 +199,10 @@ void HyperbolicLPSolver::computeSetupsForNextIteration() {
 	double startTime;
 
 	startTime = omp_get_wtime();
-	//m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
-	if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
+	if(m_pParticleData->m_iMagneticField){
+    m_pPelletSolver->updateStatesByLorentzForce(m_fDt);
+	}
+    if(m_iSolidBoundary) generateSolidBoundaryByMirrorParticles();
 	if(m_iPeriodicBoundary) generatePeriodicBoundaryByMirrorParticles();
 	if(m_iSolidBoundary || m_iPeriodicBoundary) 
 	{
@@ -440,7 +442,8 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //------start density integral computing--------------------
  
         int numberofParticle = m_pParticleData->m_iFluidNum +  m_pParticleData->m_iInflowNum;
-   /*     if(m_pParticleData->m_iNumberofPellet){
+        if(m_pParticleData->m_iNumberofPellet){
+            if(m_pParticleData->m_iHeatModel ){
             m_vPositionX_temp = new double[numberofParticle];
             fill_n(m_vPositionX_temp, numberofParticle, 0);
 
@@ -455,8 +458,8 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
     delete[] m_vPositionX_temp;
        
        }
+    }
 
-*/
 
 
 
@@ -472,6 +475,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 //	cout<<"Calculate integral"<<endl;
 //        printf("Build octree takes %.16g seconds\n", omp_get_wtime() - startTime);
 	if(m_pParticleData->m_iNumberofPellet){
+          if(m_pParticleData->m_iHeatModel == 0){
 	      double  apcstartTime = omp_get_wtime();
 
 //Compute integral from x+ and x- directions using octree
@@ -489,7 +493,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 
 	}
 
-
+}
 
 
 
@@ -3028,8 +3032,8 @@ for(size_t index=startIndex; index<endIndex; index++) {
     double speed = vU[index]*vU[index]+vV[index]*vV[index];
 	if(m_iDimension==3)
 		speed+=vW[index]*vW[index];
-	double cfl=dx*dx/max(sound*sound,speed);
-//  double cfl = dx*dx/sound/sound;
+//	double cfl=dx*dx/max(sound*sound,speed);
+  double cfl = dx*dx/sound/sound;
     #ifdef _OPENMP
 		if(cfl<mincfl[tid] || mincfl[tid]<0)
 			mincfl[tid]=cfl;

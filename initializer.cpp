@@ -428,7 +428,16 @@ void Initializer::readInputfile(const string& inputfileName) {
         for(int i=0;i<m_iNumberofPellet;i++){
         m_vPelletOuterRadius[i] = pelletquantity_tmp;
         }
-
+        
+        iss.str(lines[i++]);
+        iss>>m_iHeatModel;
+        save<<"m_iHeatModel "<<m_iHeatModel<<endl;
+        if(!m_iHeatModel && m_iNumberofPellet!=1){
+            cout<<"Cannot run multi pellets with spherically symmetric heating model."<<endl;
+            assert(false);
+            return;
+            }
+        if(m_iHeatModel){
         iss.str(lines[i++]);
 	    iss>>m_iQuadtreeResolution;
 	    save<<"m_iQuadtreeResolution "<<m_iQuadtreeResolution<<endl;
@@ -436,8 +445,15 @@ void Initializer::readInputfile(const string& inputfileName) {
         iss.str(lines[i++]);
         iss>>m_iBinarytreeResolution;
 	    save<<"m_iBinarytreeResolution "<<m_iBinarytreeResolution<<endl;
-
-
+        
+        iss.str(lines[i++]);
+        iss>>m_iMagneticField;
+        if(m_iEOSChoice != 3)
+            m_iMagneticField = 0;
+        
+        save<<"m_iMagneticField "<<m_iMagneticField<<endl;
+        printf("Magnetic Field is %g T\n.",m_iMagneticField/10.0);
+       }
        
 /*
         Magx=0;

@@ -485,6 +485,8 @@ private:
 	int m_iMaxParticlePerCell;//maximum number of particle per APCloud node for density integral calculation
 	int m_iQuadtreeResolution;
     int m_iBinarytreeResolution;
+    int m_iHeatModel;
+    double m_iMagneticField;
     double* m_vPelletPositionX;//x coordinate of centre of each pellet, size = m_iNumberofPellet
 	double* m_vPelletPositionY;//y coordinate
 	double* m_vPelletPositionZ;//z coordinate
@@ -492,7 +494,7 @@ private:
 	double* m_vPelletInnerRadius;
 	double* m_vPelletOuterRadius;
     double* m_vPelletEnergy;//energy absorbed by each pellet, need to be updated in every time step
-	double* pelletqsum;
+    double* pelletqsum;
     double* volumeOnBoundary;
     double* ssOnBoundary; //soundspeed
     double* uOnBoundary; //radial velocity
