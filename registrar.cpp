@@ -34,13 +34,12 @@
 #include "boundary_pellet.h"
 #include "geometry_pellet.h"
 #include "state_pellet.h"
-
+#include "geometry_cylinder.h"
 namespace 
 {
 	
 	GeometryRegistrar<Ball> r1("ball");
 	GeometryRegistrar<Disk> r2("disk");	
-	
 	StateRegistrar<GaussianPressureState> s1("gauss_pressure");
 
 	// 2d collision simulation
@@ -255,4 +254,7 @@ namespace
 	StateRegistrar<PelletState> s60("pelletstate");
 	BoundaryRegistrar<PelletInflowBoundary> b60("pelletinflow");
 	BoundaryRegistrar<PelletOutflowBoundary> b61("pelletoutflow");
+
+    GeometryRegistrar<Cylinder> r62("cylinder");
+
 }

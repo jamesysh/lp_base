@@ -175,7 +175,7 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
 
         searchNeighbourForFluidParticle(0);
     	
-       m_pPelletSolver->computeBoundaryCondition(0.,m_fInitParticleSpacing);
+      // m_pPelletSolver->computeBoundaryCondition(0.,m_fInitParticleSpacing);
         computeSetupsForNextIteration();
 		
 
@@ -266,8 +266,8 @@ index<m_pParticleData->m_iFluidStartIndex+m_pParticleData->m_iFluidNum; index++)
 	m_pParticleData->m_vVolumeOld[index] = m_pParticleData->m_vVolume[index];
 }
 
-if(m_pParticleData->m_iNumberofPellet)
-    m_pPelletSolver->computeBoundaryCondition(dt,m_fInitParticleSpacing);
+//if(m_pParticleData->m_iNumberofPellet)
+//    m_pPelletSolver->computeBoundaryCondition(dt,m_fInitParticleSpacing);
 
 
 double startTime;
