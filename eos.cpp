@@ -86,7 +86,7 @@ double PolytropicGasEOS::getTemperature(double pressure, double density) {
     R = 83.14;
   }
   else if(m_iPelletMaterial == 1){
-       R = 41.28;
+       R = 83.14;
        mu = 2.014;
       }
   return mu*pressure/(R*density)/11604.525;
