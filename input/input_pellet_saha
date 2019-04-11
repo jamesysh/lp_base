@@ -42,5 +42,4 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 pressure
 temperature
 density
-timetrack
-
+allparticle
