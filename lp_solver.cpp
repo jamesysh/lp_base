@@ -3370,6 +3370,7 @@ for(size_t index=startIndex; index<endIndex; index++) {
            if(m_pParticleData->m_iNumberofPellet)
 			{  
 				    outPressure[index] += realDt*m_pParticleData->m_vDeltaq[index]*(inSoundSpeed[index]*inSoundSpeed[index]/(inVolume[index]*inPressure[index]) - 1);
+                   
                    //outPressure[index] += realDt * m_pParticleData->m_vDeltaq[index]*(m_pGamma-1);
 			}
 			if(LPFOrder0[index]*LPFOrder1[index]==0 && warningcount++==0)
