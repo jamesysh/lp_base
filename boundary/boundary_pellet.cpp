@@ -94,23 +94,20 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		else
 		{
 
-            pelletvelocity[pi] = (-B + sqrt(B*B - 4*C))/2;
-            volumeOnBoundary[pi] = pelletvelocity[pi]/(massflowrate/4/M_PI/pr/pr);
-			pressureOnBoundary[pi] = R*Ts/volumeOnBoundary[pi];
+       volumeOnBoundary[pi] = Vinflow;
+            pelletvelocity[pi]=massflowrate*Vinflow/4.0/M_PI/pr/pr;
+        pressureOnBoundary[pi] = Pinflow;
+
+      // pelletvelocity[pi] = (-B + sqrt(B*B - 4*C))/2;
+           // volumeOnBoundary[pi] = pelletvelocity[pi]/(massflowrate/4/M_PI/pr/pr);
+		//	pressureOnBoundary[pi] = R*Ts/volumeOnBoundary[pi];
 		}
            
            cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
         	cout<<"pressure on boundary is "<<pressureOnBoundary[pi]<<endl;
-     //   volumeOnBoundary[pi] = Vinflow;
-       // pressureOnBoundary[pi] = Pinflow;
-    cout<<"pellet velocity is "<<pelletvelocity[pi]<<endl;
+          cout<<"pellet velocity is "<<pelletvelocity[pi]<<endl;
     cout<<"massflowrate is "<<massflowrate<<endl;            
-           double D =  (pressureOnBoundary[pi]+dt*gamma1*(pelletqsum[pi]))*volumeOnBoundary[pi]/ssOnBoundary[pi]; 
-         //  cout<<"D is "<<D<<endl; 
-        //pelletvelocity[pi]=massflowrate*volumeOnBoundary[pi]/4.0/M_PI/pr/pr;
-/*
 	 
-*/
 
  
  
