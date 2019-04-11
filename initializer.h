@@ -399,6 +399,7 @@ public:
     int getQuadtreeResolution() const {return m_iQuadtreeResolution;}
     int getBinarytreeResolution() const {return m_iBinarytreeResolution;}
     int getHeatModel() const {return m_iHeatModel;}
+    int getPelletMaterial() const{return m_iPelletMaterial;}
     double getMagneticField() const {return m_iMagneticField;}
     double* getPelletPositionX() const {return m_vPelletPositionX;}
         double* getPelletPositionY() const {return m_vPelletPositionY;}
@@ -873,7 +874,7 @@ private:
     int m_iBinarytreeResolution;
     int m_iHeatModel;
     double m_iMagneticField;
-
+    int m_iPelletMaterial; //0:neon 1:deuterium
     //-----------------------------------------------------------------------------
 
 	

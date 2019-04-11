@@ -3,7 +3,7 @@
 #include <cmath>
 
 
-Cylinder::Cylinder():radius(3/2.),length(8),xCen(0),yCen(0),zCen(){}
+Cylinder::Cylinder():radius(3/2.),length(10),xCen(0),yCen(0),zCen(){}
 
 
 bool Cylinder::operator()(double x, double y, double z) const {	

@@ -1756,7 +1756,7 @@ bool HyperbolicLPSolver::generateGhostParticleByFillingVacancy() {
 				z[ghostIndex] = gZ[tid][j];
 				size_t index = fIndex[tid][j];
 
-				pressure[ghostIndex] = 0;
+				pressure[ghostIndex] = 0.64;
 				velocityU[ghostIndex] = velocityU[index];
 				velocityV[ghostIndex] = velocityV[index];
 				velocityW[ghostIndex] = velocityW[index];
@@ -3032,8 +3032,8 @@ for(size_t index=startIndex; index<endIndex; index++) {
     double speed = vU[index]*vU[index]+vV[index]*vV[index];
 	if(m_iDimension==3)
 		speed+=vW[index]*vW[index];
-//	double cfl=dx*dx/max(sound*sound,speed);
-  double cfl = dx*dx/sound/sound;
+	double cfl=dx*dx/max(sound*sound,speed);
+//  double cfl = dx*dx/sound/sound;
     #ifdef _OPENMP
 		if(cfl<mincfl[tid] || mincfl[tid]<0)
 			mincfl[tid]=cfl;

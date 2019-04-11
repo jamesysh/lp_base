@@ -34,9 +34,10 @@ public:
 class PolytropicGasEOS : public EOS {
 protected:
 	double m_fGamma; ///< The parameter \e gamma
-
+    
+    int m_iPelletMaterial;
 public:
-	PolytropicGasEOS(double gamma) : m_fGamma(gamma) {m_iEOSChoice=1;}
+	PolytropicGasEOS(double gamma,int pelletmaterial) : m_fGamma(gamma),m_iPelletMaterial(pelletmaterial) {m_iEOSChoice=1;}
 	
 	// Destructor
 	virtual ~PolytropicGasEOS() {}	

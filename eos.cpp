@@ -55,14 +55,41 @@ double PolytropicGasEOS::getSoundSpeed(double pressure, double density) {
 }
 
 double PolytropicGasEOS::getElectricConductivity(double pressure, double density) {
-  return 0.0;
+if(m_iPelletMaterial == 0)
+    return 0.0;
+else if(m_iPelletMaterial == 1)
+{   
+    double cond;
+    double T = getTemperature(pressure,density);
+    double m = 1 ;
+    double nt,fi,lnL,f_one;   
+    nt =  density/3.34e-24;
+    fi = m;
+    if(fi < 1.e-20)
+        cond = 0.;
+    else{
+        lnL = 3.6e9*pow(T,1.5)/sqrt(fi*nt);
+        cond = 1e11/1.15/(lnL/pow(T,1.5) + 0.54*pow(T,0.059)*(1/fi-1));
+
+        
+        }
+      
+    return cond;
+    }
 }
 
 double PolytropicGasEOS::getTemperature(double pressure, double density) {
-  double mu = 20.18;
-  double R = 83.14;
+  double R,mu;
   
-  return mu*pressure/(R*density);
+  if(m_iPelletMaterial == 0 ){
+    mu = 20.18;
+    R = 83.14;
+  }
+  else if(m_iPelletMaterial == 1){
+       R = 41.28;
+       mu = 2.014;
+      }
+  return mu*pressure/(R*density)/11604.525;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

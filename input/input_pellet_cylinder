@@ -1,7 +1,7 @@
 24				number of threads
 0				start time
-1				end time
-0.01				write time interval
+0.1				end time
+0.001				write time interval
 0.5				CFL coefficient
 3				dimension (2 or 3)
 1				number of fluid objects
@@ -28,6 +28,7 @@ free				type of boundary condition1
 none				name of exact solution to compare with (simplewave, shocktube, sod, gresho, yee, noh)
 pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletablation)
 1				distribution of pellet (number of pellets)
+1               pellet material
 0. 8. 0 0       x position of pellets
 0. 0. 4 3       y position of pellets
 0. 0. 0 0       z position of pellets
@@ -36,7 +37,7 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 1           heating model
 2000        quadtree resolution
 50          binarytree resolution
-0            magnetic field
+20            magnetic field
 pressure
 density
 temperature

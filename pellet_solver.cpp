@@ -222,7 +222,7 @@ void PelletSolver::updateStatesByLorentzForce( double dt) {
        	//	phi[index] = rad_cool*1.e9;
 
 		//radiation cooling term
-       	pressure[index] = press - (sc*sc*density/pressure[index] - 1)*rad_cool*dt;
+    //   	pressure[index] = press - (sc*sc*density/pressure[index] - 1)*rad_cool*dt;
        
 
 		double radius = sqrt(positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index]);

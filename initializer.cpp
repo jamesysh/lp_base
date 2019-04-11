@@ -390,13 +390,18 @@ void Initializer::readInputfile(const string& inputfileName) {
 
     if(m_iPelletDistribution){
         m_iNumberofPellet = m_iPelletDistribution;
-        save<<"m_iNumberofPellet"<< m_iNumberofPellet<<endl;
+        save<<"m_iNumberofPellet "<< m_iNumberofPellet<<endl;
+        
+        iss.str(lines[i++]);
+        iss>>m_iPelletMaterial;
+        save<<"m_iPelletMaterial "<<m_iPelletMaterial<<endl;
         m_vPelletPositionX = new double[m_iNumberofPellet];
         m_vPelletPositionY = new double[m_iNumberofPellet];
         m_vPelletPositionZ = new double[m_iNumberofPellet];
         m_vPelletRadius = new double[m_iNumberofPellet];
         m_vPelletInnerRadius = new double[m_iNumberofPellet];
         m_vPelletOuterRadius = new double[m_iNumberofPellet];
+        
         double pelletquantity_tmp;
         iss.str(lines[i++]);
 	    for(int i=0;i<m_iNumberofPellet;i++){
@@ -448,8 +453,8 @@ void Initializer::readInputfile(const string& inputfileName) {
         
         iss.str(lines[i++]);
         iss>>m_iMagneticField;
-        if(m_iEOSChoice != 3)
-            m_iMagneticField = 0;
+        //if(m_iEOSChoice != 3)
+          //  m_iMagneticField = 0;
         
         save<<"m_iMagneticField "<<m_iMagneticField<<endl;
         printf("Magnetic Field is %g T\n.",m_iMagneticField/10.0);
@@ -669,7 +674,7 @@ void Initializer::setParams() {
 void Initializer::setEOS() {
 	 
 	if(m_iEOSChoice == 1) // Polytropic gas EOS
-		m_pEOS = new PolytropicGasEOS(m_fGamma);
+		m_pEOS = new PolytropicGasEOS(m_fGamma,m_iPelletMaterial);
 	else if(m_iEOSChoice==2) // Stiffened Polytropic gas EOS
 		m_pEOS = new StiffPolytropicGasEOS(m_fGamma,m_fPinf,m_fEinf);
 	else if(m_iEOSChoice==3) // Saha EOS
@@ -2011,23 +2016,58 @@ void Initializer::modifyInitContactLength() {
 }
 
 void Initializer::setPelletQuantity(){
-
-
+    
+        static bool FIRST=true;                                                                              
+        static std::map<double, double> map_one_plus_Zstar;                                                     
+     
+    
         Magx=0;
         Magy=0;
         Magz=0;
+        
         masse=9.109e-28;
-        massNe=3.35e-23;
         teinf=2000;//kev
-       	INe=135.5;//kev
-        ZNe=10;
         neinf=1.204910e+13;
         heatK=1.602e-18;//eVu
         conductivity=0;
-        sublimationenergy=1363;
-        static bool FIRST=true;                                                                              
-        static std::map<double, double> map_one_plus_Zstar;                                                     
+
+        if(m_iPelletMaterial == 1)//Deuterium
+        {
+         cout<<"The pellet Material is Deuterium."<<endl;
+         massNe = 3.34e-24;
+         INe = 14.9913;
+         ZNe = 1;
+         sublimationenergy=3125.2;   
+        if (FIRST)                                                                                           
+	  {                                                                                                    
+	    map_one_plus_Zstar[1000] = 0.952556;                                                               
+	    map_one_plus_Zstar[2000] = 0.957404;                                                               
+	    map_one_plus_Zstar[3000] = 0.959938;                                                               
+	    map_one_plus_Zstar[4000] = 0.961598;                                                               
+	    map_one_plus_Zstar[6000] = 0.963751;                                                               
+	    map_one_plus_Zstar[8000] = 0.965155;                                                               
+	    map_one_plus_Zstar[10000] = 0.966178;                                                              
                                                                                                              
+	    one_plus_Zstar = map_one_plus_Zstar[teinf];                                          
+        cout<<"one plus zstar = "<<one_plus_Zstar<<endl;                                                                                                     
+	    if (floor(one_plus_Zstar) != 0)                                                                   
+	      printf("in %s, line %d, function %s: error in map initialization of 1+Z*\n", __FILE__,__LINE__,\
+		     __PRETTY_FUNCTION__);                                                                                        
+                                                                                                             
+	    FIRST = false;                                                                                    
+	  }                             
+     
+     }
+        
+        else if(m_iPelletMaterial == 0){
+      
+    
+        cout<<"The Pellet Material is Neon."<<endl;
+        massNe=3.35e-23;
+       	INe=135.5;//kev
+        ZNe=10;
+        sublimationenergy=1363;
+                                                                                                            
         if (FIRST)                                                                                           
 	  {                                                                                                    
 	    map_one_plus_Zstar[1000] = 4.93908;                                                               
@@ -2046,7 +2086,7 @@ void Initializer::setPelletQuantity(){
                                                                                                              
 	    FIRST = false;                                                                                    
 	  }                             
-
+    }
 
 }
 
