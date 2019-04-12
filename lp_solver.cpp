@@ -255,7 +255,7 @@ int HyperbolicLPSolver::solve(double dt) {
 //cout<<"--------------HyperbolicLPSolver::solve()--------------"<<endl;
 //	cout<<"---------------------------------------------------------"<<endl;
 
-srand(dt);  
+srand(time(NULL));  
 double currentstepstartTime;
 currentstepstartTime = omp_get_wtime();
 // dt for this time step 
@@ -3038,8 +3038,8 @@ for(size_t index=startIndex; index<endIndex; index++) {
     double speed = vU[index]*vU[index]+vV[index]*vV[index];
 	if(m_iDimension==3)
 		speed+=vW[index]*vW[index];
-	double cfl=dx*dx/max(sound*sound,speed);
-//  double cfl = dx*dx/sound/sound;
+//	double cfl=dx*dx/max(sound*sound,speed);
+  double cfl = dx*dx/sound/sound;
     #ifdef _OPENMP
 		if(cfl<mincfl[tid] || mincfl[tid]<0)
 			mincfl[tid]=cfl;
