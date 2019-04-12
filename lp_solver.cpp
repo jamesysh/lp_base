@@ -4737,12 +4737,15 @@ void HyperbolicLPSolver::writeDebugInfo(){
 	const double* positionY = m_pParticleData->getPositionY();
 	const double* velocityU = m_pParticleData->getVelocityU();
 	const double* velocityV = m_pParticleData->getVelocityV();
+    const double* positionZ;
     
-	if(m_pParticleData->getDimension()==2)
+	const double* velocityW;
+   
+	if(m_pParticleData->getDimension()==3)
    {    
-    	const double* positionZ = m_pParticleData->getPositionZ();
+    	positionZ = m_pParticleData->getPositionZ();
     
-	    const double* velocityW = m_pParticleData->getVelocityW();
+	    velocityW = m_pParticleData->getVelocityW();
     } 
 	const double* volume = m_pParticleData->getVolume();
 	const double* mass = m_pParticleData->getMass();
@@ -4750,8 +4753,50 @@ void HyperbolicLPSolver::writeDebugInfo(){
 	const double* soundSpeed = m_pParticleData->getSoundSpeed();
     const double* localParSpacing = m_pParticleData->getLocalParSpacing();
     FILE *debug;
+    debug = fopen(m_sDebugfileName.c_str(),"w");
+    if(debug==nullptr) {
+		printf("Unable to open file: %s\n",m_sDebugfileName.c_str()); 
+		return ;
+	}
+
+    size_t startIndex = m_pParticleData->getFluidStartIndex();
+
+    size_t endIndex = startIndex + m_pParticleData->getFluidNum();
+  
+    fprintf(debug,"The number of fluid particles\n");
+    fprintf(debug,"%d\n",endIndex-startIndex);
+    fprintf(debug,"Position\n");
+     if(m_pParticleData->getDimension()==2) {
+		for(size_t i = startIndex; i<endIndex; i++)
+			fprintf(debug,"%.16g %.16g %.16g\n",positionX[i], positionY[i], 0.);
+	}
+	else if(m_pParticleData->getDimension()==3) {
+		for(size_t i = startIndex; i<endIndex; i++)
+			fprintf(debug,"%.16g %.16g %.16g\n",positionX[i], positionY[i], positionZ[i]);
+	}
+   
+    fprintf(debug,"Velocity\n");
+    if(m_pParticleData->getDimension()==2) {
+		for(size_t i=startIndex; i<endIndex; i++)
+			fprintf(debug,"%.16g %.16g %.16g\n",velocityU[i], velocityV[i], 0.);
+	}
+	else if(m_pParticleData->getDimension()==3) {
+		for(size_t i=startIndex; i<endIndex; i++)
+			fprintf(debug,"%.16g %.16g %.16g\n",velocityU[i], velocityV[i], velocityW[i]);
+	}
+
+	fprintf(debug,"Pressure\n");
+	for(size_t i=startIndex; i<endIndex; i++)
+		fprintf(debug,"%.16g\n",pressure[i]);
+
+	fprintf(debug,"Volume\n");
+	for(size_t i=startIndex; i<endIndex; i++)
+		fprintf(debug,"%.16g\n",volume[i]);
+
 
     
+    fclose(debug);
+
     
     }
 

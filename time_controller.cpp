@@ -71,6 +71,8 @@ int DefaultTimeController::solve() {
 	
 	// visualization at zero time step
 	m_pSolver->solve(0.0);
+    m_pSolver->writeDebugInfo(); 
+
 	for(auto pViewer:m_vViewers) {
 //		cout<<"solve"<<endl;
 //                m_pSolver->solve(0.0);
@@ -114,7 +116,7 @@ int DefaultTimeController::solve() {
 		// write results if necessary
 		if(0||isWriteTime) { 
 			
-            
+            m_pSolver->writeDebugInfo(); 
             printf("Time=%.16g, writeStep=%ld\n",m_fTime, m_iWriteStep); // check the write time is correct
 			for(auto pViewer:m_vViewers) {
 //				m_pSolver->solve(0.0);
