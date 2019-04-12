@@ -254,6 +254,8 @@ computeMinCFL();
 int HyperbolicLPSolver::solve(double dt) {	
 //cout<<"--------------HyperbolicLPSolver::solve()--------------"<<endl;
 //	cout<<"---------------------------------------------------------"<<endl;
+
+srand(dt);  
 double currentstepstartTime;
 currentstepstartTime = omp_get_wtime();
 // dt for this time step 
@@ -276,9 +278,7 @@ bool phase_success;
 if(m_iFixParticles==0){
 //Solver: upwind scheme
 if(m_iRandomDirSplitOrder){
-    srand((unsigned)time(NULL));  
     m_iDirSplitOrder =  rand()%6;  
-    cout<<"split order "<<m_iDirSplitOrder<<endl;                
     }
 
 for(int phase=0; phase<m_iNumPhase; ) {
