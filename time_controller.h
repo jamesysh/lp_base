@@ -71,8 +71,6 @@ protected:
 	double m_fDt; ///< The physical time interval between two iterations of the simulation
         double m_fAvgParticleSpacing; ///< the average particle spacing
 	std::size_t m_iWriteStep; ///< The number of times results are written to the particle veiwer
-	bool m_iIfDebug;///< if true then print debug info
-	std::ofstream debug;///< output information for debugging
 
 	/**
 	 * \brief   Adjusts the iteration time step when current time approaches the time for results writting 

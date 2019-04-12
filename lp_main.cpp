@@ -18,8 +18,8 @@ int main(int argc, const char* argv[]) {
 	string inputfileName;
 	string datafileName; // restart datafile
 	string outputfileNameAll, outputfileNameFluid;		
-	string debugfileName = "debug"; 
-	bool ifDebug = false;
+	string debugfileName;
+    bool ifDebug = false;
 #ifdef LP_DEBUG
         cout<<"Begin"<<endl;
 #endif
@@ -49,14 +49,21 @@ int main(int argc, const char* argv[]) {
 			}
 			outputfileNameAll = string(argv[i+1]) + "/out";
 			outputfileNameFluid = string(argv[i+1]) + "/out_fluid";
-			cout<<"output file name: "<<outputfileNameAll<<endl;
+			debugfileName = string(argv[i+1]);
+            cout<<"output file name: "<<outputfileNameAll<<endl;
 			cout<<"output file name: "<<outputfileNameFluid<<endl;
 		}
 		else if(!strcmp(argv[i], "-d")) { // debug
 			ifDebug = true;
 			if(i+1 >= argc || argv[i+1][0]=='-') // no debugfile name following -d option is fine, use default name
-				continue;
-			debugfileName = argv[i+1];
+			{
+                debugfileName = debugfileName + "/" + "debug";
+                
+                cout<<"debug file name: "<<debugfileName<<endl;
+
+                continue;
+            }
+			debugfileName = debugfileName + "/" + argv[i+1];
 			cout<<"debug file name: "<<debugfileName<<endl;
 		}	
 	}

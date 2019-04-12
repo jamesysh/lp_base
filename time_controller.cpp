@@ -64,8 +64,6 @@ DefaultTimeController::DefaultTimeController(const Initializer& init, LPSolver* 
 	if(m_fNextWriteTime > m_fEndTime) m_fNextWriteTime = m_fEndTime;
 	m_fDt = 0;
 	m_fCFLCoeff = init.getCFLCoeff();
-	m_iIfDebug = init.getIfDebug();
-	debug.open(init.getDebugfileName(), std::ofstream::out | std::ofstream::app);
 }
 
 
@@ -115,7 +113,9 @@ int DefaultTimeController::solve() {
 		
 		// write results if necessary
 		if(0||isWriteTime) { 
-			printf("Time=%.16g, writeStep=%ld\n",m_fTime, m_iWriteStep); // check the write time is correct
+			
+            
+            printf("Time=%.16g, writeStep=%ld\n",m_fTime, m_iWriteStep); // check the write time is correct
 			for(auto pViewer:m_vViewers) {
 //				m_pSolver->solve(0.0);
 				pViewer->writeResult(m_fTime, m_iWriteStep);
@@ -148,12 +148,14 @@ void DefaultTimeController::computeDtByCFL() {
 	if(m_fDt > m_fWriteTimeInterval) { 
 		cout<<"time = "<<m_fTime<<": m_fDt = "<<m_fDt<<" > m_fWriteTimeInterval!!!"<<endl;
 	}
-	if(m_iIfDebug) {
+	/*
+    if(m_iIfDebug) {
 		debug.precision(16);
 		//debug<<"-------DefaultTimeController::computeDtByCFL()-------"<<endl;
 		debug<<"m_fDt="<<m_fDt<<endl;
 		//debug<<"-----------------------------------------------------"<<endl;
 	}
+    */
 }
 
 ////////////////////////////////////////////////////////////////////////////////

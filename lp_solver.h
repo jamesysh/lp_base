@@ -97,7 +97,7 @@ protected:
 	double m_fMaxFluidVelocity; ///< Maximum absolute value velocity of fluid particles at a time step
 	double m_fMinCFL;
 	bool m_iIfDebug;///< if true then print debug info
-	std::ofstream debug;///< output information for debugging	
+    std::string m_sDebugfileName;
 };
 
 
@@ -529,9 +529,10 @@ void (HyperbolicLPSolver::*computeA) (size_t, const int *, const int*, size_t, s
 	void updateFluidVelocity();
 
     void computeTemperature();
-	void calculateHeatDeposition();
+    
+    void writeDebugInfo();
 
+    
 
-	void computeIntegralSpherical();
 };
 #endif

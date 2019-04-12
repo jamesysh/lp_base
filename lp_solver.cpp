@@ -185,7 +185,11 @@ HyperbolicLPSolver::HyperbolicLPSolver(const Initializer& init, ParticleData* pD
         m_fOctreeTime=0;
         m_fNeighbourTime=0;
         m_fBoundaryTime=0;
-	m_iCount=0;
+  	m_iCount=0;
+    m_iIfDebug = init.getIfDebug(); 
+    m_sDebugfileName = init.getDebugfileName();
+
+
 }
 
 HyperbolicLPSolver::~HyperbolicLPSolver() {
@@ -389,31 +393,7 @@ void HyperbolicLPSolver::searchNeighbourForFluidParticle() {
 	searchNeighbourForFluidParticle(0);
 }
 
-void HyperbolicLPSolver::computeIntegralSpherical(){
-        const double *positionX = m_pParticleData->m_vPositionX;
-        const double *positionY = m_pParticleData->m_vPositionY;
-        const double *positionZ = m_pParticleData->m_vPositionZ; // is all zero for the 2D case 
-        const double *mass = m_pParticleData->m_vMass;
-        double *leftintegral = m_pParticleData->m_vLeftIntegral;
 
-        int fluidStartIndex = m_pParticleData->getFluidStartIndex();
-        int fluidEndIndex = fluidStartIndex + m_pParticleData->getFluidNum();
-
-	std::vector<std::pair<double,int>> vec(m_pParticleData->m_iFluidNum);
-	for(int index=fluidStartIndex; index<fluidEndIndex; index++)
-	{
-		double r2=positionX[index]*positionX[index]+positionY[index]*positionY[index]+positionZ[index]*positionZ[index];
-		vec[index]={r2,index};
-	}
-	std::sort(vec.begin(),vec.end());
-	double integral=0;
-	for(int index=fluidEndIndex-1; index>=fluidStartIndex; index--)
-	{
-		double temp=mass[vec[index].second]/4.0/3.1416/vec[index].first;
-		leftintegral[vec[index].second]=integral+0.5*temp;
-		integral+=temp;
-	}
-}
 
 void HyperbolicLPSolver::searchNeighbourForFluidParticle(int choice) {
 	
@@ -876,66 +856,6 @@ float           Bessel_Kn(
 	return bk;
 }
 //Pellet heat deposition calculation
-void HyperbolicLPSolver::calculateHeatDeposition() {
-	const double* leftintegral = m_pParticleData->m_vLeftIntegral;
-	const double* rightintegral = m_pParticleData->m_vRightIntegral;
-	const double* volume = m_pParticleData->m_vVolume;
-	double* Deltaq = m_pParticleData->m_vDeltaq;
-	double* Qplusminus = m_pParticleData->m_vQplusminus;
-	double masse = m_pParticleData->masse;
-	double massNe = m_pParticleData->massNe;
-	double teinf = m_pParticleData->teinf;
-	double INe = m_pParticleData->INe;
-	int ZNe = m_pParticleData->ZNe;
-	double neinf = m_pParticleData->neinf;
-	double heatK = m_pParticleData->heatK;
-	double e = heatK*(2.99792458e7)/100;
-    size_t fluidStartIndex = m_pParticleData->getFluidStartIndex();
-    size_t ghostStartIndex = fluidStartIndex + m_pParticleData->getGhostStartIndex();
-
-    double lnLambda = log(2*teinf/INe*sqrt(exp(1)/2));
-//previous used lnlambda
-//	double lnLambda = log(2.5*teinf/(INe));
-
-//new lnlambda
-//	double lnLambda = log(2.0*teinf/(9.0*ZNe*(1.0 + 1.8*pow(ZNe,-2./3.))));
-
-
-	double k_warmup;
-        static double time;
-
-        time += m_fDt;
-
-        if (time > 0.02)
-          k_warmup = 1.0;
-        else
-          k_warmup = time/0.02;
-
-
-//        #ifdef _OPENMP
-//        #pragma omp parallel for
-//        #endif
-	for(size_t index=fluidStartIndex; index<ghostStartIndex; index++){
-		double tauleft = leftintegral[index]/massNe*ZNe;
-		double tauright = rightintegral[index]/massNe*ZNe;
-		double tauinf = heatK*heatK*teinf*teinf/(8.0*3.1416*e*e*e*e*lnLambda);
-		double taueff = tauinf*sqrt(2.0/(1.0+ZNe));
-		double uleft = tauleft/taueff;
-		double uright = tauright/taueff;
-		double qinf=sqrt(2.0/3.1416/masse)*neinf*pow(heatK*teinf,1.5);
-		double guleft = sqrt(uleft)*Bessel_K1(sqrt(uleft))/4;
-		double guright = sqrt(uright)*Bessel_K1(sqrt(uright))/4;
-		double nt=1.0/volume[index]/massNe;
-//parallel line case
-//		Deltaq[index] = qinf*nt/tauinf*(guleft+guright)*k_warmup;
-//		Qplusminus[index] = qinf*0.5*(uleft*Bessel_Kn(2,sqrt(uleft))+uright*Bessel_Kn(2,sqrt(uright)))*k_warmup;
-//spherical symmetry case
-		Deltaq[index]=qinf*nt/tauinf*guleft*k_warmup;
-		Qplusminus[index] = qinf*0.5*uleft*Bessel_Kn(2,sqrt(uleft))*k_warmup;
-	}
-
-}
-
 
 
 void HyperbolicLPSolver::SPHDensityEstimatorForFluidParticle(int choice) {
@@ -4808,6 +4728,33 @@ void HyperbolicLPSolver::computeTemperature(){
     }
 
 }
+
+void HyperbolicLPSolver::writeDebugInfo(){
+    if(!m_iIfDebug)
+        return;
+    
+    const double* positionX = m_pParticleData->getPositionX();
+	const double* positionY = m_pParticleData->getPositionY();
+	const double* velocityU = m_pParticleData->getVelocityU();
+	const double* velocityV = m_pParticleData->getVelocityV();
+    
+	if(m_pParticleData->getDimension()==2)
+   {    
+    	const double* positionZ = m_pParticleData->getPositionZ();
+    
+	    const double* velocityW = m_pParticleData->getVelocityW();
+    } 
+	const double* volume = m_pParticleData->getVolume();
+	const double* mass = m_pParticleData->getMass();
+	const double* pressure = m_pParticleData->getPressure();
+	const double* soundSpeed = m_pParticleData->getSoundSpeed();
+    const double* localParSpacing = m_pParticleData->getLocalParSpacing();
+    FILE *debug;
+
+    
+    
+    }
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // End of HyperbolicLPSolver
 ////////////////////////////////////////////////////////////////////////////////////////
