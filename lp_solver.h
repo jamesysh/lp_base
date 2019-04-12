@@ -69,7 +69,7 @@ public:
 	 */ 
 	virtual int solve(double dt) = 0;
 
-    virtual void writeDebugInfo() = 0;
+    virtual void writeDebugInfo(double time) = 0;
 	/**
 	 * \brief   Getter function of the minimum inter-particle distance among all fluid particles 
 	 * \param   None
@@ -531,7 +531,7 @@ void (HyperbolicLPSolver::*computeA) (size_t, const int *, const int*, size_t, s
 
     void computeTemperature();
     
-    virtual void writeDebugInfo();
+    virtual void writeDebugInfo(double time);
 
     
 

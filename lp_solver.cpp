@@ -4729,7 +4729,7 @@ void HyperbolicLPSolver::computeTemperature(){
 
 }
 
-void HyperbolicLPSolver::writeDebugInfo(){
+void HyperbolicLPSolver::writeDebugInfo(double time){
     if(!m_iIfDebug)
         return;
     
@@ -4763,8 +4763,9 @@ void HyperbolicLPSolver::writeDebugInfo(){
 
     size_t endIndex = startIndex + m_pParticleData->getFluidNum();
   
-    fprintf(debug,"The number of fluid particles\n");
-    fprintf(debug,"%d\n",endIndex-startIndex);
+    fprintf(debug,"%.16g The current running time\n", time);
+
+    fprintf(debug,"%d The number of fluid particles\n",endIndex-startIndex);
     fprintf(debug,"Position\n");
      if(m_pParticleData->getDimension()==2) {
 		for(size_t i = startIndex; i<endIndex; i++)
@@ -4792,6 +4793,14 @@ void HyperbolicLPSolver::writeDebugInfo(){
 	fprintf(debug,"Volume\n");
 	for(size_t i=startIndex; i<endIndex; i++)
 		fprintf(debug,"%.16g\n",volume[i]);
+
+    fprintf(debug,"Soundspeed\n");
+	for(size_t i=startIndex; i<endIndex; i++)
+		fprintf(debug,"%.16g\n",soundSpeed[i]);
+    
+    fprintf(debug,"LocalSpacing\n");
+	for(size_t i=startIndex; i<endIndex; i++)
+		fprintf(debug,"%.16g\n",localParSpacing[i]);
 
 
     

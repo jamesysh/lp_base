@@ -115,17 +115,17 @@ void Initializer::readDatafile(const string& datafileName) {
 	string s;
 	size_t num;
 	
-	getline(ifs,s); // Skip 1 line
-	ifs >> s >> s >> s >> s >> v1;
-	save<<"(RESTART CHANGE): m_fStartTime has been changed from "<<m_fStartTime;
-	m_fStartTime = v1;
-	save<<" to "<<m_fStartTime<<endl;	
-	
-	save<<"(RESTART CHANGE): m_iWriteStep has been changed from "<<m_iWriteStep;
-	m_iWriteStep = m_fStartTime/m_fWriteTimeInterval;
-	save<<" to "<<m_iWriteStep<<endl;
+	ifs >> v1;
 
-	for(int line=1; line<=3; line++) getline(ifs,s); // Skip 2 lines
+	m_fStartTime = v1;
+    cout<<"(RESTART CHANGE): m_fStartTime has been changed to "<<m_fStartTime<<endl;
+	
+	m_iWriteStep = m_fStartTime/m_fWriteTimeInterval;
+	cout<<"(RESTART CHANGE): m_iWriteStep has been changed to "<<m_iWriteStep<<endl;
+    ifs >> num;
+    m_iFluidNum = num; 
+    cout<<"Total number of Fluid Particles: "<<m_iFluidNum<<endl;	
+    getline(ifs,s); // Skip 2 lines
 	ifs >> s >> num >> s; // Read the number of particles (fluid + boundary)
 	save<<"(RESTART) number of particles (boundary + fluid) "<<num<<endl;
 	m_iCapacity = (size_t)(m_fTimesCapacity*num + m_fAdditionalCapacity); // set capacity of data arays
