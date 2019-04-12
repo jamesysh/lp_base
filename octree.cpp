@@ -200,7 +200,7 @@ int Octree::buildOctree(const double* x, const double* y, const double* z, size_
   m_dBoundingBox_max_y = *std::max_element(m_vCoordY, m_vCoordY + m_iTotalNumberOfParticles);
   m_dBoundingBox_min_z = *std::min_element(m_vCoordZ, m_vCoordZ + m_iTotalNumberOfParticles);
   m_dBoundingBox_max_z = *std::max_element(m_vCoordZ, m_vCoordZ + m_iTotalNumberOfParticles);
-
+/*
   m_dBoundingBox_min_x = -16;
   m_dBoundingBox_max_x = 16;
   m_dBoundingBox_min_y = -16;
@@ -208,7 +208,7 @@ int Octree::buildOctree(const double* x, const double* y, const double* z, size_
   m_dBoundingBox_min_z = -16;
   m_dBoundingBox_max_z = 16;
 
-
+*/
   //Create an array which will hold the morton key and index of each particle.
   //After we fill this array, it will be sorted by the "key" field in the "KeyIndex" struct.
   //The operator < has been overloaded for this purpose

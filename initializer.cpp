@@ -122,23 +122,28 @@ void Initializer::readDatafile(const string& datafileName) {
 	
 	m_iWriteStep = m_fStartTime/m_fWriteTimeInterval;
 	cout<<"(RESTART CHANGE): m_iWriteStep has been changed to "<<m_iWriteStep<<endl;
+    getline(ifs,s);
     ifs >> num;
     m_iFluidNum = num; 
     cout<<"Total number of Fluid Particles: "<<m_iFluidNum<<endl;	
-    getline(ifs,s); // Skip 2 lines
-	ifs >> s >> num >> s; // Read the number of particles (fluid + boundary)
-	save<<"(RESTART) number of particles (boundary + fluid) "<<num<<endl;
 	m_iCapacity = (size_t)(m_fTimesCapacity*num + m_fAdditionalCapacity); // set capacity of data arays
 	initParticleDataMemory(); // Allocate memory
 
-	for(size_t i=0; i<num; i++) { // Read location
+    getline(ifs,s); // Skip 1 lines
+	ifs >> s;
+    cout<<"v1 \n"<<s<<endl;
+
+    for(size_t i=0; i<num; i++) { // Read location
 		ifs >> v1 >> v2 >> v3;
 		m_vPositionX[i] = v1;
 		m_vPositionY[i] = v2;
 		m_vPositionZ[i] = v3;
-	}
+	    cout<<"v1 \n"<<v1<<endl;
+      getline(ifs,s);
+
+    }
 	
-	for(size_t line=1; line<=3; line++) getline(ifs,s); // Skip 2 lines
+    getline(ifs,s); // Skip 1 lines
 	for(size_t i=0; i<num; i++) { // Read velocity
 		ifs >> v1 >> v2 >> v3;
 		m_vVelocityU[i] = v1;
@@ -146,19 +151,19 @@ void Initializer::readDatafile(const string& datafileName) {
 		if(m_iDimension == 3) m_vVelocityW[i] = v3;
 	}
 	
-	for(size_t line=1; line<=3; line++) getline(ifs,s); // Skip 2 lines	
+    getline(ifs,s); // Skip 1 lines	
 	for(size_t i=0; i<num; i++) { // Read pressure
 		ifs >> v1;
 		m_vPressure[i] = v1;
 	}
 
-	for(size_t line=1; line<=3; line++) getline(ifs,s); // Skip 2 lines
+     getline(ifs,s); // Skip 1 lines
 	for(size_t i=0; i<num; i++) { // Read volume
 		ifs >> v1;
 		m_vVolume[i] = v1;
 	}
 
-	for(size_t line=1; line<=3; line++) getline(ifs,s); // Skip 2 lines
+	 getline(ifs,s); // Skip 1 lines
 	for(size_t i=0; i<num; i++) { // Read sound speed
 		ifs >> v1;
 		m_vSoundSpeed[i] = v1;
@@ -167,8 +172,8 @@ void Initializer::readDatafile(const string& datafileName) {
 	//map<int,vector<double>> counter; // counter for each tag
 	//counter {tag:[num,xmin,xmax,ymin,ymax,zmin,zmax]}
 //	m_iBoundaryNum = 0;
-	for(size_t line=1; line<=3; line++) getline(ifs,s); // Skip 2 lines
-	for(size_t i=0; i<num; i++) { // Read object tag
+	/*
+    for(size_t i=0; i<num; i++) { // Read object tag
 		ifs >> v1;
 		m_vObjectTag[i] = (int)v1;
 //		if(m_vObjectTag[i]==0) m_iBoundaryNum++;
@@ -198,7 +203,8 @@ void Initializer::readDatafile(const string& datafileName) {
 	//	m_iBoundaryNum = counter[0][0];
 	//else
 	//	m_iBoundaryNum = 0;
-	for(size_t line=1; line<=3; line++) getline(ifs,s); // Skip 2 lines
+	*/
+     getline(ifs,s); // Skip 1 lines
 	for(size_t i=0; i<num; i++) { // Read sound speed
 		ifs >> v1;
 		m_vLocalParSpacing[i] = v1;
@@ -207,8 +213,6 @@ void Initializer::readDatafile(const string& datafileName) {
 //	m_iFluidNum = num - m_iBoundaryNum;
 	m_iFluidNum = num;
 	m_iFluidStartIndex = 0;
-//	m_iBoundaryStartIndex = m_iFluidStartIndex + m_iFluidNum;
-//	m_iGhostStartIndex = m_iFluidStartIndex + m_iFluidNum + m_iBoundaryNum;
 	
 	//setBoundingBox(counter); // set bounding boxes for fluid & boundary objects
 
