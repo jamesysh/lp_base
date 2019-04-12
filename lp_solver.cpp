@@ -275,6 +275,12 @@ startTime = omp_get_wtime();
 bool phase_success;
 if(m_iFixParticles==0){
 //Solver: upwind scheme
+if(m_iRandomDirSplitOrder){
+    srand((unsigned)time(NULL));  
+    m_iDirSplitOrder =  rand()%6;  
+    cout<<"split order "<<m_iDirSplitOrder<<endl;                
+    }
+
 for(int phase=0; phase<m_iNumPhase; ) {
 
 	cout<<"upwind phase="<<phase<<endl;
