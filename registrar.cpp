@@ -35,6 +35,7 @@
 #include "geometry_pellet.h"
 #include "state_pellet.h"
 #include "geometry_cylinder.h"
+#include "state_cylinder.h"
 namespace 
 {
 	
@@ -256,5 +257,5 @@ namespace
 	BoundaryRegistrar<PelletOutflowBoundary> b61("pelletoutflow");
 
     GeometryRegistrar<Cylinder> r62("cylinder");
-
+    StateRegistrar<CylinderState> s61("cylinderstate");
 }

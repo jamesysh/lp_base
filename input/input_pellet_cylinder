@@ -6,7 +6,7 @@
 3				dimension (2 or 3)
 1				number of fluid objects
 cylinder		geometry for fluid object0
-pelletstate			intiial condition for fluid object0
+cylinderstate			intiial condition for fluid object0
 2				number of boundary conditions
 pelletoutflow       pelletoutflow
 outflow             outflow
