@@ -10,7 +10,7 @@
 #include "omp.h"
 //#include "voronoi_area_estimator.h"
 #include <algorithm>
-#include <ctime>
+#include <time.h>
 #include <cstdlib>
 #include <cassert>
 #include <vector>
@@ -254,6 +254,8 @@ computeMinCFL();
 int HyperbolicLPSolver::solve(double dt) {	
 //cout<<"--------------HyperbolicLPSolver::solve()--------------"<<endl;
 //	cout<<"---------------------------------------------------------"<<endl;
+
+srand(time(NULL));  
 double currentstepstartTime;
 currentstepstartTime = omp_get_wtime();
 // dt for this time step 
@@ -275,13 +277,12 @@ startTime = omp_get_wtime();
 bool phase_success;
 if(m_iFixParticles==0){
 //Solver: upwind scheme
+
 if(m_iRandomDirSplitOrder){
-    srand((unsigned)time(NULL));  
     m_iDirSplitOrder =  rand()%6;  
-                
     }
 for(int phase=0; phase<m_iNumPhase; ) {
-
+    
 	cout<<"upwind phase="<<phase<<endl;
 double upwind_start = omp_get_wtime();
 	phase_success = solve_upwind(phase);
