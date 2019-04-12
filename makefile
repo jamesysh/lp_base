@@ -28,7 +28,7 @@ GEOMETRY_OBJS = geometry.o geometry_1d.o geometry_nozzle.o geometry_random.o\
 		 geometry_jet.o geometry_shocktube.o geometry_shocktube3d.o geometry_pellet.o geometry_cylinder.o
 
 STATE_OBJS =  state.o state_1d.o state_ballexp.o state_collision.o state_gresho.o state_powder_target.o state_powder_target_3d.o state_nozzle.o\
-	     state_jet.o state_shocktube.o state_pellet.o
+	     state_jet.o state_shocktube.o state_pellet.o state_cylinder.o
 
 B_OBJS := $(foreach OBJ,$(BOUNDARY_OBJS),$(addprefix $(BOUNDARY_DIR),$(OBJ)))
 S_OBJS := $(foreach OBJ,$(STATE_OBJS),$(addprefix $(STATE_DIR),$(OBJ)))

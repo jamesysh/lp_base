@@ -50,7 +50,8 @@ time_controller.o: time_controller.h time_controller.cpp lp_solver.h particle_vi
 
 state_nozzle.o: state.h state_nozzle.h state_nozzle.cpp
 	$(CC) $(CFLAGS) state_nozzle.cpp
-
+state_cylinder.o: state.h state_cylinder.h state_cylinder.cpp
+	$(CC) $(CFLAGS) state_cylinder.cpp
 
 clean:
 	rm *.o
