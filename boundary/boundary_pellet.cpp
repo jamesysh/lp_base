@@ -94,13 +94,13 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		else
 		{
 
-       volumeOnBoundary[pi] = Vinflow;
-            pelletvelocity[pi]=massflowrate*Vinflow/4.0/M_PI/pr/pr;
-        pressureOnBoundary[pi] = Pinflow;
+      // volumeOnBoundary[pi] = Vinflow;
+        //    pelletvelocity[pi]=massflowrate*Vinflow/4.0/M_PI/pr/pr;
+       // pressureOnBoundary[pi] = Pinflow;
 
-      // pelletvelocity[pi] = (-B + sqrt(B*B - 4*C))/2;
-           // volumeOnBoundary[pi] = pelletvelocity[pi]/(massflowrate/4/M_PI/pr/pr);
-		//	pressureOnBoundary[pi] = R*Ts/volumeOnBoundary[pi];
+         pelletvelocity[pi] = (-B + sqrt(B*B - 4*C))/2;
+            volumeOnBoundary[pi] = pelletvelocity[pi]/(massflowrate/4/M_PI/pr/pr);
+			pressureOnBoundary[pi] = R*Ts/volumeOnBoundary[pi];
 		}
            
            cout<<"volume on boundary is "<<volumeOnBoundary[pi]<<endl;
@@ -112,9 +112,6 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
  
  
  } 
-/* 
-
- */
 	    	inflowEndIndex = fluidEndIndex; 
  //generate new inflow particles in region 0<r<pir
 
@@ -182,8 +179,8 @@ int PelletInflowBoundary::UpdateInflowBoundary(ParticleData* m_pParticleData, EO
 		vz[index]=newv*d_z/dr;
 		dr+=dt*0.5*(old_v+newv);
 		
-        volumeold[index] = volume[index]=Vinflow;
-       	pressure[index] = Pinflow;
+        volumeold[index] = volume[index]=volumeOnBoundary[pi]*dr*dr/pr/pr;
+       	pressure[index] = pressureOnBoundary[pi]*pr*pr/dr/dr;
        	localParSpacing[index]=dx;
 		mass[index]=dx*dx*dx/Vinflow/sqrt(2);
        	sound[index]=m_pEOS->getSoundSpeed(pressure[index],1./volume[index]);

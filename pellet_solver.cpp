@@ -701,9 +701,9 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
             double r_shift = (sqrt(r)-shift)*(sqrt(r)-shift);
 
 
-            if( r>pr*pr && r<(pr+dx)*(pr+dx))
+//            if( r>pr*pr && r<(pr+dx)*(pr+dx))
 
-//			if(r_shift<(pr+dx/10)*(pr+dx/10) 	&& r_shift > (pr-dx/10)*(pr-dx/10) && r>(pr)*(pr))
+			if(r_shift<(pr+dx/10)*(pr+dx/10) 	&& r_shift > (pr-dx/10)*(pr-dx/10) && r>(pr)*(pr))
 //			&& r_shift > (pr-dx/5)*(pr-dx/5)
 //			if( r>(pr+dis-dx/5)*(pr+dis-dx/5) && r<(pr+dis+dx/5)*(pr+dis+dx/5))
             {
