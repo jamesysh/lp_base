@@ -36,6 +36,7 @@
 #include "state_pellet.h"
 #include "geometry_cylinder.h"
 #include "state_cylinder.h"
+#include "geometry_sphere.h"
 namespace 
 {
 	
@@ -258,4 +259,5 @@ namespace
 
     GeometryRegistrar<Cylinder> r62("cylinder");
     StateRegistrar<CylinderState> s61("cylinderstate");
+    GeometryRegistrar<Sphere> r63("sphere");
 }

@@ -55,7 +55,8 @@ geometry_pellet.o: geometry.h geometry_pellet.h geometry_pellet.cpp
 	${CC} ${CFLAGS} geometry_pellet.cpp
 geometry_cylinder.o: geometry.h geometry_cylinder.h geometry_cylinder.cpp
 	$(CC) $(CFLAGS) geometry_cylinder.cpp
-
+geometry_sphere.o: geometry.h geometry_sphere.h geometry_sphere.cpp
+	$(CC) $(CFLAGS) geometry_sphere.cpp
 
 clean:
 	rm *.o
