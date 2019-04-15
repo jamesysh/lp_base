@@ -278,7 +278,7 @@ bool phase_success;
 if(m_iFixParticles==0){
 //Solver: upwind scheme
 if(m_iRandomDirSplitOrder){
-    m_iDirSplitOrder = 0;//rand()%6;  
+    m_iDirSplitOrder = rand()%6;  
     }
 
 for(int phase=0; phase<m_iNumPhase; ) {
