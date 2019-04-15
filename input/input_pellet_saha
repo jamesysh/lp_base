@@ -39,7 +39,7 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 1           heating model
 2000        quadtree resolution
 50          binarytree resolution
-40          magnetic field  
+20          magnetic field  
 pressure
 temperature
 density
