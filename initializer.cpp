@@ -59,13 +59,16 @@ bool ifDebug, const string& debugfileName)
 	setEOS();
 		
 	readDatafile(datafileName); // read datafile
-	
+
+    if(m_iNumberofPellet)
+        setPelletQuantity();
 	//modifyLocalParSpacing();
 	//modifyInitParticleSpacing();
 	//modifyInitNeighbourSearchRadius();
 	//modifyInitContactLength();
 	
 	//modifyNumParticleWithinSearchRadius();
+    setObjs();
 
 	setBoundingBox(m_vObjectTag,m_iFluidNum);
 
@@ -110,7 +113,7 @@ void Initializer::readDatafile(const string& datafileName) {
 	ofstream save(m_sFilenameSaveInit, ofstream::app); // save init info
 
 	ifstream ifs(datafileName);
-	
+    ifs.precision(16);	
 	double v1, v2, v3;
 	string s;
 	size_t num;
@@ -130,15 +133,13 @@ void Initializer::readDatafile(const string& datafileName) {
 	initParticleDataMemory(); // Allocate memory
 
     getline(ifs,s); // Skip 1 lines
-	ifs >> s;
-    cout<<"v1 \n"<<s<<endl;
+	getline(ifs,s);
 
     for(size_t i=0; i<num; i++) { // Read location
 		ifs >> v1 >> v2 >> v3;
 		m_vPositionX[i] = v1;
 		m_vPositionY[i] = v2;
 		m_vPositionZ[i] = v3;
-	    cout<<"v1 \n"<<v1<<endl;
       getline(ifs,s);
 
     }
@@ -149,26 +150,33 @@ void Initializer::readDatafile(const string& datafileName) {
 		m_vVelocityU[i] = v1;
 		m_vVelocityV[i] = v2;
 		if(m_iDimension == 3) m_vVelocityW[i] = v3;
-	}
+	
+        getline(ifs,s); // Skip 1 lines	
+    }
 	
     getline(ifs,s); // Skip 1 lines	
 	for(size_t i=0; i<num; i++) { // Read pressure
 		ifs >> v1;
 		m_vPressure[i] = v1;
+        getline(ifs,s); // Skip 1 lines	
+
 	}
 
      getline(ifs,s); // Skip 1 lines
 	for(size_t i=0; i<num; i++) { // Read volume
 		ifs >> v1;
 		m_vVolume[i] = v1;
-	}
+        getline(ifs,s); // Skip 1 lines	
+
+    }
 
 	 getline(ifs,s); // Skip 1 lines
-	for(size_t i=0; i<num; i++) { // Read sound speed
+    for(size_t i=0; i<num; i++) { // Read sound speed
 		ifs >> v1;
 		m_vSoundSpeed[i] = v1;
-	}
-	
+	    getline(ifs,s); // Skip 1 lines	
+    }
+       
 	//map<int,vector<double>> counter; // counter for each tag
 	//counter {tag:[num,xmin,xmax,ymin,ymax,zmin,zmax]}
 //	m_iBoundaryNum = 0;
@@ -208,10 +216,26 @@ void Initializer::readDatafile(const string& datafileName) {
 	for(size_t i=0; i<num; i++) { // Read sound speed
 		ifs >> v1;
 		m_vLocalParSpacing[i] = v1;
-	}
+        getline(ifs,s); 
+    }
+	 
+     getline(ifs,s); // Skip 1 lines
+	for(size_t i=0; i<num; i++) { // Read sound speed
+		ifs >> v1;
+		m_vMass[i] = v1;
+        getline(ifs,s); 
+    }
 	
-//	m_iFluidNum = num - m_iBoundaryNum;
-	m_iFluidNum = num;
+    if(m_iNumberofPellet){	
+    getline(ifs,s); // Skip 1 lines
+    for(size_t i=0; i<m_iNumberofPellet; i++) { // Read sound speed
+		ifs >> v1;
+		m_vPelletVelocity[i] = v1;
+	    getline(ifs,s); // Skip 1 lines	
+    }
+    }
+	
+    m_iFluidNum = num;
 	m_iFluidStartIndex = 0;
 	
 	//setBoundingBox(counter); // set bounding boxes for fluid & boundary objects
@@ -405,12 +429,13 @@ void Initializer::readInputfile(const string& inputfileName) {
         m_vPelletRadius = new double[m_iNumberofPellet];
         m_vPelletInnerRadius = new double[m_iNumberofPellet];
         m_vPelletOuterRadius = new double[m_iNumberofPellet];
-        
+        m_vPelletVelocity = new double[m_iNumberofPellet]; 
         double pelletquantity_tmp;
         iss.str(lines[i++]);
 	    for(int i=0;i<m_iNumberofPellet;i++){
         iss>>pelletquantity_tmp;
         m_vPelletPositionX[i] = pelletquantity_tmp;
+        m_vPelletVelocity[i] = 0;
         }
 
         iss.str(lines[i++]);

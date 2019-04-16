@@ -708,7 +708,7 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
 //			if( r>(pr+dis-dx/5)*(pr+dis-dx/5) && r<(pr+dis+dx/5)*(pr+dis+dx/5))
             {
                 
-				qsum_bc[pi]+=qplusminus[index];
+				qsum_bc[pi] += qplusminus[index];
                 vol_bc[pi] += volume[index];
                 pre_bc[pi] += pressure[index];
 				ss_bc[pi] += sound[index];
