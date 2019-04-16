@@ -15,7 +15,7 @@ PelletSolver::PelletSolver(const Initializer& init,ParticleData* pdata){
     
     m_pPelletData = pdata;
     m_pEOS = init.getEOS();
-
+    m_fCurrentTime = init.getStartTime();
 }
 
 void PelletSolver::calculateHeatDeposition( double dt) {
@@ -46,14 +46,13 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 
 
 	double k_warmup;
-     static double time = 0;
 
-        time += dt;
+       m_fCurrentTime  += dt;
 
-        if (time > 0.01)
+        if ( m_fCurrentTime > 0.01)
           k_warmup = 1.0;
         else
-          k_warmup = time/0.01;
+          k_warmup = m_fCurrentTime/0.01;
 
                                                                                                              
 

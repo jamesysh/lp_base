@@ -36,7 +36,7 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 0. 0. 0 0       z position of pellets
 0.2             radius
 0.24             outer radius
-1           heating model spherically symmetric(0) directional heating(1)
+0           heating model spherically symmetric(0) directional heating(1)
 500        quadtree resolution
 20          binarytree resolution
 0            magnetic field

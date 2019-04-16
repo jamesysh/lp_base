@@ -208,7 +208,7 @@ private:
 	int m_iDensityEstimatorType; //< if use SPH density estimator
 	bool m_iFixParticles;//<if use fixed particles
 
-	double m_fTotalTime;///< total CPU time
+    double m_fTotalTime;///< total CPU time
 	double m_fSolverTime;///< CPU time to solve the sptial and temporal derivatives and update the states
 	double m_fSPHTime;///< CPU time to calculate SPH density (only >0 when SPH density estimator is used)
 	double m_fOctreeTime;///< CPU time to construct and search the octree
