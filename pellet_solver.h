@@ -23,7 +23,7 @@ class PelletSolver {
     void computeBoundaryCondition(double,double);       
     private:
 
-        
+        double m_fCurrentTime;  
         EOS* m_pEOS;
          
         ParticleData* m_pPelletData;

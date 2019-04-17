@@ -407,6 +407,7 @@ public:
         double* getPelletRadius() const {return m_vPelletRadius;}
 	double* getPelletInnerRadius() const {return m_vPelletInnerRadius;}
         double* getPelletOuterRadius() const {return m_vPelletOuterRadius;}
+        double* getPelletVelocity() const {return m_vPelletVelocity;}
         double getMagx() {return Magx;}
         double getMagy() {return Magy;}
         double getMagz() {return Magz;}
@@ -951,7 +952,8 @@ private:
 	double* m_vPelletRadius;
 	double* m_vPelletInnerRadius;
     double* m_vPelletOuterRadius;
-        double Magx;
+    double* m_vPelletVelocity;
+    double Magx;
         double Magy;
         double Magz;
         double masse;

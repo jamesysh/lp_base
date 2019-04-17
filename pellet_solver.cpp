@@ -15,7 +15,7 @@ PelletSolver::PelletSolver(const Initializer& init,ParticleData* pdata){
     
     m_pPelletData = pdata;
     m_pEOS = init.getEOS();
-
+    m_fCurrentTime = init.getStartTime();
 }
 
 void PelletSolver::calculateHeatDeposition( double dt) {
@@ -46,14 +46,13 @@ void PelletSolver::calculateHeatDeposition( double dt) {
 
 
 	double k_warmup;
-     static double time = 0;
 
-        time += dt;
+       m_fCurrentTime  += dt;
 
-        if (time > 0.01)
+        if ( m_fCurrentTime > 0.01)
           k_warmup = 1.0;
         else
-          k_warmup = time/0.01;
+          k_warmup = m_fCurrentTime/0.01;
 
                                                                                                              
 
@@ -708,7 +707,7 @@ void PelletSolver::computeBoundaryCondition( double dt, double dx){
 //			if( r>(pr+dis-dx/5)*(pr+dis-dx/5) && r<(pr+dis+dx/5)*(pr+dis+dx/5))
             {
                 
-				qsum_bc[pi]+=qplusminus[index];
+				qsum_bc[pi] += qplusminus[index];
                 vol_bc[pi] += volume[index];
                 pre_bc[pi] += pressure[index];
 				ss_bc[pi] += sound[index];

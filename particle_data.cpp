@@ -63,7 +63,8 @@ ParticleData::ParticleData(Initializer& init) {
 	m_vPelletRadius = init.getPelletRadius();
 	m_vPelletInnerRadius = init.getPelletInnerRadius();
     m_vPelletOuterRadius = init.getPelletOuterRadius();
-	Magx = init.getMagx();
+	m_vPelletVelocity = init.getPelletVelocity();
+    Magx = init.getMagx();
 	Magy = init.getMagy();
 	Magz = init.getMagz();
 	masse = init.getmasse();
@@ -148,8 +149,6 @@ ParticleData::ParticleData(Initializer& init) {
 
                     m_vPelletEnergy = new double[m_iNumberofPellet];
                     fill_n(m_vPelletEnergy, m_iNumberofPellet, 0);
-                    m_vPelletVelocity = new double[m_iNumberofPellet];
-                    fill_n(m_vPelletVelocity, m_iNumberofPellet, 0);
                     m_vMassFlowRate = new double[m_iNumberofPellet];
                     fill_n(m_vMassFlowRate,m_iNumberofPellet, 0);
                     m_vPelletID = new int[m_iCapacity];

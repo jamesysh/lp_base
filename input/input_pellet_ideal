@@ -17,7 +17,7 @@ free				type of boundary condition1
 1				use random order for direction splittig (1) or not(0)
 1				order of numerical scheme: 1: upwind method, 2: Lax-Wendroff method
 1				EOS choice: 1:polytropic 2:Stiffened polytropic
-1.67				EOS parameter: gamma
+1.67			EOS parameter: gamma
 0				EOS parameter: pinf (only meaningful for stiffened polytropic eos)
 0.				EOS parameter: einf (only meaningful for stiffened polytropic eos)
 0.01				initial particle spacing
@@ -36,8 +36,8 @@ pelletablation			auxiliary output type (nozzle, region, radial, tvplot, pelletab
 0. 0. 0 0       z position of pellets
 0.2             radius
 0.24             outer radius
-0          heating model spherically symmetric(0) directional heating(1)
-600        quadtree resolution
+0           heating model spherically symmetric(0) directional heating(1)
+500        quadtree resolution
 20          binarytree resolution
 0            magnetic field
 pressure

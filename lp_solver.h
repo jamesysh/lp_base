@@ -68,7 +68,8 @@ public:
 	 * \warning       The function should always return 0 because all exceptions should be handled inside this class
 	 */ 
 	virtual int solve(double dt) = 0;
-	
+
+    virtual void writeDebugInfo(double time) = 0;
 	/**
 	 * \brief   Getter function of the minimum inter-particle distance among all fluid particles 
 	 * \param   None
@@ -97,7 +98,7 @@ protected:
 	double m_fMaxFluidVelocity; ///< Maximum absolute value velocity of fluid particles at a time step
 	double m_fMinCFL;
 	bool m_iIfDebug;///< if true then print debug info
-	std::ofstream debug;///< output information for debugging	
+    std::string m_sDebugfileName;
 };
 
 
@@ -207,7 +208,7 @@ private:
 	int m_iDensityEstimatorType; //< if use SPH density estimator
 	bool m_iFixParticles;//<if use fixed particles
 
-	double m_fTotalTime;///< total CPU time
+    double m_fTotalTime;///< total CPU time
 	double m_fSolverTime;///< CPU time to solve the sptial and temporal derivatives and update the states
 	double m_fSPHTime;///< CPU time to calculate SPH density (only >0 when SPH density estimator is used)
 	double m_fOctreeTime;///< CPU time to construct and search the octree
@@ -529,9 +530,10 @@ void (HyperbolicLPSolver::*computeA) (size_t, const int *, const int*, size_t, s
 	void updateFluidVelocity();
 
     void computeTemperature();
-	void calculateHeatDeposition();
+    
+    virtual void writeDebugInfo(double time);
 
+    
 
-	void computeIntegralSpherical();
 };
 #endif
