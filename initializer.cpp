@@ -226,14 +226,6 @@ void Initializer::readDatafile(const string& datafileName) {
         getline(ifs,s); 
     }
 	
-    if(m_iNumberofPellet){	
-    getline(ifs,s); // Skip 1 lines
-    for(size_t i=0; i<m_iNumberofPellet; i++) { // Read sound speed
-		ifs >> v1;
-		m_vPelletVelocity[i] = v1;
-	    getline(ifs,s); // Skip 1 lines	
-    }
-    }
 	
     m_iFluidNum = num;
 	m_iFluidStartIndex = 0;

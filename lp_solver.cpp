@@ -4755,8 +4755,6 @@ void HyperbolicLPSolver::writeDebugInfo(double time){
 	const double* pressure = m_pParticleData->getPressure();
 	const double* soundSpeed = m_pParticleData->getSoundSpeed();
     const double* localParSpacing = m_pParticleData->getLocalParSpacing();
-    const double* inflowv;
-    if(m_pParticleData->m_iNumberofPellet) inflowv = m_pParticleData->m_vPelletVelocity;
     FILE *debug;
     debug = fopen(m_sDebugfileName.c_str(),"w");
     if(debug==nullptr) {
@@ -4812,16 +4810,7 @@ void HyperbolicLPSolver::writeDebugInfo(double time){
 		fprintf(debug,"%.16g\n",mass[i]);
 
 
-
     
-    if(m_pParticleData->m_iNumberofPellet){
-        
-        fprintf(debug,"InflowVelocity\n");
-        for(size_t i=0;i<m_pParticleData->m_iNumberofPellet;i++){
-            fprintf(debug,"%.16g\n",inflowv[i]);
-        }
-        
-        }
     
     fclose(debug);
 
